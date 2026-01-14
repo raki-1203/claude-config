@@ -1,0 +1,4 @@
+claude-hud@claude-hud
+claude-mem@thedotmack
+code-simplifier@claude-plugins-official
+frontend-design@claude-plugins-official
