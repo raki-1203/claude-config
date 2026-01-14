@@ -81,17 +81,34 @@ if [ -f "$PLUGINS_FILE" ]; then
     done < "$SCRIPT_DIR/plugins.txt"
 fi
 
-# Generate mcp-servers.txt (user-level only, no API keys)
+# Generate mcp-servers.txt (collect from all sources, no API keys)
 echo "# MCP 서버 설치 명령어" > "$SCRIPT_DIR/mcp-servers.txt"
 echo "# API 키는 환경변수로 설정하세요" >> "$SCRIPT_DIR/mcp-servers.txt"
 echo "" >> "$SCRIPT_DIR/mcp-servers.txt"
 
-# Check user-level MCP servers from ~/.claude.json
+MCP_FOUND=false
+
 if [ -f "$HOME/.claude.json" ]; then
+    # User-level mcpServers
     USER_MCP=$(jq -r '.mcpServers // {}' "$HOME/.claude.json" 2>/dev/null)
-    if [ "$USER_MCP" != "{}" ] && [ -n "$USER_MCP" ]; then
+    if [ "$USER_MCP" != "{}" ] && [ "$USER_MCP" != "null" ] && [ -n "$USER_MCP" ]; then
+        echo "# User-level MCP servers" >> "$SCRIPT_DIR/mcp-servers.txt"
         echo "$USER_MCP" | jq -r 'to_entries[] | "claude mcp add \(.key) -s user -- \(.value.command) \(.value.args | join(" "))"' >> "$SCRIPT_DIR/mcp-servers.txt" 2>/dev/null || true
+        MCP_FOUND=true
     fi
+
+    # Project-level mcpServers (collect unique servers from all projects)
+    PROJECT_MCP=$(jq -r '[.projects | to_entries[] | .value.mcpServers // {} | to_entries[]] | unique_by(.key) | from_entries' "$HOME/.claude.json" 2>/dev/null)
+    if [ "$PROJECT_MCP" != "{}" ] && [ "$PROJECT_MCP" != "null" ] && [ -n "$PROJECT_MCP" ]; then
+        echo "" >> "$SCRIPT_DIR/mcp-servers.txt"
+        echo "# Project-level MCP servers" >> "$SCRIPT_DIR/mcp-servers.txt"
+        echo "$PROJECT_MCP" | jq -r 'to_entries[] | "claude mcp add \(.key) -s user -- \(.value.command) \(.value.args | join(" "))"' >> "$SCRIPT_DIR/mcp-servers.txt" 2>/dev/null || true
+        MCP_FOUND=true
+    fi
+fi
+
+if [ "$MCP_FOUND" = false ]; then
+    echo "# 설치된 MCP 서버가 없습니다" >> "$SCRIPT_DIR/mcp-servers.txt"
 fi
 
 echo "✅ mcp-servers.txt 생성 완료"
