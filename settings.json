@@ -7,7 +7,12 @@
     "allow": [
       "WebSearch",
       "mcp__context7__resolve-library-id",
-      "Bash(mkdir:*)"
+      "Bash(mkdir:*)",
+      "Bash(grep:*)",
+      "Bash(npm install:*)",
+      "Skill(claude-hud:setup)",
+      "Bash(~/.tmux.conf)",
+      "Bash(tmux source-file:*)"
     ],
     "deny": [],
     "ask": [],
@@ -43,6 +48,5 @@
       }
     ]
   },
-  "alwaysThinkingEnabled": false,
-  "promptSuggestionEnabled": false
+  "alwaysThinkingEnabled": false
 }

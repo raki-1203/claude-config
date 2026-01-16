@@ -8,16 +8,18 @@ TERMINAL_NAME="${TERM_PROGRAM:-Unknown Terminal}"
 PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$(pwd)}"
 PROJECT_NAME=$(basename "$PROJECT_DIR")
 
-# Get Warp tab name via System Events (requires accessibility permission)
+# Get tab/window name based on terminal type
 TAB_NAME=""
-if [ "$TERMINAL_NAME" = "WarpTerminal" ]; then
+if [ -n "$TMUX" ] || tmux info &>/dev/null; then
+    # tmux: get current window name
+    TAB_NAME=$(tmux display-message -p '#W' 2>/dev/null || echo "")
+elif [ "$TERMINAL_NAME" = "WarpTerminal" ]; then
+    # Warp: get tab name via System Events (requires accessibility permission)
     TAB_NAME=$(osascript -e 'tell application "System Events" to get name of first window of process "Warp"' 2>/dev/null || echo "")
 fi
 
-# Read hook input from stdin
+# Read hook input from stdin (for potential future use)
 HOOK_INPUT=$(cat)
-SESSION_ID=$(echo "$HOOK_INPUT" | jq -r '.session_id // "Unknown"')
-TRANSCRIPT_PATH=$(echo "$HOOK_INPUT" | jq -r '.transcript_path // ""')
 
 # Slack Webhook Notification
 SLACK_WEBHOOK_URL="${CLAUDE_SLACK_WEBHOOK_URL:-}"
@@ -30,8 +32,9 @@ if [ -n "$SLACK_WEBHOOK_URL" ]; then
         --arg terminal "$TERMINAL_NAME" \
         --arg tab "$TAB_DISPLAY" \
         --arg project "$PROJECT_NAME" \
+        --arg path "$PROJECT_DIR" \
         '{
-            "text": "============================================\n*\($terminal)* : \($tab) 작업 완료 ✅\n*프로젝트* : \($project)\n============================================"
+            "text": "============================================\n*\($terminal)* : \($tab) 작업 완료 ✅\n*프로젝트* : \($project)\n*경로* : \($path)\n============================================"
         }')
 
     curl -s -X POST -H 'Content-type: application/json' \

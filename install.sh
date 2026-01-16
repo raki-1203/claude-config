@@ -61,24 +61,24 @@ if [ -d "$SCRIPT_DIR/skills" ]; then
     echo "✅ skills 복사 완료"
 fi
 
-# Copy agents
+# Copy agents (exclude .gitkeep)
 if [ -d "$SCRIPT_DIR/agents" ]; then
     mkdir -p "$HOME/.claude/agents"
-    cp -r "$SCRIPT_DIR/agents"/* "$HOME/.claude/agents/"
+    find "$SCRIPT_DIR/agents" -maxdepth 1 -type f ! -name ".gitkeep" -exec cp {} "$HOME/.claude/agents/" \; 2>/dev/null || true
     echo "✅ agents 복사 완료"
 fi
 
-# Copy commands
+# Copy commands (exclude .gitkeep)
 if [ -d "$SCRIPT_DIR/commands" ]; then
     mkdir -p "$HOME/.claude/commands"
-    cp -r "$SCRIPT_DIR/commands"/* "$HOME/.claude/commands/"
+    find "$SCRIPT_DIR/commands" -maxdepth 1 -type f ! -name ".gitkeep" -exec cp {} "$HOME/.claude/commands/" \; 2>/dev/null || true
     echo "✅ commands 복사 완료"
 fi
 
-# Copy rules
+# Copy rules (exclude .gitkeep)
 if [ -d "$SCRIPT_DIR/rules" ]; then
     mkdir -p "$HOME/.claude/rules"
-    cp -r "$SCRIPT_DIR/rules"/* "$HOME/.claude/rules/"
+    find "$SCRIPT_DIR/rules" -maxdepth 1 -type f ! -name ".gitkeep" -exec cp {} "$HOME/.claude/rules/" \; 2>/dev/null || true
     echo "✅ rules 복사 완료"
 fi
 
