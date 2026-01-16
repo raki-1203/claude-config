@@ -40,13 +40,41 @@ if [ -d "$CLAUDE_DIR/skills" ]; then
     echo "✅ skills 동기화 완료"
 fi
 
-# Sync agents
-if [ -d "$CLAUDE_DIR/agents" ]; then
+# Sync agents (from ~/.claude/agents and plugin cache)
+sync_agents() {
     rm -rf "$SCRIPT_DIR/agents"
     mkdir -p "$SCRIPT_DIR/agents"
-    cp -r "$CLAUDE_DIR/agents"/* "$SCRIPT_DIR/agents/" 2>/dev/null || true
-    echo "✅ agents 동기화 완료"
-fi
+    touch "$SCRIPT_DIR/agents/.gitkeep"
+    local FOUND_AGENTS=false
+
+    # Copy from ~/.claude/agents
+    if [ -d "$CLAUDE_DIR/agents" ]; then
+        for f in "$CLAUDE_DIR/agents"/*; do
+            [ -e "$f" ] || continue
+            [[ "$(basename "$f")" == ".gitkeep" ]] && continue
+            cp -r "$f" "$SCRIPT_DIR/agents/"
+            FOUND_AGENTS=true
+        done
+    fi
+
+    # Extract from plugin cache
+    local PLUGINS_CACHE="$CLAUDE_DIR/plugins/cache"
+    if [ -d "$PLUGINS_CACHE" ]; then
+        while IFS= read -r -d '' agent_file; do
+            local agent_name=$(basename "$agent_file")
+            cp "$agent_file" "$SCRIPT_DIR/agents/$agent_name"
+            FOUND_AGENTS=true
+        done < <(find "$PLUGINS_CACHE" -path "*/agents/*.md" -type f -print0 2>/dev/null)
+    fi
+
+    if [ "$FOUND_AGENTS" = true ]; then
+        echo "✅ agents 동기화 완료"
+    else
+        echo "✅ agents 동기화 완료 (비어있음)"
+    fi
+}
+
+sync_agents
 
 # Sync commands
 if [ -d "$CLAUDE_DIR/commands" ]; then

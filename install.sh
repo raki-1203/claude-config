@@ -88,6 +88,28 @@ if [ -f "$SCRIPT_DIR/CLAUDE.md" ]; then
     echo "✅ CLAUDE.md 복사 완료"
 fi
 
+# Extract agents from installed plugins
+extract_plugin_agents() {
+    local PLUGINS_CACHE="$HOME/.claude/plugins/cache"
+    if [ -d "$PLUGINS_CACHE" ]; then
+        mkdir -p "$HOME/.claude/agents"
+        local FOUND_AGENTS=false
+
+        # Find all agent .md files in plugin cache
+        while IFS= read -r -d '' agent_file; do
+            local agent_name=$(basename "$agent_file")
+            cp "$agent_file" "$HOME/.claude/agents/$agent_name"
+            FOUND_AGENTS=true
+        done < <(find "$PLUGINS_CACHE" -path "*/agents/*.md" -type f -print0 2>/dev/null)
+
+        if [ "$FOUND_AGENTS" = true ]; then
+            echo "✅ 플러그인 agents 추출 완료"
+        fi
+    fi
+}
+
+extract_plugin_agents
+
 echo ""
 echo "🎉 설치 완료!"
 
