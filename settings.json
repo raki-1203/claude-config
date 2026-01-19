@@ -5,24 +5,25 @@
   },
   "permissions": {
     "allow": [
-      "WebSearch",
-      "mcp__context7__resolve-library-id",
-      "Bash(mkdir:*)",
       "Bash(grep:*)",
+      "Bash(mkdir:*)",
       "Bash(npm install:*)",
-      "Skill(claude-hud:setup)",
+      "Bash(tmux source-file:*)",
       "Bash(~/.tmux.conf)",
-      "Bash(tmux source-file:*)"
+      "Skill(claude-hud:setup)",
+      "WebSearch"
     ],
     "deny": [],
     "ask": [],
     "defaultMode": "default"
   },
   "enabledPlugins": {
+    "claude-hud@claude-hud": true,
     "claude-mem@thedotmack": true,
-    "frontend-design@claude-plugins-official": true,
     "code-simplifier@claude-plugins-official": true,
-    "claude-hud@claude-hud": true
+    "firebase@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true,
+    "serena@claude-plugins-official": true
   },
   "hooks": {
     "Stop": [
@@ -48,5 +49,6 @@
       }
     ]
   },
-  "alwaysThinkingEnabled": false
+  "alwaysThinkingEnabled": false,
+  "promptSuggestionEnabled": false
 }
