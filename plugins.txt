@@ -1,4 +1,3 @@
-claude-hud@claude-hud
 claude-mem@thedotmack
 code-simplifier@claude-plugins-official
 firebase@claude-plugins-official
