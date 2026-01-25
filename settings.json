@@ -46,6 +46,18 @@
           }
         ]
       }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "question",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/question-notify.sh",
+            "timeout": 10
+          }
+        ]
+      }
     ]
   },
   "alwaysThinkingEnabled": false,
