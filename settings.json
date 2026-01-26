@@ -36,17 +36,6 @@
         ]
       }
     ],
-    "SubagentStop": [
-      {
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/task-complete-notify.sh",
-            "timeout": 10
-          }
-        ]
-      }
-    ],
     "PreToolUse": [
       {
         "matcher": "question",
