@@ -154,8 +154,16 @@ echo "✅ env-template.txt 생성 완료"
 echo ""
 echo "🎉 동기화 완료!"
 echo ""
-echo "변경사항 확인:"
-echo "  cd $SCRIPT_DIR && git status"
-echo ""
-echo "커밋하려면:"
-echo "  git add . && git commit -m 'Update Claude Code settings'"
+
+# Git commit and push
+cd "$SCRIPT_DIR"
+
+if git diff --quiet && git diff --cached --quiet; then
+    echo "📝 변경사항 없음"
+else
+    echo "📦 Git 커밋 및 푸시 중..."
+    git add .
+    git commit -m "Update Claude Code settings"
+    git push
+    echo "✅ Git push 완료!"
+fi
