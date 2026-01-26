@@ -34,7 +34,7 @@ if [ -n "$SLACK_WEBHOOK_URL" ]; then
         --arg project "$PROJECT_NAME" \
         --arg path "$PROJECT_DIR" \
         '{
-            "text": "============================================\n*\($terminal)* : \($tab) 질문 대기중 \u2753\n*프로젝트* : \($project)\n*경로* : \($path)\n============================================"
+            "text": "*\($terminal)* : \($tab) 질문 대기중 \u2753\n*프로젝트* : \($project)\n*경로* : \($path)\n============================================"
         }')
 
     curl -s -X POST -H 'Content-type: application/json' \
