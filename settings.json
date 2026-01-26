@@ -20,10 +20,9 @@
   },
   "enabledPlugins": {
     "claude-mem@thedotmack": true,
-    "frontend-design@claude-plugins-official": true,
     "code-simplifier@claude-plugins-official": true,
     "firebase@claude-plugins-official": true,
-    "serena@claude-plugins-official": false
+    "frontend-design@claude-plugins-official": true
   },
   "hooks": {
     "Stop": [
