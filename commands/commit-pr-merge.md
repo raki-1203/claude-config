@@ -75,11 +75,27 @@ gh pr create --title "{PR 제목}" --body "{PR 본문}"
 gh pr merge {PR번호} --squash
 ```
 
-### 6. 결과 보고
+### 6. 브랜치 정리
+
+Merge 완료 후 브랜치 정리:
+```bash
+# main 브랜치로 전환 및 최신화
+git checkout main
+git pull origin main
+
+# 로컬 브랜치 삭제
+git branch -d {merged_branch}
+
+# 원격 브랜치 삭제
+git push origin --delete {merged_branch}
+```
+
+### 7. 결과 보고
 
 - 커밋 해시
 - PR URL
 - Merge 상태 (완료/건너뜀)
+- 브랜치 정리 상태 (삭제됨/건너뜀)
 
 ## 예시
 
@@ -99,3 +115,4 @@ gh pr merge {PR번호} --squash
 2. 커밋할 변경사항이 없으면 중단
 3. 이미 PR이 있는 경우 기존 PR 업데이트 후 merge
 4. Merge conflict 발생 시 해결 후 재시도
+5. Merge 후 자동으로 로컬/원격 브랜치 삭제 (main 브랜치로 전환됨)
