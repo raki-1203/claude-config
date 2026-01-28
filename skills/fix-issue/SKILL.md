@@ -1,0 +1,329 @@
+---
+name: fix-issue
+description: "GitHub 이슈를 TDD 기반으로 해결. 브랜치 생성 → 테스트 작성 → 수정 → PR → 배포 완전 자동화. Use when: '/fix-issue [이슈번호]', 'fix issue', '이슈 수정', '이슈 해결', 'resolve issue'. ALWAYS uses tdd-guide skill for test-first development. 프로젝트 타입(iOS/Flutter/Web) 자동 감지하여 배포."
+---
+
+# Fix Issue with TDD
+
+GitHub 이슈 해결: TDD (테스트 먼저) + 자동 배포
+
+## Quick Start
+
+```bash
+/fix-issue 68
+```
+
+## Workflow Overview
+
+```
+이슈 분석 → 브랜치 생성 → TDD (테스트→수정→리팩토링) → 커밋 → PR → 배포
+```
+
+## Required Skills
+
+**자동 로드**: 이 skill 사용 시 `tdd-guide` skill도 함께 로드
+
+```
+delegate_task(load_skills=["fix-issue", "tdd-guide"], ...)
+```
+
+---
+
+## Phase 1: Issue Analysis
+
+```bash
+gh issue view $ISSUE_NUMBER
+```
+
+Extract from issue:
+- **Title**: 브랜치명 및 커밋 메시지용
+- **Labels**: bug/feature/enhancement 분류
+- **Body**: 재현 단계, 관련 컴포넌트 힌트
+
+---
+
+## Phase 2: Branch Creation
+
+```bash
+git checkout main
+git pull origin main
+git checkout -b {issue_number}-{kebab-case-title}
+```
+
+**Branch naming**: `68-fix-login-button-mobile`
+
+---
+
+## Phase 3: TDD-based Resolution
+
+**핵심: 테스트 먼저, 코드 나중** (tdd-guide skill 참조)
+
+### 3.1 Write Failing Test (RED)
+
+이슈를 재현하는 테스트 작성:
+
+```typescript
+// Bug: "로그인 버튼이 비활성화 안됨"
+describe('LoginButton', () => {
+  it('should be disabled when email is empty', () => {
+    render(<LoginButton email="" password="123" />)
+    expect(screen.getByRole('button')).toBeDisabled()  // 이게 실패해야 함
+  })
+})
+```
+
+### 3.2 Verify Test FAILS
+
+```bash
+npm test  # 반드시 실패 확인
+```
+
+**테스트가 통과하면**: 잘못된 테스트 → 다시 작성
+
+### 3.3 Write Minimal Fix (GREEN)
+
+테스트 통과하는 **최소한의 코드**만 작성:
+
+```typescript
+// 최소 수정
+function LoginButton({ email, password }) {
+  const isDisabled = !email || !password  // 이 한 줄 추가
+  return <button disabled={isDisabled}>Login</button>
+}
+```
+
+### 3.4 Verify Test PASSES
+
+```bash
+npm test  # 이제 통과
+```
+
+### 3.5 Refactor (IMPROVE)
+
+테스트 유지하며 코드 정리:
+- 중복 제거
+- 이름 개선
+- OCP 원칙 적용
+
+### 3.6 OCP Principle (Open-Closed Principle)
+
+리팩토링 시 우선순위:
+
+| 순위 | 접근 방식 | 예시 |
+|-----|----------|------|
+| 1순위 | 새 파일/클래스 추가 | 새 Provider, Service 생성 |
+| 2순위 | 기존 인터페이스 확장 | 필드/메서드 추가 (시그니처 유지) |
+| 3순위 | 기존 코드 최소 수정 | 호출부만 수정, 로직은 새 코드에 위임 |
+
+### 3.7 Verify Coverage
+
+```bash
+npm test -- --coverage  # 80%+ 목표
+```
+
+---
+
+## Phase 4: Commit & Push
+
+```bash
+git add .
+git commit -m "{type}: {summary} (#{issue_number})"
+git push -u origin {branch_name}
+```
+
+**Commit types:** fix, feat, refactor, chore, docs
+
+---
+
+## Phase 5: PR Creation
+
+```bash
+gh pr create --title "{type}: {title}" --body "$(cat <<'EOF'
+Fixes #{issue_number}
+
+## Changes
+- {변경 내용}
+
+## Testing
+- {테스트 방법}
+EOF
+)"
+```
+
+---
+
+## Phase 6: Auto Deploy
+
+프로젝트 타입을 자동 감지하여 적절한 배포 수행.
+
+### 6.1 Project Type Detection
+
+```bash
+# Detection order (first match wins)
+if [ -f "pubspec.yaml" ]; then
+    PROJECT_TYPE="flutter"
+elif [ -d "*.xcodeproj" ] || [ -d "*.xcworkspace" ]; then
+    PROJECT_TYPE="ios-native"
+elif [ -f "package.json" ]; then
+    PROJECT_TYPE="web"
+fi
+```
+
+### 6.2 Custom Deploy Config (Optional)
+
+프로젝트 루트에 `.deploy.yaml` 파일이 있으면 커스텀 설정 사용:
+
+```yaml
+# .deploy.yaml example
+type: flutter  # flutter | ios-native | web
+platform: ios  # ios | android | web
+
+modes:
+  local:
+    commands:
+      - flutter build ios --debug
+      - flutter install
+  
+  remote:
+    commands:
+      - flutter build ipa --release
+      - cd ios && fastlane beta
+```
+
+### 6.3 Deploy by Project Type
+
+#### iOS/Flutter Projects
+
+```bash
+# Check USB connection
+ios-deploy --detect 2>/dev/null
+
+if [ $? -eq 0 ]; then
+    # USB connected → Local install (fast)
+    DEPLOY_MODE="local"
+else
+    # No USB → TestFlight (remote)
+    DEPLOY_MODE="remote"
+fi
+```
+
+**Local Deploy (USB):**
+- Flutter: `flutter install`
+- iOS Native: `ios-deploy --bundle build/ios/iphoneos/Runner.app`
+
+**Remote Deploy (TestFlight):**
+- Flutter: `flutter build ipa && cd ios && fastlane pilot upload`
+- iOS Native: `fastlane pilot upload`
+
+See [references/deploy-ios.md](references/deploy-ios.md) for detailed commands.
+
+#### Web Projects
+
+```
+웹 프로젝트는 로컬 테스트가 쉬우므로 배포는 선택적:
+
+"Preview 배포를 할까요? (Vercel/Netlify)"
+├─ Yes → Preview URL 생성
+└─ No → 스킵
+```
+
+**If Yes:**
+- Vercel: `vercel`
+- Netlify: `netlify deploy`
+- Custom: `.deploy.yaml` 참조
+
+See [references/deploy-web.md](references/deploy-web.md) for detailed commands.
+
+---
+
+## Phase 7: Completion Report
+
+```
+✅ 이슈 #68 해결 완료
+
+📌 Branch: 68-fix-login-button-mobile
+🔀 PR: #69 (URL)
+📱 Deploy: TestFlight (build 1.2.3)
+
+💡 다음 단계:
+- PR 리뷰 요청
+- TestFlight에서 테스트 확인
+```
+
+---
+
+## Error Handling
+
+| 상황 | 처리 |
+|------|------|
+| 이슈 없음 | "이슈 #N을 찾을 수 없습니다" |
+| 브랜치 이미 존재 | 기존 브랜치 checkout |
+| 빌드 실패 | 에러 로그 표시, 배포 스킵 |
+| ios-deploy 미설치 | "npm install -g ios-deploy 실행" |
+| fastlane 미설치 | "gem install fastlane 실행" |
+
+---
+
+## Examples
+
+### Example 1: Flutter iOS Bug Fix
+
+```
+/fix-issue 68
+
+→ 이슈 분석: "로그인 버튼 모바일 크기 문제"
+→ 브랜치: 68-fix-login-button-mobile
+→ 수정 완료, 테스트 통과
+→ PR #69 생성
+→ USB 연결 감지됨 → flutter install
+→ "iPhone에 설치 완료! 테스트해주세요"
+```
+
+### Example 2: Flutter Remote Deploy
+
+```
+/fix-issue 42
+
+→ 이슈 분석: "프로필 사진 업로드 실패"
+→ 브랜치: 42-fix-profile-upload
+→ 수정 완료
+→ PR #43 생성
+→ USB 미연결 → TestFlight 업로드
+→ "TestFlight 빌드 1.2.3 업로드 완료"
+```
+
+### Example 3: Web Project
+
+```
+/fix-issue 15
+
+→ 이슈 분석: "다크모드 토글 버그"
+→ 브랜치: 15-fix-darkmode-toggle
+→ 수정 완료
+→ PR #16 생성
+→ "Preview 배포할까요?" → No
+→ "완료! npm run dev로 로컬 테스트 가능"
+```
+
+---
+
+## Integration
+
+**Required Skills:**
+- `tdd-guide`: TDD 워크플로우 (자동 로드)
+
+**Works with:**
+- `/gh-issue`: 이슈 생성
+- `/commit-pr-merge`: PR 머지
+- `kent-beck-refactor`: 리팩토링 후처리
+
+---
+
+## Bugfix Rule
+
+**버그 수정 시 최소한의 변경만 수행. 리팩토링 금지.**
+
+예외:
+- 명백한 버그 수정 (로직/타입 오류)
+- 보안 취약점 패치
+- 잘못된 설계 (사전 협의 필요)

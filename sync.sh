@@ -146,13 +146,50 @@ cat > "$SCRIPT_DIR/env-template.txt" << 'EOF'
 # Slack 알림용 Webhook URL
 CLAUDE_SLACK_WEBHOOK_URL="your-slack-webhook-url"
 
+# OpenCode Quotio API 키 (Quotio 앱에서 발급)
+QUOTIO_API_KEY="quotio-local-XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
+
 # MCP 서버 API 키 (사용하는 경우)
 # HYPERBROWSER_API_KEY="your-api-key"
 EOF
 echo "✅ env-template.txt 생성 완료"
 
 echo ""
-echo "🎉 동기화 완료!"
+echo "🎉 Claude Code 동기화 완료!"
+
+OPENCODE_DIR="$HOME/.config/opencode"
+OPENCODE_DEST="$SCRIPT_DIR/opencode"
+
+if [ -d "$OPENCODE_DIR" ]; then
+    echo ""
+    echo "🔄 OpenCode 설정 동기화 시작..."
+    
+    mkdir -p "$OPENCODE_DEST"
+
+    if [ -f "$OPENCODE_DIR/opencode.json" ]; then
+        jq 'walk(if type == "object" and has("apiKey") then .apiKey = "${QUOTIO_API_KEY}" else . end)' \
+            "$OPENCODE_DIR/opencode.json" > "$OPENCODE_DEST/opencode.json"
+        echo "✅ opencode.json 동기화 완료 (API 키 제거됨)"
+    fi
+
+    if [ -f "$OPENCODE_DIR/oh-my-opencode.json" ]; then
+        cp "$OPENCODE_DIR/oh-my-opencode.json" "$OPENCODE_DEST/oh-my-opencode.json"
+        echo "✅ oh-my-opencode.json 동기화 완료"
+    fi
+
+    if [ -f "$OPENCODE_DIR/antigravity.json" ]; then
+        cp "$OPENCODE_DIR/antigravity.json" "$OPENCODE_DEST/antigravity.json"
+        echo "✅ antigravity.json 동기화 완료"
+    fi
+
+    echo "🎉 OpenCode 동기화 완료!"
+else
+    echo ""
+    echo "⏭️  ~/.config/opencode 폴더 없음 (OpenCode 동기화 건너뜀)"
+fi
+
+echo ""
+echo "🎉 전체 동기화 완료!"
 echo ""
 
 # Git commit and push

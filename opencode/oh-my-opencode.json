@@ -1,0 +1,108 @@
+{
+  "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/master/assets/oh-my-opencode.schema.json",
+  "google_auth": false,
+  "claude_code": {
+    "mcp": true,
+    "commands": true,
+    "skills": true,
+    "agents": true,
+    "hooks": true,
+    "plugins": true,
+    "plugins_override": {
+      "code-simplifier@claude-plugins-official": true,
+      "frontend-design@claude-plugins-official": true,
+      "claude-mem@thedotmack": true
+    }
+  },
+  "sisyphus_agent": {
+    "disabled": false,
+    "default_builder_enabled": false,
+    "planner_enabled": true,
+    "replace_plan": true
+  },
+  "agents": {
+    "sisyphus": {
+      "model": "anthropic/claude-opus-4-5-20251101"
+    },
+    "sisyphus-junior": {
+      "model": "anthropic/claude-sonnet-4-5-20250929"
+    },
+    "atlas": {
+      "model": "anthropic/claude-sonnet-4-5-20250929"
+    },
+    "prometheus": {
+      "model": "anthropic/claude-opus-4-5-20251101"
+    },
+    "metis": {
+      "model": "anthropic/claude-sonnet-4-5-20250929"
+    },
+    "momus": {
+      "model": "anthropic/claude-opus-4-5-20251101"
+    },
+    "oracle": {
+      "model": "quotio/gpt-5.2"
+    },
+    "frontend-ui-ux-engineer": {
+      "model": "google/antigravity-gemini-3-pro"
+    },
+    "librarian": {
+      "model": "google/antigravity-gemini-3-flash"
+    },
+    "explore": {
+      "model": "google/antigravity-gemini-3-flash"
+    },
+    "document-writer": {
+      "model": "google/antigravity-gemini-3-pro"
+    },
+    "multimodal-looker": {
+      "model": "google/antigravity-gemini-3-flash"
+    }
+  },
+  "categories": {
+    "visual-engineering": {
+      "model": "google/antigravity-gemini-3-pro"
+    },
+    "ultrabrain": {
+      "model": "quotio/gpt-5.2-codex"
+    },
+    "artistry": {
+      "model": "google/antigravity-gemini-3-pro"
+    },
+    "quick": {
+      "model": "anthropic/claude-haiku-4-5"
+    },
+    "unspecified-low": {
+      "model": "anthropic/claude-sonnet-4-5-20250929"
+    },
+    "unspecified-high": {
+      "model": "anthropic/claude-opus-4-5-20251101"
+    },
+    "writing": {
+      "model": "google/antigravity-gemini-3-flash"
+    }
+  },
+  "lsp": {
+    "typescript-language-server": {
+      "command": [
+        "typescript-language-server",
+        "--stdio"
+      ],
+      "extensions": [
+        ".ts",
+        ".tsx"
+      ],
+      "priority": 10
+    }
+  },
+  "tmux": {
+    "enabled": true,
+    "layout": "main-vertical",
+    "main_pane_size": 60,
+    "main_pane_min_width": 120,
+    "agent_pane_min_width": 40
+  },
+  "disabled_hooks": [
+    "session-notification",
+    "directory-agents-injector"
+  ]
+}

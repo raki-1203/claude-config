@@ -1,6 +1,6 @@
-# Claude Code 개인 설정
+# Claude Code & OpenCode 개인 설정
 
-Claude Code 설정을 여러 기기에서 공유하기 위한 저장소입니다.
+Claude Code와 OpenCode 설정을 여러 기기에서 공유하기 위한 저장소입니다.
 
 ## 빠른 시작
 
@@ -32,6 +32,14 @@ cd ~/claude-config
 | **rules/** | 커스텀 규칙 (있는 경우) |
 | **CLAUDE.md** | 전역 지침 (있는 경우) |
 
+### OpenCode 설정 (자동 설치)
+
+| 항목 | 설명 |
+|------|------|
+| **opencode.json** | 모델, 플러그인, 프로바이더 설정 (기존과 병합) |
+| **oh-my-opencode.json** | 에이전트/카테고리별 모델, LSP, tmux 설정 |
+| **antigravity.json** | Antigravity 플러그인 설정 |
+
 ### 수동 설치 안내 (install.sh 실행 시 출력)
 
 | 항목 | 파일 |
@@ -62,7 +70,7 @@ cd ~/claude-config
 
 ```
 claude-config/
-├── settings.json       # 권한, hooks, 플러그인 활성화
+├── settings.json       # Claude Code 권한, hooks, 플러그인 활성화
 ├── hooks/
 │   └── task-complete-notify.sh
 ├── skills/
@@ -72,6 +80,10 @@ claude-config/
 ├── commands/           # (있는 경우)
 ├── rules/              # (있는 경우)
 ├── CLAUDE.md           # (있는 경우)
+├── opencode/           # OpenCode 설정
+│   ├── opencode.json       # 모델, 플러그인, 프로바이더
+│   ├── oh-my-opencode.json # 에이전트, 카테고리, LSP, tmux
+│   └── antigravity.json    # Antigravity 설정
 ├── plugins.txt         # 설치할 플러그인 목록
 ├── mcp-servers.txt     # MCP 서버 설치 명령어
 ├── env-template.txt    # 필요한 환경변수
@@ -86,10 +98,13 @@ claude-config/
 - settings.json, hooks, skills, agents, commands, rules
 - CLAUDE.md
 - .mcp.json (프로젝트용, API 키는 환경변수로)
+- opencode/opencode.json, oh-my-opencode.json, antigravity.json
 
 ### ❌ 공유 불가 (개인 정보)
 - settings.local.json (자동 gitignore)
 - ~/.claude.json (개인 MCP, 통계)
+- ~/.config/opencode/antigravity-accounts.json (계정 정보)
+- ~/.config/opencode/CLAUDE.md (claude-mem 개인 활동 기록)
 - API 키, Webhook URL 등
 
 ## 알림 형식

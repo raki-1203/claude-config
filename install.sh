@@ -115,7 +115,63 @@ extract_plugin_agents() {
 extract_plugin_agents
 
 echo ""
-echo "🎉 설치 완료!"
+echo "🎉 Claude Code 설정 설치 완료!"
+
+# ============================================
+# OpenCode 설정 설치
+# ============================================
+echo ""
+echo "🚀 OpenCode 설정 설치 시작..."
+
+OPENCODE_DIR="$HOME/.config/opencode"
+OPENCODE_SRC="$SCRIPT_DIR/opencode"
+
+if [ -d "$OPENCODE_SRC" ]; then
+    mkdir -p "$OPENCODE_DIR"
+
+    if [ -f "$OPENCODE_SRC/opencode.json" ]; then
+        if [ -f "$OPENCODE_DIR/opencode.json" ]; then
+            BACKUP="$OPENCODE_DIR/opencode.json.backup.$(date +%Y%m%d%H%M%S)"
+            cp "$OPENCODE_DIR/opencode.json" "$BACKUP"
+            echo "📦 기존 opencode.json 백업: $BACKUP"
+        fi
+        
+        cp "$OPENCODE_SRC/opencode.json" "$OPENCODE_DIR/opencode.json"
+        
+        if [ -n "$QUOTIO_API_KEY" ]; then
+            sed -i '' "s|\${QUOTIO_API_KEY}|$QUOTIO_API_KEY|g" "$OPENCODE_DIR/opencode.json"
+            echo "✅ opencode.json 복사 완료 (QUOTIO_API_KEY 자동 설정)"
+        else
+            echo "✅ opencode.json 복사 완료"
+            echo "⚠️  QUOTIO_API_KEY 환경변수가 없습니다. 수동으로 설정하세요."
+        fi
+    fi
+
+    # Install oh-my-opencode.json (merge with existing)
+    if [ -f "$OPENCODE_SRC/oh-my-opencode.json" ]; then
+        if [ -f "$OPENCODE_DIR/oh-my-opencode.json" ]; then
+            BACKUP="$OPENCODE_DIR/oh-my-opencode.json.backup.$(date +%Y%m%d%H%M%S)"
+            cp "$OPENCODE_DIR/oh-my-opencode.json" "$BACKUP"
+            echo "📦 기존 oh-my-opencode.json 백업: $BACKUP"
+            
+            jq -s '.[0] * .[1]' "$OPENCODE_DIR/oh-my-opencode.json" "$OPENCODE_SRC/oh-my-opencode.json" > "$OPENCODE_DIR/oh-my-opencode.merged.json"
+            mv "$OPENCODE_DIR/oh-my-opencode.merged.json" "$OPENCODE_DIR/oh-my-opencode.json"
+            echo "✅ oh-my-opencode.json 병합 완료"
+        else
+            cp "$OPENCODE_SRC/oh-my-opencode.json" "$OPENCODE_DIR/oh-my-opencode.json"
+            echo "✅ oh-my-opencode.json 복사 완료"
+        fi
+    fi
+
+    if [ -f "$OPENCODE_SRC/antigravity.json" ]; then
+        cp "$OPENCODE_SRC/antigravity.json" "$OPENCODE_DIR/antigravity.json"
+        echo "✅ antigravity.json 복사 완료"
+    fi
+
+    echo "🎉 OpenCode 설정 설치 완료!"
+else
+    echo "⏭️  opencode/ 폴더 없음 (OpenCode 설정 건너뜀)"
+fi
 
 # Show required plugins
 if [ -f "$SCRIPT_DIR/plugins.txt" ]; then
