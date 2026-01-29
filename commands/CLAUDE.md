@@ -7,5 +7,5 @@
 
 | ID | Time | T | Title | Read |
 |----|------|---|-------|------|
-| #6063 | 12:50 PM | 🔵 | CLAUDE.md configuration file examined in user's .claude directory | ~175 |
+| #6076 | 12:59 PM | 🟣 | Code review command installed to global Claude Code configuration | ~483 |
 </claude-mem-context>

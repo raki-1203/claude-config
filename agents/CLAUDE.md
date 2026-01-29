@@ -7,5 +7,5 @@
 
 | ID | Time | T | Title | Read |
 |----|------|---|-------|------|
-| #6063 | 12:50 PM | 🔵 | CLAUDE.md configuration file examined in user's .claude directory | ~175 |
+| #6074 | 12:58 PM | 🟣 | Code-reviewer agent installed to local Claude agents directory | ~551 |
 </claude-mem-context>

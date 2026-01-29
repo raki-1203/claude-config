@@ -7,5 +7,5 @@
 
 | ID | Time | T | Title | Read |
 |----|------|---|-------|------|
-| #6063 | 12:50 PM | 🔵 | CLAUDE.md configuration file examined in user's .claude directory | ~175 |
+| #6075 | 12:59 PM | 🟣 | Security review skill installed to global Claude Code configuration | ~522 |
 </claude-mem-context>
