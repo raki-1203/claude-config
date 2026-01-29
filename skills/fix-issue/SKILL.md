@@ -236,7 +236,37 @@ See [references/deploy-web.md](references/deploy-web.md) for detailed commands.
 
 ---
 
-## Phase 7: Completion Report
+## Phase 7: Code Review with code-reviewer Agent
+
+작업 완료 후 **code-reviewer 에이전트**를 사용하여 자동 리뷰 수행:
+
+```bash
+# code-reviewer 에이전트 활성화
+--agent code-reviewer
+```
+
+### 리뷰 항목
+- **보안**: 하드코딩된 자격증명, SQL 주입, XSS 취약점
+- **코드 품질**: 함수 크기, 중첩 깊이, 에러 처리, 테스트 커버리지
+- **성능**: 알고리즘 효율성, 캐싱, N+1 쿼리 패턴
+- **모범 사례**: 명명 규칙, 문서화, 접근성
+
+### 리뷰 결과
+
+```
+✅ Approve: 모든 이슈 해결됨
+⚠️ Warning: 중간 정도 이슈만 존재 (선택적 수정)
+❌ Block: Critical/High 이슈 발견 (수정 필요)
+```
+
+리뷰 결과에 따라:
+- **✅ 승인**: PR을 그대로 진행
+- **⚠️ 경고**: 권장 사항 검토 후 결정
+- **❌ 차단**: 지적 사항 수정 후 재검토
+
+---
+
+## Phase 8: Completion Report
 
 ```
 ✅ 이슈 #68 해결 완료
@@ -244,6 +274,7 @@ See [references/deploy-web.md](references/deploy-web.md) for detailed commands.
 📌 Branch: 68-fix-login-button-mobile
 🔀 PR: #69 (URL)
 📱 Deploy: TestFlight (build 1.2.3)
+🔍 Code Review: ✅ Approved
 
 💡 다음 단계:
 - PR 리뷰 요청
@@ -266,7 +297,7 @@ See [references/deploy-web.md](references/deploy-web.md) for detailed commands.
 
 ## Examples
 
-### Example 1: Flutter iOS Bug Fix
+### Example 1: Flutter iOS Bug Fix with Code Review
 
 ```
 /fix-issue 68
@@ -276,6 +307,7 @@ See [references/deploy-web.md](references/deploy-web.md) for detailed commands.
 → 수정 완료, 테스트 통과
 → PR #69 생성
 → USB 연결 감지됨 → flutter install
+→ Code Review (code-reviewer): ✅ Approved
 → "iPhone에 설치 완료! 테스트해주세요"
 ```
 
@@ -289,6 +321,7 @@ See [references/deploy-web.md](references/deploy-web.md) for detailed commands.
 → 수정 완료
 → PR #43 생성
 → USB 미연결 → TestFlight 업로드
+→ Code Review (code-reviewer): ⚠️ Warning (성능 최적화 권장)
 → "TestFlight 빌드 1.2.3 업로드 완료"
 ```
 
@@ -301,6 +334,7 @@ See [references/deploy-web.md](references/deploy-web.md) for detailed commands.
 → 브랜치: 15-fix-darkmode-toggle
 → 수정 완료
 → PR #16 생성
+→ Code Review (code-reviewer): ✅ Approved
 → "Preview 배포할까요?" → No
 → "완료! npm run dev로 로컬 테스트 가능"
 ```
@@ -312,10 +346,14 @@ See [references/deploy-web.md](references/deploy-web.md) for detailed commands.
 **Required Skills:**
 - `tdd-guide`: TDD 워크플로우 (자동 로드)
 
+**Related Agents:**
+- `code-reviewer`: 작업 완료 후 자동 코드 리뷰 (Phase 7)
+
 **Works with:**
 - `/gh-issue`: 이슈 생성
 - `/commit-pr-merge`: PR 머지
 - `kent-beck-refactor`: 리팩토링 후처리
+- `code-review`: 수동 코드 리뷰
 
 ---
 
