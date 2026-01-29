@@ -1,6 +1,6 @@
 ---
 name: fix-issue
-description: "GitHub 이슈를 TDD 기반으로 해결. 브랜치 생성 → 테스트 작성 → 수정 → PR → 배포 완전 자동화. Use when: '/fix-issue [이슈번호]', 'fix issue', '이슈 수정', '이슈 해결', 'resolve issue'. ALWAYS uses tdd-guide skill for test-first development. 프로젝트 타입(iOS/Flutter/Web) 자동 감지하여 배포."
+description: "GitHub 이슈를 TDD 기반으로 해결. 브랜치 생성 → TDD → 리뷰 → (통과 시) 커밋/PR → 배포. 리뷰 실패 시 수정 후 재리뷰. Use when: '/fix-issue [이슈번호]', 'fix issue', '이슈 수정', '이슈 해결', 'resolve issue'. ALWAYS uses tdd-guide skill for test-first development."
 ---
 
 # Fix Issue with TDD
@@ -16,7 +16,9 @@ GitHub 이슈 해결: TDD (테스트 먼저) + 자동 배포
 ## Workflow Overview
 
 ```
-이슈 분석 → 브랜치 생성 → TDD (테스트→수정→리팩토링) → 커밋 → PR → 배포
+이슈 분석 → 브랜치 생성 → TDD (테스트→수정→리팩토링) → 리뷰 → [통과] → 커밋 → PR → 배포
+                                                    ↑         ↓
+                                                    └─ [실패] ←┘ (수정 후 재리뷰)
 ```
 
 ## Required Skills
@@ -123,7 +125,61 @@ npm test -- --coverage  # 80%+ 목표
 
 ---
 
-## Phase 4: Commit & Push
+## Phase 4: Code Review (커밋 전 필수)
+
+**핵심: 리뷰 통과 전까지 커밋/PR 진행하지 않음**
+
+### 4.1 code-reviewer 에이전트로 리뷰 수행
+
+```bash
+# code-reviewer 에이전트 활성화하여 변경사항 리뷰
+delegate_task(
+  subagent_type="code-reviewer",
+  load_skills=["security-review"],
+  prompt="Review the changes for issue #{issue_number}. Check: security, code quality, performance, best practices."
+)
+```
+
+### 4.2 리뷰 항목
+
+| 카테고리 | 체크 포인트 |
+|---------|-----------|
+| **보안** | 하드코딩된 자격증명, SQL 주입, XSS 취약점 |
+| **코드 품질** | 함수 크기, 중첩 깊이, 에러 처리, 테스트 커버리지 |
+| **성능** | 알고리즘 효율성, 캐싱, N+1 쿼리 패턴 |
+| **모범 사례** | 명명 규칙, 문서화, 접근성 |
+
+### 4.3 리뷰 결과 처리
+
+```
+✅ APPROVE → Phase 5 (커밋) 진행
+⚠️ WARNING → 권장 사항 검토 후 결정 (진행 or 수정)
+❌ BLOCK → 반드시 수정 후 Phase 4 재실행
+```
+
+### 4.4 리뷰 실패 시 수정 루프
+
+```
+리뷰 실패 (❌ BLOCK)
+    ↓
+지적 사항 분석
+    ↓
+코드 수정 (Phase 3의 TDD 방식 유지)
+    ↓
+테스트 재실행
+    ↓
+Phase 4 재실행 (재리뷰)
+    ↓
+통과할 때까지 반복
+```
+
+**재리뷰 시 이전 지적 사항이 해결되었는지 명시적으로 확인**
+
+---
+
+## Phase 5: Commit & Push (리뷰 통과 후)
+
+**선행 조건: Phase 4 리뷰 ✅ APPROVE 또는 ⚠️ WARNING (사용자 승인)**
 
 ```bash
 git add .
@@ -135,7 +191,7 @@ git push -u origin {branch_name}
 
 ---
 
-## Phase 5: PR Creation
+## Phase 6: PR Creation
 
 ```bash
 gh pr create --title "{type}: {title}" --body "$(cat <<'EOF'
@@ -146,17 +202,21 @@ Fixes #{issue_number}
 
 ## Testing
 - {테스트 방법}
+
+## Code Review
+- ✅ Reviewed by code-reviewer agent
+- {리뷰 결과 요약}
 EOF
 )"
 ```
 
 ---
 
-## Phase 6: Auto Deploy
+## Phase 7: Auto Deploy
 
 프로젝트 타입을 자동 감지하여 적절한 배포 수행.
 
-### 6.1 Project Type Detection
+### 7.1 Project Type Detection
 
 ```bash
 # Detection order (first match wins)
@@ -169,7 +229,7 @@ elif [ -f "package.json" ]; then
 fi
 ```
 
-### 6.2 Custom Deploy Config (Optional)
+### 7.2 Custom Deploy Config (Optional)
 
 프로젝트 루트에 `.deploy.yaml` 파일이 있으면 커스텀 설정 사용:
 
@@ -190,7 +250,7 @@ modes:
       - cd ios && fastlane beta
 ```
 
-### 6.3 Deploy by Project Type
+### 7.3 Deploy by Project Type
 
 #### iOS/Flutter Projects
 
@@ -236,36 +296,6 @@ See [references/deploy-web.md](references/deploy-web.md) for detailed commands.
 
 ---
 
-## Phase 7: Code Review with code-reviewer Agent
-
-작업 완료 후 **code-reviewer 에이전트**를 사용하여 자동 리뷰 수행:
-
-```bash
-# code-reviewer 에이전트 활성화
---agent code-reviewer
-```
-
-### 리뷰 항목
-- **보안**: 하드코딩된 자격증명, SQL 주입, XSS 취약점
-- **코드 품질**: 함수 크기, 중첩 깊이, 에러 처리, 테스트 커버리지
-- **성능**: 알고리즘 효율성, 캐싱, N+1 쿼리 패턴
-- **모범 사례**: 명명 규칙, 문서화, 접근성
-
-### 리뷰 결과
-
-```
-✅ Approve: 모든 이슈 해결됨
-⚠️ Warning: 중간 정도 이슈만 존재 (선택적 수정)
-❌ Block: Critical/High 이슈 발견 (수정 필요)
-```
-
-리뷰 결과에 따라:
-- **✅ 승인**: PR을 그대로 진행
-- **⚠️ 경고**: 권장 사항 검토 후 결정
-- **❌ 차단**: 지적 사항 수정 후 재검토
-
----
-
 ## Phase 8: Completion Report
 
 ```
@@ -297,35 +327,40 @@ See [references/deploy-web.md](references/deploy-web.md) for detailed commands.
 
 ## Examples
 
-### Example 1: Flutter iOS Bug Fix with Code Review
+### Example 1: Flutter iOS Bug Fix (리뷰 통과)
 
 ```
 /fix-issue 68
 
 → 이슈 분석: "로그인 버튼 모바일 크기 문제"
 → 브랜치: 68-fix-login-button-mobile
-→ 수정 완료, 테스트 통과
+→ TDD: 테스트 작성 → 수정 → 테스트 통과
+→ Code Review (code-reviewer): ✅ APPROVE
+→ 커밋 & 푸시
 → PR #69 생성
 → USB 연결 감지됨 → flutter install
-→ Code Review (code-reviewer): ✅ Approved
 → "iPhone에 설치 완료! 테스트해주세요"
 ```
 
-### Example 2: Flutter Remote Deploy
+### Example 2: 리뷰 실패 후 재수정
 
 ```
 /fix-issue 42
 
 → 이슈 분석: "프로필 사진 업로드 실패"
 → 브랜치: 42-fix-profile-upload
-→ 수정 완료
+→ TDD: 수정 완료, 테스트 통과
+→ Code Review (code-reviewer): ❌ BLOCK
+   - "보안 이슈: 파일 타입 검증 누락"
+→ 수정: 파일 타입 검증 추가
+→ 테스트 재실행 → 통과
+→ Code Review (재리뷰): ✅ APPROVE
+→ 커밋 & 푸시
 → PR #43 생성
-→ USB 미연결 → TestFlight 업로드
-→ Code Review (code-reviewer): ⚠️ Warning (성능 최적화 권장)
-→ "TestFlight 빌드 1.2.3 업로드 완료"
+→ TestFlight 업로드 완료
 ```
 
-### Example 3: Web Project
+### Example 3: Web Project (경고 수준 통과)
 
 ```
 /fix-issue 15
@@ -333,8 +368,11 @@ See [references/deploy-web.md](references/deploy-web.md) for detailed commands.
 → 이슈 분석: "다크모드 토글 버그"
 → 브랜치: 15-fix-darkmode-toggle
 → 수정 완료
+→ Code Review (code-reviewer): ⚠️ WARNING
+   - "성능: 불필요한 리렌더링 있음 (권장 수정)"
+→ 사용자 확인: "진행할까요?" → Yes
+→ 커밋 & 푸시
 → PR #16 생성
-→ Code Review (code-reviewer): ✅ Approved
 → "Preview 배포할까요?" → No
 → "완료! npm run dev로 로컬 테스트 가능"
 ```
@@ -347,7 +385,7 @@ See [references/deploy-web.md](references/deploy-web.md) for detailed commands.
 - `tdd-guide`: TDD 워크플로우 (자동 로드)
 
 **Related Agents:**
-- `code-reviewer`: 작업 완료 후 자동 코드 리뷰 (Phase 7)
+- `code-reviewer`: 커밋 전 자동 코드 리뷰 (Phase 4) - 리뷰 통과 필수
 
 **Works with:**
 - `/gh-issue`: 이슈 생성
