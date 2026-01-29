@@ -7,5 +7,37 @@
 
 | ID | Time | T | Title | Read |
 |----|------|---|-------|------|
-| #6063 | 12:50 PM | 🔵 | CLAUDE.md configuration file examined in user's .claude directory | ~175 |
+| #6063 | 12:50 PM | : | CLAUDE.md configuration file examined in user's .claude directory | ~175 |
 </claude-mem-context>
+
+# Global Development Principles
+
+## Core Rules (모든 프로젝트 적용)
+
+### 1. TDD First
+- 테스트 먼저, 코드 나중 (RED -> GREEN -> REFACTOR)
+- 테스트 없이 코드 없다
+- 커버리지 80%+ 유지
+
+### 2. Bugfix = Minimal Change
+- 버그 수정 시 최소 변경만
+- 리팩토링은 별도 작업으로 분리
+- 관련 없는 코드 정리 금지
+
+### 3. Code Review Before Commit
+- 커밋 전 code-reviewer 에이전트로 검토 필수
+- BLOCK 결과 시 반드시 수정 후 재리뷰
+- 보안, 품질, 성능, 모범 사례 체크
+
+### 4. OCP Principle
+- 확장에는 열려있고, 수정에는 닫혀있게
+- 새 코드 추가 > 기존 코드 수정
+
+## Related Skills
+- `fix-issue`: GitHub 이슈 TDD 기반 해결
+- `tdd-guide`: TDD 상세 가이드
+- `kent-beck-refactor`: 리팩토링 워크플로우
+- `code-review`: 코드 리뷰
+
+## Detailed Rules
+See `~/.claude/rules/tdd-development.md` for comprehensive TDD guidelines.

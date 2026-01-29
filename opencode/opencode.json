@@ -5,6 +5,11 @@
     "oh-my-opencode@3.1.6",
     "opencode-antigravity-auth"
   ],
+  "agent": {
+    "code-reviewer": {
+      "model": "quotio/gpt-5.2"
+    }
+  },
   "provider": {
     "google": {
       "models": {

@@ -172,6 +172,14 @@ if [ -d "$OPENCODE_DIR" ]; then
         echo "✅ opencode.json 동기화 완료 (API 키 제거됨)"
     fi
 
+    # Sync 완료 후, source의 placeholder를 실제 API 키로 복원
+    if [ -n "$QUOTIO_API_KEY" ]; then
+        if grep -q '\${QUOTIO_API_KEY}' "$OPENCODE_DIR/opencode.json" 2>/dev/null; then
+            sed -i '' "s|\${QUOTIO_API_KEY}|$QUOTIO_API_KEY|g" "$OPENCODE_DIR/opencode.json"
+            echo "✅ Source opencode.json의 API 키 복원 완료"
+        fi
+    fi
+
     if [ -f "$OPENCODE_DIR/oh-my-opencode.json" ]; then
         cp "$OPENCODE_DIR/oh-my-opencode.json" "$OPENCODE_DEST/oh-my-opencode.json"
         echo "✅ oh-my-opencode.json 동기화 완료"

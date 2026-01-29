@@ -22,10 +22,10 @@
     "replace_plan": true
   },
   "agents": {
-    "Sisyphus": {
+    "sisyphus": {
       "model": "anthropic/claude-opus-4-5-20251101"
     },
-    "Sisyphus-Junior": {
+    "sisyphus-junior": {
       "model": "anthropic/claude-sonnet-4-5-20250929"
     },
     "atlas": {
