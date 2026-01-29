@@ -199,6 +199,7 @@ if git diff --quiet && git diff --cached --quiet; then
     echo "📝 변경사항 없음"
 else
     echo "📦 Git 커밋 및 푸시 중..."
+    git status
     git add .
     git commit -m "Update Claude Code settings"
     git push
