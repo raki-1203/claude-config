@@ -7,6 +7,33 @@ description: "GitHub 이슈를 TDD 기반으로 해결. 브랜치 생성 → TDD
 
 GitHub 이슈 해결: TDD (테스트 먼저) + 자동 배포
 
+## 핵심 원칙: 자동 진행 (심각한 경우 제외)
+
+**일반적인 경우 사용자에게 물어보지 않고 끝까지 자동 진행한다.**
+
+- ❌ BLOCK 리뷰 → 수정 후 재시도
+- ⚠️ WARNING → 기록만 하고 자동 진행
+- 배포 여부 → 프로젝트 설정(`.deploy.yaml`)에 따라 자동 결정
+- 질문 금지: "진행할까요?", "배포할까요?" 등 확인 요청 하지 않음
+
+### 예외: 심각한 이슈는 사용자 확인 필요
+
+다음 경우에는 **반드시 사용자에게 확인** 후 진행:
+
+| 심각도 | 예시 | 행동 |
+|--------|------|------|
+| 🔴 **보안** | 인증 우회, 권한 상승, 민감 데이터 노출 | 수정 방향 확인 후 진행 |
+| 🔴 **데이터 손실** | DB 스키마 변경, 마이그레이션, 삭제 로직 | 롤백 계획 확인 후 진행 |
+| 🔴 **Breaking Change** | API 시그니처 변경, 하위 호환성 깨짐 | 영향 범위 확인 후 진행 |
+| 🔴 **대규모 변경** | 10+ 파일 수정, 아키텍처 변경 | 접근 방식 확인 후 진행 |
+
+```
+심각한 이슈 감지 시:
+"⚠️ 이 이슈는 [보안/데이터/Breaking Change] 관련입니다.
+제안 수정 방향: [요약]
+진행해도 될까요?"
+```
+
 ## Quick Start
 
 ```bash
@@ -153,7 +180,7 @@ delegate_task(
 
 ```
 ✅ APPROVE → Phase 5 (커밋) 진행
-⚠️ WARNING → 권장 사항 검토 후 결정 (진행 or 수정)
+⚠️ WARNING → 경고 사항 기록 후 Phase 5 자동 진행 (사용자 확인 없이 계속)
 ❌ BLOCK → 반드시 수정 후 Phase 4 재실행
 ```
 
@@ -179,7 +206,7 @@ Phase 4 재실행 (재리뷰)
 
 ## Phase 5: Commit & Push (리뷰 통과 후)
 
-**선행 조건: Phase 4 리뷰 ✅ APPROVE 또는 ⚠️ WARNING (사용자 승인)**
+**선행 조건: Phase 4 리뷰 ✅ APPROVE 또는 ⚠️ WARNING (자동 진행)**
 
 ```bash
 git add .
@@ -279,18 +306,12 @@ See [references/deploy-ios.md](references/deploy-ios.md) for detailed commands.
 
 #### Web Projects
 
-```
-웹 프로젝트는 로컬 테스트가 쉬우므로 배포는 선택적:
+웹 프로젝트는 로컬 테스트가 쉬우므로 **배포 단계 스킵** (PR 생성으로 완료).
 
-"Preview 배포를 할까요? (Vercel/Netlify)"
-├─ Yes → Preview URL 생성
-└─ No → 스킵
-```
-
-**If Yes:**
+`.deploy.yaml`이 있는 경우에만 자동 배포 실행:
 - Vercel: `vercel`
 - Netlify: `netlify deploy`
-- Custom: `.deploy.yaml` 참조
+- Custom: `.deploy.yaml` 설정에 따름
 
 See [references/deploy-web.md](references/deploy-web.md) for detailed commands.
 
@@ -360,7 +381,7 @@ See [references/deploy-web.md](references/deploy-web.md) for detailed commands.
 → TestFlight 업로드 완료
 ```
 
-### Example 3: Web Project (경고 수준 통과)
+### Example 3: Web Project (경고 수준 자동 진행)
 
 ```
 /fix-issue 15
@@ -370,10 +391,10 @@ See [references/deploy-web.md](references/deploy-web.md) for detailed commands.
 → 수정 완료
 → Code Review (code-reviewer): ⚠️ WARNING
    - "성능: 불필요한 리렌더링 있음 (권장 수정)"
-→ 사용자 확인: "진행할까요?" → Yes
+→ 경고 기록 후 자동 진행
 → 커밋 & 푸시
 → PR #16 생성
-→ "Preview 배포할까요?" → No
+→ 배포 스킵 (웹 프로젝트)
 → "완료! npm run dev로 로컬 테스트 가능"
 ```
 
