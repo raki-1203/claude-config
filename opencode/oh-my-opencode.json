@@ -7,13 +7,19 @@
     "skills": true,
     "agents": true,
     "hooks": true,
+    "rules": true,
     "plugins": true,
     "plugins_override": {
       "code-simplifier@claude-plugins-official": true,
       "frontend-design@claude-plugins-official": true,
       "claude-mem@thedotmack": true
-    },
-    "rules": true
+    }
+  },
+  "sisyphus_agent": {
+    "disabled": false,
+    "default_builder_enabled": false,
+    "planner_enabled": true,
+    "replace_plan": true
   },
   "agents": {
     "sisyphus": {
@@ -54,11 +60,6 @@
     }
   },
   "categories": {
-    "korean-writer": {
-      "model": "google/gemini-3-flash-preview",
-      "temperature": 0.5,
-      "prompt_append": "You are a Korean technical writer. Maintain a friendly and clear tone."
-    },
     "visual-engineering": {
       "model": "google/antigravity-gemini-3-pro"
     },
@@ -71,27 +72,15 @@
     "quick": {
       "model": "anthropic/claude-haiku-4-5"
     },
-    "most-capable": {
-      "model": "anthropic/claude-sonnet-4-5-20250929"
-    },
-    "writing": {
-      "model": "google/antigravity-gemini-3-flash"
-    },
-    "general": {
-      "model": "anthropic/claude-sonnet-4-5-20250929"
-    },
     "unspecified-low": {
       "model": "anthropic/claude-sonnet-4-5-20250929"
     },
     "unspecified-high": {
       "model": "anthropic/claude-opus-4-5-20251101"
+    },
+    "writing": {
+      "model": "google/antigravity-gemini-3-flash"
     }
-  },
-  "sisyphus_agent": {
-    "disabled": false,
-    "default_builder_enabled": false,
-    "planner_enabled": true,
-    "replace_plan": true
   },
   "lsp": {
     "typescript-language-server": {
