@@ -24,7 +24,8 @@
     "firebase@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true,
     "serena@claude-plugins-official": false,
-    "example-skills@anthropic-agent-skills": true
+    "example-skills@anthropic-agent-skills": true,
+    "compound-engineering@every-marketplace": true
   },
   "hooks": {
     "Stop": [

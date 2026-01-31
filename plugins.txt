@@ -1,5 +1,6 @@
 claude-mem@thedotmack
 code-simplifier@claude-plugins-official
+compound-engineering@every-marketplace
 firebase@claude-plugins-official
 frontend-design@claude-plugins-official
 serena@claude-plugins-official

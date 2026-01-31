@@ -20,10 +20,10 @@
       "model": "anthropic/claude-opus-4-5-20251101"
     },
     "sisyphus-junior": {
-      "model": "opencode/kimi-k2.5-free"
+      "model": "anthropic/claude-sonnet-4-5-20250929"
     },
     "atlas": {
-      "model": "opencode/kimi-k2.5-free"
+      "model": "anthropic/claude-sonnet-4-5-20250929"
     },
     "prometheus": {
       "model": "anthropic/claude-opus-4-5-20251101"
@@ -54,11 +54,6 @@
     }
   },
   "categories": {
-    "korean-writer": {
-      "model": "google/gemini-3-flash-preview",
-      "temperature": 0.5,
-      "prompt_append": "You are a Korean technical writer. Maintain a friendly and clear tone."
-    },
     "visual-engineering": {
       "model": "google/antigravity-gemini-3-pro"
     },
