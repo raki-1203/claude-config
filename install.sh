@@ -23,7 +23,8 @@ fi
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 echo "📥 최신 설정 가져오는 중..."
-git -C "$SCRIPT_DIR" pull || echo "⚠️  git pull 실패 (오프라인이거나 권한 문제일 수 있습니다)"
+git -C "$SCRIPT_DIR" fetch origin || echo "⚠️  git fetch 실패 (오프라인이거나 권한 문제일 수 있습니다)"
+git -C "$SCRIPT_DIR" reset --hard origin/main || echo "⚠️  git reset 실패 (오프라인이거나 권한 문제일 수 있습니다)"
 
 EXISTING="$HOME/.claude/settings.json"
 NEW="$SCRIPT_DIR/settings.json"
