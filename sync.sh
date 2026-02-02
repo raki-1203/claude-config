@@ -1,6 +1,9 @@
 #!/bin/bash
 
-# Claude Code 설정을 claude-config 저장소로 동기화
+# 로컬 설정을 저장소로 동기화 (선택적)
+# 주의: 저장소가 source of truth입니다.
+# 저장소를 기준으로 여러 기기를 동기화하려면 install.sh를 사용하세요.
+# 
 # 사용법: ./sync.sh
 
 set -e

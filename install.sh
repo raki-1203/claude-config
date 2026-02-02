@@ -33,22 +33,11 @@ if [ -f "$EXISTING" ]; then
     BACKUP="$HOME/.claude/settings.json.backup.$(date +%Y%m%d%H%M%S)"
     cp "$EXISTING" "$BACKUP"
     echo "📦 기존 설정 백업: $BACKUP"
-
-    # Merge settings
-    echo "🔀 기존 설정과 병합 중..."
-    jq -s '
-      .[0] as $existing | .[1] as $new |
-      ($existing * $new) |
-      .enabledPlugins = (($existing.enabledPlugins // {}) * ($new.enabledPlugins // {})) |
-      .permissions.allow = ((($existing.permissions.allow // []) + ($new.permissions.allow // [])) | unique) |
-      .hooks = (($existing.hooks // {}) * ($new.hooks // {}))
-    ' "$EXISTING" "$NEW" > "$HOME/.claude/settings.merged.json"
-    mv "$HOME/.claude/settings.merged.json" "$EXISTING"
-    echo "✅ settings.json 병합 완료"
-else
-    cp "$NEW" "$EXISTING"
-    echo "✅ settings.json 복사 완료"
 fi
+
+# Copy repo settings (overwrite)
+cp "$NEW" "$EXISTING"
+echo "✅ settings.json 적용 완료 (저장소 기준)"
 
 # Copy hooks
 if [ -d "$SCRIPT_DIR/hooks" ]; then
@@ -58,32 +47,36 @@ if [ -d "$SCRIPT_DIR/hooks" ]; then
     echo "✅ hooks 복사 완료"
 fi
 
-# Copy skills
+# Copy skills (replace completely)
 if [ -d "$SCRIPT_DIR/skills" ]; then
+    rm -rf "$HOME/.claude/skills"
     mkdir -p "$HOME/.claude/skills"
     cp -r "$SCRIPT_DIR/skills"/* "$HOME/.claude/skills/"
-    echo "✅ skills 복사 완료"
+    echo "✅ skills 적용 완료 (저장소 기준)"
 fi
 
-# Copy agents (exclude .gitkeep)
+# Copy agents (replace completely, exclude .gitkeep)
 if [ -d "$SCRIPT_DIR/agents" ]; then
+    rm -rf "$HOME/.claude/agents"
     mkdir -p "$HOME/.claude/agents"
     find "$SCRIPT_DIR/agents" -maxdepth 1 -type f ! -name ".gitkeep" -exec cp {} "$HOME/.claude/agents/" \; 2>/dev/null || true
-    echo "✅ agents 복사 완료"
+    echo "✅ agents 적용 완료 (저장소 기준)"
 fi
 
-# Copy commands (exclude .gitkeep)
+# Copy commands (replace completely, exclude .gitkeep)
 if [ -d "$SCRIPT_DIR/commands" ]; then
+    rm -rf "$HOME/.claude/commands"
     mkdir -p "$HOME/.claude/commands"
     find "$SCRIPT_DIR/commands" -maxdepth 1 -type f ! -name ".gitkeep" -exec cp {} "$HOME/.claude/commands/" \; 2>/dev/null || true
-    echo "✅ commands 복사 완료"
+    echo "✅ commands 적용 완료 (저장소 기준)"
 fi
 
-# Copy rules (exclude .gitkeep)
+# Copy rules (replace completely, exclude .gitkeep)
 if [ -d "$SCRIPT_DIR/rules" ]; then
+    rm -rf "$HOME/.claude/rules"
     mkdir -p "$HOME/.claude/rules"
     find "$SCRIPT_DIR/rules" -maxdepth 1 -type f ! -name ".gitkeep" -exec cp {} "$HOME/.claude/rules/" \; 2>/dev/null || true
-    echo "✅ rules 복사 완료"
+    echo "✅ rules 적용 완료 (저장소 기준)"
 fi
 
 # Copy CLAUDE.md
@@ -136,36 +129,33 @@ if [ -d "$OPENCODE_SRC" ]; then
             echo "📦 기존 opencode.json 백업: $BACKUP"
         fi
         
+        # Apply repo config (overwrite)
         cp "$OPENCODE_SRC/opencode.json" "$OPENCODE_DIR/opencode.json"
         
         if [ -n "$QUOTIO_API_KEY" ]; then
             sed -i '' "s|\${QUOTIO_API_KEY}|$QUOTIO_API_KEY|g" "$OPENCODE_DIR/opencode.json"
-            echo "✅ opencode.json 복사 완료 (QUOTIO_API_KEY 자동 설정)"
+            echo "✅ opencode.json 적용 완료 (저장소 기준, QUOTIO_API_KEY 자동 설정)"
         else
-            echo "✅ opencode.json 복사 완료"
+            echo "✅ opencode.json 적용 완료 (저장소 기준)"
             echo "⚠️  QUOTIO_API_KEY 환경변수가 없습니다. 수동으로 설정하세요."
         fi
     fi
 
-    # Install oh-my-opencode.json (merge with existing)
+    # Apply oh-my-opencode.json (replace completely)
     if [ -f "$OPENCODE_SRC/oh-my-opencode.json" ]; then
         if [ -f "$OPENCODE_DIR/oh-my-opencode.json" ]; then
             BACKUP="$OPENCODE_DIR/oh-my-opencode.json.backup.$(date +%Y%m%d%H%M%S)"
             cp "$OPENCODE_DIR/oh-my-opencode.json" "$BACKUP"
             echo "📦 기존 oh-my-opencode.json 백업: $BACKUP"
-            
-            jq -s '.[0] * .[1]' "$OPENCODE_DIR/oh-my-opencode.json" "$OPENCODE_SRC/oh-my-opencode.json" > "$OPENCODE_DIR/oh-my-opencode.merged.json"
-            mv "$OPENCODE_DIR/oh-my-opencode.merged.json" "$OPENCODE_DIR/oh-my-opencode.json"
-            echo "✅ oh-my-opencode.json 병합 완료"
-        else
-            cp "$OPENCODE_SRC/oh-my-opencode.json" "$OPENCODE_DIR/oh-my-opencode.json"
-            echo "✅ oh-my-opencode.json 복사 완료"
         fi
+        
+        cp "$OPENCODE_SRC/oh-my-opencode.json" "$OPENCODE_DIR/oh-my-opencode.json"
+        echo "✅ oh-my-opencode.json 적용 완료 (저장소 기준)"
     fi
 
     if [ -f "$OPENCODE_SRC/antigravity.json" ]; then
         cp "$OPENCODE_SRC/antigravity.json" "$OPENCODE_DIR/antigravity.json"
-        echo "✅ antigravity.json 복사 완료"
+        echo "✅ antigravity.json 적용 완료 (저장소 기준)"
     fi
 
     echo "🎉 OpenCode 설정 설치 완료!"
