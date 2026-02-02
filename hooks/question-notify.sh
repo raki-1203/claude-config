@@ -10,8 +10,15 @@ PROJECT_NAME=$(basename "$PROJECT_DIR")
 
 # Get tab/window name based on terminal type
 TAB_NAME=""
-if [ -n "$TMUX" ] || tmux info &>/dev/null; then
-    # tmux: get current window name
+if [ -n "$TMUX_PANE" ]; then
+    # tmux: get window name for the pane where Claude Code is running
+    # TMUX_PANE contains the pane ID (e.g., %0, %1, etc.)
+    WINDOW_ID=$(tmux list-panes -a -F '#{pane_id} #{window_id}' 2>/dev/null | grep "^${TMUX_PANE} " | awk '{print $2}')
+    if [ -n "$WINDOW_ID" ]; then
+        TAB_NAME=$(tmux list-windows -a -F '#{window_id} #{window_name}' 2>/dev/null | grep "^${WINDOW_ID} " | cut -d' ' -f2-)
+    fi
+elif [ -n "$TMUX" ] || tmux info &>/dev/null; then
+    # Fallback: tmux session exists but no TMUX_PANE
     TAB_NAME=$(tmux display-message -p '#W' 2>/dev/null || echo "")
 elif [ "$TERMINAL_NAME" = "WarpTerminal" ]; then
     # Warp: get tab name via System Events (requires accessibility permission)
