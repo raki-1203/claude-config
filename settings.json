@@ -1,8 +1,4 @@
 {
-  "statusLine": {
-    "type": "command",
-    "command": "bash -c '\"/Users/raki-1203/.bun/bin/bun\" \"$(ls -td ~/.claude/plugins/cache/claude-hud/claude-hud/*/ 2>/dev/null | head -1)src/index.ts\"'"
-  },
   "permissions": {
     "allow": [
       "Bash(grep:*)",
@@ -18,12 +14,7 @@
     "ask": [],
     "defaultMode": "default"
   },
-  "enabledPlugins": {
-    "frontend-design@claude-plugins-official": true,
-    "code-simplifier@claude-plugins-official": true,
-    "firebase@claude-plugins-official": true,
-    "example-skills@anthropic-agent-skills": true
-  },
+  "model": "haiku",
   "hooks": {
     "Stop": [
       {
@@ -60,6 +51,19 @@
       }
     ]
   },
+  "statusLine": {
+    "type": "command",
+    "command": "bash -c '\"/Users/raki-1203/.bun/bin/bun\" \"$(ls -td ~/.claude/plugins/cache/claude-hud/claude-hud/*/ 2>/dev/null | head -1)src/index.ts\"'"
+  },
+  "enabledPlugins": {
+    "frontend-design@claude-plugins-official": true,
+    "code-simplifier@claude-plugins-official": true,
+    "firebase@claude-plugins-official": true,
+    "example-skills@anthropic-agent-skills": true
+  },
+  "language": "Korean",
   "alwaysThinkingEnabled": false,
-  "promptSuggestionEnabled": false
+  "promptSuggestionEnabled": false,
+  "autoUpdatesChannel": "stable",
+  "minimumVersion": "2.1.7"
 }
