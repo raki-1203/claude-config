@@ -64,7 +64,7 @@
       "model": "google/antigravity-gemini-3-pro"
     },
     "ultrabrain": {
-      "model": "quotio/gpt-5.2-codex"
+      "model": "quotio/gpt-5.2"
     },
     "artistry": {
       "model": "google/antigravity-gemini-3-pro"
