@@ -14,25 +14,19 @@ CLAUDE_DIR="$HOME/.claude"
 echo "🔄 Claude Code 설정 동기화 시작..."
 echo ""
 
-# Sync settings.json (remove personal data)
+# Sync settings.json from local
 if [ -f "$CLAUDE_DIR/settings.json" ]; then
-    # Extract only shareable fields
-    jq '{
-        statusLine: .statusLine,
-        permissions: .permissions,
-        enabledPlugins: .enabledPlugins,
-        hooks: .hooks,
-        alwaysThinkingEnabled: .alwaysThinkingEnabled,
-        promptSuggestionEnabled: .promptSuggestionEnabled
-    } | with_entries(select(.value != null))' "$CLAUDE_DIR/settings.json" > "$SCRIPT_DIR/settings.json"
-    echo "✅ settings.json 동기화 완료"
+    # Copy local settings completely (will override repo)
+    cp "$CLAUDE_DIR/settings.json" "$SCRIPT_DIR/settings.json"
+    echo "✅ settings.json 동기화 완료 (로컬 기준)"
 fi
 
-# Sync hooks
+# Sync hooks (replace completely)
 if [ -d "$CLAUDE_DIR/hooks" ]; then
+    rm -rf "$SCRIPT_DIR/hooks"
     mkdir -p "$SCRIPT_DIR/hooks"
     cp "$CLAUDE_DIR/hooks"/* "$SCRIPT_DIR/hooks/" 2>/dev/null || true
-    echo "✅ hooks 동기화 완료"
+    echo "✅ hooks 동기화 완료 (로컬 기준)"
 fi
 
 # Sync skills
@@ -95,10 +89,10 @@ if [ -d "$CLAUDE_DIR/rules" ]; then
     echo "✅ rules 동기화 완료"
 fi
 
-# Sync CLAUDE.md (user-level)
+# Sync CLAUDE.md (user-level, local source)
 if [ -f "$CLAUDE_DIR/CLAUDE.md" ]; then
     cp "$CLAUDE_DIR/CLAUDE.md" "$SCRIPT_DIR/CLAUDE.md"
-    echo "✅ CLAUDE.md 동기화 완료"
+    echo "✅ CLAUDE.md 동기화 완료 (로컬 기준)"
 fi
 
 # Generate plugins.txt from installed plugins
@@ -170,27 +164,19 @@ if [ -d "$OPENCODE_DIR" ]; then
     mkdir -p "$OPENCODE_DEST"
 
     if [ -f "$OPENCODE_DIR/opencode.json" ]; then
-        jq 'walk(if type == "object" and has("apiKey") then .apiKey = "${QUOTIO_API_KEY}" else . end)' \
-            "$OPENCODE_DIR/opencode.json" > "$OPENCODE_DEST/opencode.json"
-        echo "✅ opencode.json 동기화 완료 (API 키 제거됨)"
-    fi
-
-    # Sync 완료 후, source의 placeholder를 실제 API 키로 복원
-    if [ -n "$QUOTIO_API_KEY" ]; then
-        if grep -q '\${QUOTIO_API_KEY}' "$OPENCODE_DIR/opencode.json" 2>/dev/null; then
-            sed -i '' "s|\${QUOTIO_API_KEY}|$QUOTIO_API_KEY|g" "$OPENCODE_DIR/opencode.json"
-            echo "✅ Source opencode.json의 API 키 복원 완료"
-        fi
+        # Copy local opencode.json completely (overwrite repo)
+        cp "$OPENCODE_DIR/opencode.json" "$OPENCODE_DEST/opencode.json"
+        echo "✅ opencode.json 동기화 완료 (로컬 기준)"
     fi
 
     if [ -f "$OPENCODE_DIR/oh-my-opencode.json" ]; then
         cp "$OPENCODE_DIR/oh-my-opencode.json" "$OPENCODE_DEST/oh-my-opencode.json"
-        echo "✅ oh-my-opencode.json 동기화 완료"
+        echo "✅ oh-my-opencode.json 동기화 완료 (로컬 기준)"
     fi
 
     if [ -f "$OPENCODE_DIR/antigravity.json" ]; then
         cp "$OPENCODE_DIR/antigravity.json" "$OPENCODE_DEST/antigravity.json"
-        echo "✅ antigravity.json 동기화 완료"
+        echo "✅ antigravity.json 동기화 완료 (로컬 기준)"
     fi
 
     echo "🎉 OpenCode 동기화 완료!"
