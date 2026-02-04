@@ -21,7 +21,15 @@ if [ -f "$CLAUDE_DIR/settings.json" ]; then
     echo "✅ settings.json 동기화 완료 (로컬 기준)"
 fi
 
-# Sync hooks (replace completely)
+# Sync scripts (hooks and libs - replace completely)
+if [ -d "$CLAUDE_DIR/scripts" ]; then
+    rm -rf "$SCRIPT_DIR/scripts"
+    mkdir -p "$SCRIPT_DIR/scripts"
+    cp -r "$CLAUDE_DIR/scripts"/* "$SCRIPT_DIR/scripts/" 2>/dev/null || true
+    echo "✅ scripts 동기화 완료 (로컬 기준)"
+fi
+
+# Sync hooks (Slack notification hooks - replace completely)
 if [ -d "$CLAUDE_DIR/hooks" ]; then
     rm -rf "$SCRIPT_DIR/hooks"
     mkdir -p "$SCRIPT_DIR/hooks"

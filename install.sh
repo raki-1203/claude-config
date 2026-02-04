@@ -40,7 +40,15 @@ fi
 cp "$NEW" "$EXISTING"
 echo "✅ settings.json 적용 완료 (저장소 기준)"
 
-# Copy hooks
+# Copy scripts (hooks and libs)
+if [ -d "$SCRIPT_DIR/scripts" ]; then
+    mkdir -p "$HOME/.claude/scripts"
+    cp -r "$SCRIPT_DIR/scripts"/* "$HOME/.claude/scripts/"
+    chmod +x "$HOME/.claude/scripts/hooks"/*.js 2>/dev/null || true
+    echo "✅ scripts 복사 완료"
+fi
+
+# Copy hooks (Slack notification hooks)
 if [ -d "$SCRIPT_DIR/hooks" ]; then
     mkdir -p "$HOME/.claude/hooks"
     cp "$SCRIPT_DIR/hooks"/* "$HOME/.claude/hooks/"
