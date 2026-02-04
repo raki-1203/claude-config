@@ -190,7 +190,9 @@ if [ -d "$OPENCODE_DIR" ]; then
 
             # Replace QUOTIO_API_KEY with placeholder for repo
             if [ -n "$QUOTIO_API_KEY" ]; then
-                sed -i '' "s|$QUOTIO_API_KEY|\${QUOTIO_API_KEY}|g" "$OPENCODE_DEST/opencode.json"
+                # Escape special characters for sed
+                ESCAPED_KEY=$(printf '%s\n' "$QUOTIO_API_KEY" | sed -e 's/[\/&]/\\&/g')
+                sed -i '' "s/$ESCAPED_KEY/\${QUOTIO_API_KEY}/g" "$OPENCODE_DEST/opencode.json"
                 echo "✅ opencode.json 동기화 완료 (로컬 기준, QUOTIO_API_KEY → placeholder)"
             else
                 echo "✅ opencode.json 동기화 완료 (로컬 기준)"

@@ -202,7 +202,7 @@
       "name": "Quotio",
       "npm": "@ai-sdk/anthropic",
       "options": {
-        "apiKey": "quotio-local-F06F3274-1325-4894-8B00-13C109127759",
+        "apiKey": "${QUOTIO_API_KEY}",
         "baseURL": "http://127.0.0.1:8317/v1"
       }
     }

@@ -160,7 +160,9 @@ if [ -d "$OPENCODE_SRC" ]; then
         cp "$OPENCODE_SRC/opencode.json" "$OPENCODE_DIR/opencode.json"
 
         if [ -n "$QUOTIO_API_KEY" ]; then
-            sed -i '' "s|\${QUOTIO_API_KEY}|$QUOTIO_API_KEY|g" "$OPENCODE_DIR/opencode.json"
+            # Escape special characters for sed
+            ESCAPED_KEY=$(printf '%s\n' "$QUOTIO_API_KEY" | sed -e 's/[\/&]/\\&/g')
+            sed -i '' "s/\${QUOTIO_API_KEY}/$ESCAPED_KEY/g" "$OPENCODE_DIR/opencode.json"
             echo "✅ opencode.json 적용 완료 (저장소 기준, QUOTIO_API_KEY 자동 설정)"
         else
             echo "✅ opencode.json 적용 완료 (저장소 기준)"
