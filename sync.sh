@@ -187,7 +187,14 @@ if [ -d "$OPENCODE_DIR" ]; then
     if [ -f "$OPENCODE_DIR/opencode.json" ]; then
         if ! cmp -s "$OPENCODE_DIR/opencode.json" "$OPENCODE_DEST/opencode.json" 2>/dev/null; then
             cp "$OPENCODE_DIR/opencode.json" "$OPENCODE_DEST/opencode.json"
-            echo "✅ opencode.json 동기화 완료 (로컬 기준)"
+
+            # Replace QUOTIO_API_KEY with placeholder for repo
+            if [ -n "$QUOTIO_API_KEY" ]; then
+                sed -i '' "s|$QUOTIO_API_KEY|\${QUOTIO_API_KEY}|g" "$OPENCODE_DEST/opencode.json"
+                echo "✅ opencode.json 동기화 완료 (로컬 기준, QUOTIO_API_KEY → placeholder)"
+            else
+                echo "✅ opencode.json 동기화 완료 (로컬 기준)"
+            fi
             SYNC_COUNT=$((SYNC_COUNT + 1))
         else
             echo "✅ opencode.json (변경 없음)"
