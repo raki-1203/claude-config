@@ -29,16 +29,29 @@ git -C "$SCRIPT_DIR" reset --hard origin/main || echo "⚠️  git reset 실패 
 EXISTING="$HOME/.claude/settings.json"
 NEW="$SCRIPT_DIR/settings.json"
 
-# Backup existing settings
+# Backup existing settings only if different
 if [ -f "$EXISTING" ]; then
-    BACKUP="$HOME/.claude/settings.json.backup.$(date +%Y%m%d%H%M%S)"
-    cp "$EXISTING" "$BACKUP"
-    echo "📦 기존 설정 백업: $BACKUP"
+    if ! cmp -s "$EXISTING" "$NEW"; then
+        BACKUP="$HOME/.claude/settings.json.backup.$(date +%Y%m%d%H%M%S)"
+        cp "$EXISTING" "$BACKUP"
+        echo "📦 기존 설정 백업: $BACKUP"
+
+        # Keep only the latest backup, delete older ones
+        ls -t "$HOME/.claude/settings.json.backup."* 2>/dev/null | tail -n +2 | xargs -r rm
+    fi
 fi
 
 # Copy repo settings (overwrite)
 cp "$NEW" "$EXISTING"
-echo "✅ settings.json 적용 완료 (저장소 기준)"
+if [ -f "$EXISTING" ]; then
+    if cmp -s "$EXISTING" "$NEW"; then
+        echo "✅ settings.json 적용 완료 (이미 최신 상태)"
+    else
+        echo "✅ settings.json 적용 완료 (저장소 기준)"
+    fi
+else
+    echo "✅ settings.json 적용 완료 (저장소 기준)"
+fi
 
 # Copy scripts (hooks and libs)
 if [ -d "$SCRIPT_DIR/scripts" ]; then
@@ -133,14 +146,19 @@ if [ -d "$OPENCODE_SRC" ]; then
 
     if [ -f "$OPENCODE_SRC/opencode.json" ]; then
         if [ -f "$OPENCODE_DIR/opencode.json" ]; then
-            BACKUP="$OPENCODE_DIR/opencode.json.backup.$(date +%Y%m%d%H%M%S)"
-            cp "$OPENCODE_DIR/opencode.json" "$BACKUP"
-            echo "📦 기존 opencode.json 백업: $BACKUP"
+            if ! cmp -s "$OPENCODE_DIR/opencode.json" "$OPENCODE_SRC/opencode.json"; then
+                BACKUP="$OPENCODE_DIR/opencode.json.backup.$(date +%Y%m%d%H%M%S)"
+                cp "$OPENCODE_DIR/opencode.json" "$BACKUP"
+                echo "📦 기존 opencode.json 백업: $BACKUP"
+
+                # Keep only the latest backup, delete older ones
+                ls -t "$OPENCODE_DIR/opencode.json.backup."* 2>/dev/null | tail -n +2 | xargs -r rm
+            fi
         fi
-        
+
         # Apply repo config (overwrite)
         cp "$OPENCODE_SRC/opencode.json" "$OPENCODE_DIR/opencode.json"
-        
+
         if [ -n "$QUOTIO_API_KEY" ]; then
             sed -i '' "s|\${QUOTIO_API_KEY}|$QUOTIO_API_KEY|g" "$OPENCODE_DIR/opencode.json"
             echo "✅ opencode.json 적용 완료 (저장소 기준, QUOTIO_API_KEY 자동 설정)"
@@ -153,11 +171,16 @@ if [ -d "$OPENCODE_SRC" ]; then
     # Apply oh-my-opencode.json (replace completely)
     if [ -f "$OPENCODE_SRC/oh-my-opencode.json" ]; then
         if [ -f "$OPENCODE_DIR/oh-my-opencode.json" ]; then
-            BACKUP="$OPENCODE_DIR/oh-my-opencode.json.backup.$(date +%Y%m%d%H%M%S)"
-            cp "$OPENCODE_DIR/oh-my-opencode.json" "$BACKUP"
-            echo "📦 기존 oh-my-opencode.json 백업: $BACKUP"
+            if ! cmp -s "$OPENCODE_DIR/oh-my-opencode.json" "$OPENCODE_SRC/oh-my-opencode.json"; then
+                BACKUP="$OPENCODE_DIR/oh-my-opencode.json.backup.$(date +%Y%m%d%H%M%S)"
+                cp "$OPENCODE_DIR/oh-my-opencode.json" "$BACKUP"
+                echo "📦 기존 oh-my-opencode.json 백업: $BACKUP"
+
+                # Keep only the latest backup, delete older ones
+                ls -t "$OPENCODE_DIR/oh-my-opencode.json.backup."* 2>/dev/null | tail -n +2 | xargs -r rm
+            fi
         fi
-        
+
         cp "$OPENCODE_SRC/oh-my-opencode.json" "$OPENCODE_DIR/oh-my-opencode.json"
         echo "✅ oh-my-opencode.json 적용 완료 (저장소 기준)"
     fi

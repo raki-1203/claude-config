@@ -14,11 +14,18 @@ CLAUDE_DIR="$HOME/.claude"
 echo "🔄 Claude Code 설정 동기화 시작..."
 echo ""
 
-# Sync settings.json from local
+# Counter for changed files
+SYNC_COUNT=0
+
+# Sync settings.json from local (only if changed)
 if [ -f "$CLAUDE_DIR/settings.json" ]; then
-    # Copy local settings completely (will override repo)
-    cp "$CLAUDE_DIR/settings.json" "$SCRIPT_DIR/settings.json"
-    echo "✅ settings.json 동기화 완료 (로컬 기준)"
+    if ! cmp -s "$CLAUDE_DIR/settings.json" "$SCRIPT_DIR/settings.json"; then
+        cp "$CLAUDE_DIR/settings.json" "$SCRIPT_DIR/settings.json"
+        echo "✅ settings.json 동기화 완료 (로컬 기준)"
+        SYNC_COUNT=$((SYNC_COUNT + 1))
+    else
+        echo "✅ settings.json (변경 없음)"
+    fi
 fi
 
 # Sync scripts (hooks and libs - replace completely)
@@ -99,8 +106,13 @@ fi
 
 # Sync CLAUDE.md (user-level, local source)
 if [ -f "$CLAUDE_DIR/CLAUDE.md" ]; then
-    cp "$CLAUDE_DIR/CLAUDE.md" "$SCRIPT_DIR/CLAUDE.md"
-    echo "✅ CLAUDE.md 동기화 완료 (로컬 기준)"
+    if ! cmp -s "$CLAUDE_DIR/CLAUDE.md" "$SCRIPT_DIR/CLAUDE.md" 2>/dev/null; then
+        cp "$CLAUDE_DIR/CLAUDE.md" "$SCRIPT_DIR/CLAUDE.md"
+        echo "✅ CLAUDE.md 동기화 완료 (로컬 기준)"
+        SYNC_COUNT=$((SYNC_COUNT + 1))
+    else
+        echo "✅ CLAUDE.md (변경 없음)"
+    fi
 fi
 
 # Generate plugins.txt from installed plugins
@@ -168,23 +180,40 @@ OPENCODE_DEST="$SCRIPT_DIR/opencode"
 if [ -d "$OPENCODE_DIR" ]; then
     echo ""
     echo "🔄 OpenCode 설정 동기화 시작..."
-    
+
     mkdir -p "$OPENCODE_DEST"
 
+    # Sync opencode.json (only if changed)
     if [ -f "$OPENCODE_DIR/opencode.json" ]; then
-        # Copy local opencode.json completely (overwrite repo)
-        cp "$OPENCODE_DIR/opencode.json" "$OPENCODE_DEST/opencode.json"
-        echo "✅ opencode.json 동기화 완료 (로컬 기준)"
+        if ! cmp -s "$OPENCODE_DIR/opencode.json" "$OPENCODE_DEST/opencode.json" 2>/dev/null; then
+            cp "$OPENCODE_DIR/opencode.json" "$OPENCODE_DEST/opencode.json"
+            echo "✅ opencode.json 동기화 완료 (로컬 기준)"
+            SYNC_COUNT=$((SYNC_COUNT + 1))
+        else
+            echo "✅ opencode.json (변경 없음)"
+        fi
     fi
 
+    # Sync oh-my-opencode.json (only if changed)
     if [ -f "$OPENCODE_DIR/oh-my-opencode.json" ]; then
-        cp "$OPENCODE_DIR/oh-my-opencode.json" "$OPENCODE_DEST/oh-my-opencode.json"
-        echo "✅ oh-my-opencode.json 동기화 완료 (로컬 기준)"
+        if ! cmp -s "$OPENCODE_DIR/oh-my-opencode.json" "$OPENCODE_DEST/oh-my-opencode.json" 2>/dev/null; then
+            cp "$OPENCODE_DIR/oh-my-opencode.json" "$OPENCODE_DEST/oh-my-opencode.json"
+            echo "✅ oh-my-opencode.json 동기화 완료 (로컬 기준)"
+            SYNC_COUNT=$((SYNC_COUNT + 1))
+        else
+            echo "✅ oh-my-opencode.json (변경 없음)"
+        fi
     fi
 
+    # Sync antigravity.json (only if changed)
     if [ -f "$OPENCODE_DIR/antigravity.json" ]; then
-        cp "$OPENCODE_DIR/antigravity.json" "$OPENCODE_DEST/antigravity.json"
-        echo "✅ antigravity.json 동기화 완료 (로컬 기준)"
+        if ! cmp -s "$OPENCODE_DIR/antigravity.json" "$OPENCODE_DEST/antigravity.json" 2>/dev/null; then
+            cp "$OPENCODE_DIR/antigravity.json" "$OPENCODE_DEST/antigravity.json"
+            echo "✅ antigravity.json 동기화 완료 (로컬 기준)"
+            SYNC_COUNT=$((SYNC_COUNT + 1))
+        else
+            echo "✅ antigravity.json (변경 없음)"
+        fi
     fi
 
     echo "🎉 OpenCode 동기화 완료!"
@@ -194,19 +223,49 @@ else
 fi
 
 echo ""
-echo "🎉 전체 동기화 완료!"
+echo "🎉 전체 동기화 완료! ($SYNC_COUNT 개 파일 변경됨)"
 echo ""
 
 # Git commit and push
 cd "$SCRIPT_DIR"
 
+# Check for changes
 if git diff --quiet && git diff --cached --quiet; then
     echo "📝 변경사항 없음"
 else
-    echo "📦 Git 커밋 및 푸시 중..."
-    git status
+    echo ""
+    echo "📊 변경 예정 항목:"
+    echo "================================"
+    git diff --name-only
+    echo ""
     git add .
-    git commit -m "Update Claude Code settings"
-    git push
-    echo "✅ Git push 완료!"
+
+    # Show commit diff preview
+    echo "📋 변경 내용 요약:"
+    echo "================================"
+    git diff --cached --stat
+    echo ""
+
+    # Ask for confirmation before push
+    read -p "변경사항을 커밋하고 푸시하시겠습니까? (y/n) " -n 1 -r
+    echo ""
+
+    if [[ $REPLY =~ ^[Yy]$ ]]; then
+        FILES_CHANGED=$(git diff --cached --name-only | wc -l)
+        git commit -m "Update Claude Code settings ($FILES_CHANGED files changed)"
+        echo "✅ Git 커밋 완료! ($FILES_CHANGED 개 파일)"
+        echo ""
+
+        # Try to push with error handling
+        if git push; then
+            echo "✅ Git push 완료!"
+        else
+            echo "⚠️  git push 실패"
+            echo "원인: 네트워크 연결 확인, 저장소 권한, 또는 원격 브랜치 문제"
+            echo "해결 방법: git push --set-upstream origin main"
+        fi
+    else
+        echo "❌ 푸시 취소됨. 변경사항은 준비되어 있습니다."
+        echo "나중에 수동으로 푸시하려면: git push"
+    fi
 fi
