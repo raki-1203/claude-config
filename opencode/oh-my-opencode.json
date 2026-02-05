@@ -8,12 +8,7 @@
     "agents": true,
     "hooks": true,
     "rules": true,
-    "plugins": true,
-    "plugins_override": {
-      "code-simplifier@claude-plugins-official": true,
-      "frontend-design@claude-plugins-official": true,
-      "claude-mem@thedotmack": true
-    }
+    "plugins": true
   },
   "sisyphus_agent": {
     "disabled": false,
