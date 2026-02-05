@@ -187,7 +187,19 @@ if [ -d "$OPENCODE_SRC" ]; then
         echo "✅ oh-my-opencode.json 적용 완료 (저장소 기준)"
     fi
 
+    # Apply antigravity.json (replace completely)
     if [ -f "$OPENCODE_SRC/antigravity.json" ]; then
+        if [ -f "$OPENCODE_DIR/antigravity.json" ]; then
+            if ! cmp -s "$OPENCODE_DIR/antigravity.json" "$OPENCODE_SRC/antigravity.json"; then
+                BACKUP="$OPENCODE_DIR/antigravity.json.backup.$(date +%Y%m%d%H%M%S)"
+                cp "$OPENCODE_DIR/antigravity.json" "$BACKUP"
+                echo "📦 기존 antigravity.json 백업: $BACKUP"
+
+                # Keep only the latest backup, delete older ones
+                ls -t "$OPENCODE_DIR/antigravity.json.backup."* 2>/dev/null | tail -n +2 | xargs -r rm
+            fi
+        fi
+
         cp "$OPENCODE_SRC/antigravity.json" "$OPENCODE_DIR/antigravity.json"
         echo "✅ antigravity.json 적용 완료 (저장소 기준)"
     fi

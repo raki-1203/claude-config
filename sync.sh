@@ -198,6 +198,9 @@ if [ -d "$OPENCODE_DIR" ]; then
                 echo "✅ opencode.json 동기화 완료 (로컬 기준)"
             fi
             SYNC_COUNT=$((SYNC_COUNT + 1))
+
+            # Keep only the latest version in local ~/.config/opencode
+            ls -t "$OPENCODE_DIR/opencode.json"* 2>/dev/null | grep -v "^$OPENCODE_DIR/opencode.json$" | tail -n +2 | xargs -r rm 2>/dev/null || true
         else
             echo "✅ opencode.json (변경 없음)"
         fi
@@ -209,6 +212,9 @@ if [ -d "$OPENCODE_DIR" ]; then
             cp "$OPENCODE_DIR/oh-my-opencode.json" "$OPENCODE_DEST/oh-my-opencode.json"
             echo "✅ oh-my-opencode.json 동기화 완료 (로컬 기준)"
             SYNC_COUNT=$((SYNC_COUNT + 1))
+
+            # Keep only the latest version in local ~/.config/opencode
+            ls -t "$OPENCODE_DIR/oh-my-opencode.json"* 2>/dev/null | grep -v "^$OPENCODE_DIR/oh-my-opencode.json$" | tail -n +2 | xargs -r rm 2>/dev/null || true
         else
             echo "✅ oh-my-opencode.json (변경 없음)"
         fi
@@ -220,6 +226,9 @@ if [ -d "$OPENCODE_DIR" ]; then
             cp "$OPENCODE_DIR/antigravity.json" "$OPENCODE_DEST/antigravity.json"
             echo "✅ antigravity.json 동기화 완료 (로컬 기준)"
             SYNC_COUNT=$((SYNC_COUNT + 1))
+
+            # Keep only the latest version in local ~/.config/opencode
+            ls -t "$OPENCODE_DIR/antigravity.json"* 2>/dev/null | grep -v "^$OPENCODE_DIR/antigravity.json$" | tail -n +2 | xargs -r rm 2>/dev/null || true
         else
             echo "✅ antigravity.json (변경 없음)"
         fi
