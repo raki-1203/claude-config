@@ -6,9 +6,6 @@
     "opencode-antigravity-auth@1.4.3"
   ],
   "agent": {
-    "junior-mentor": {
-      "model": "google/antigravity-gemini-3-flash"
-    },
     "build-error-resolver": {
       "model": "anthropic/claude-opus-4-5-20251101"
     },
