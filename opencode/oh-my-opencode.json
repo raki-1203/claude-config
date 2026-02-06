@@ -27,7 +27,7 @@
       "model": "anthropic/claude-sonnet-4-5-20250929"
     },
     "hephaestus": {
-      "model": "quotio/gpt-5.2"
+      "model": "quotio/gpt-5.3-codex"
     },
     "prometheus": {
       "model": "anthropic/claude-opus-4-6"
@@ -39,7 +39,7 @@
       "model": "anthropic/claude-opus-4-6"
     },
     "oracle": {
-      "model": "quotio/gpt-5.2"
+      "model": "quotio/gpt-5.3-codex"
     },
     "frontend-ui-ux-engineer": {
       "model": "google/antigravity-gemini-3-pro"
@@ -62,7 +62,7 @@
       "model": "google/antigravity-gemini-3-pro"
     },
     "ultrabrain": {
-      "model": "quotio/gpt-5.2"
+      "model": "quotio/gpt-5.3-codex"
     },
     "artistry": {
       "model": "google/antigravity-gemini-3-pro"
