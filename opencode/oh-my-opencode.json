@@ -18,7 +18,7 @@
   },
   "agents": {
     "sisyphus": {
-      "model": "anthropic/claude-opus-4-5-20251101"
+      "model": "anthropic/claude-opus-4-6"
     },
     "sisyphus-junior": {
       "model": "anthropic/claude-sonnet-4-5-20250929"
@@ -30,13 +30,13 @@
       "model": "quotio/gpt-5.2"
     },
     "prometheus": {
-      "model": "anthropic/claude-opus-4-5-20251101"
+      "model": "anthropic/claude-opus-4-6"
     },
     "metis": {
       "model": "anthropic/claude-sonnet-4-5-20250929"
     },
     "momus": {
-      "model": "anthropic/claude-opus-4-5-20251101"
+      "model": "anthropic/claude-opus-4-6"
     },
     "oracle": {
       "model": "quotio/gpt-5.2"
@@ -74,7 +74,7 @@
       "model": "anthropic/claude-sonnet-4-5-20250929"
     },
     "unspecified-high": {
-      "model": "anthropic/claude-opus-4-5-20251101"
+      "model": "anthropic/claude-opus-4-6"
     },
     "writing": {
       "model": "google/antigravity-gemini-3-flash"

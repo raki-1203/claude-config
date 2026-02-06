@@ -58,7 +58,7 @@
         "description": "Block creation of random .md files - keeps docs consolidated"
       },
       {
-        "matcher": "question",
+        "matcher": "tool matches \"question\"",
         "hooks": [
           {
             "type": "command",
@@ -147,6 +147,7 @@
         "description": "Check for console.log in modified files after each response"
       },
       {
+        "matcher": "*",
         "hooks": [
           {
             "type": "command",

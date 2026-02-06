@@ -3,35 +3,35 @@
   "model": "anthropic/claude-sonnet-4-5-20250929",
   "plugin": [
     "oh-my-opencode@3.2.3",
-    "opencode-antigravity-auth@1.4.3"
+    "opencode-antigravity-auth@1.4.5"
   ],
   "agent": {
     "build-error-resolver": {
-      "model": "anthropic/claude-opus-4-5-20251101"
+      "model": "anthropic/claude-opus-4-6"
     },
     "code-reviewer": {
-      "model": "anthropic/claude-opus-4-5-20251101"
+      "model": "anthropic/claude-opus-4-6"
     },
     "database-reviewer": {
-      "model": "anthropic/claude-opus-4-5-20251101"
+      "model": "anthropic/claude-opus-4-6"
     },
     "doc-updater": {
-      "model": "anthropic/claude-opus-4-5-20251101"
+      "model": "anthropic/claude-opus-4-6"
     },
     "e2e-runner": {
-      "model": "anthropic/claude-opus-4-5-20251101"
+      "model": "anthropic/claude-opus-4-6"
     },
     "python-reviewer": {
-      "model": "anthropic/claude-opus-4-5-20251101"
+      "model": "anthropic/claude-opus-4-6"
     },
     "refactor-cleaner": {
-      "model": "anthropic/claude-opus-4-5-20251101"
+      "model": "anthropic/claude-opus-4-6"
     },
     "security-reviewer": {
-      "model": "anthropic/claude-opus-4-5-20251101"
+      "model": "anthropic/claude-opus-4-6"
     },
     "tdd-guide": {
-      "model": "anthropic/claude-opus-4-5-20251101"
+      "model": "anthropic/claude-opus-4-6"
     }
   },
   "provider": {
