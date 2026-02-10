@@ -247,14 +247,23 @@ echo ""
 # Git commit and push
 cd "$SCRIPT_DIR"
 
-# Check for changes
-if git diff --quiet && git diff --cached --quiet; then
+# Check for changes (including untracked files)
+if git diff --quiet && git diff --cached --quiet && [ -z "$(git ls-files --others --exclude-standard)" ]; then
     echo "📝 변경사항 없음"
 else
     echo ""
     echo "📊 변경 예정 항목:"
     echo "================================"
-    git diff --name-only
+
+    # Show tracked and untracked changes
+    echo "=== Tracked changes ==="
+    git diff --name-only 2>/dev/null || true
+    git diff --cached --name-only 2>/dev/null || true
+
+    echo ""
+    echo "=== Untracked files ==="
+    git ls-files --others --exclude-standard 2>/dev/null || true
+
     echo ""
     git add .
 
@@ -270,7 +279,34 @@ else
 
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         FILES_CHANGED=$(git diff --cached --name-only | wc -l)
-        git commit -m "Update Claude Code settings ($FILES_CHANGED files changed)"
+
+        # Generate detailed commit message based on what was changed
+        COMMIT_MSG="chore: Sync Claude Code settings and configurations"
+
+        # Check what was changed
+        if git diff --cached --name-only | grep -q "skills/"; then
+            COMMIT_MSG="$COMMIT_MSG
+
+- Sync skill definitions"
+        fi
+        if git diff --cached --name-only | grep -q "settings.json"; then
+            COMMIT_MSG="$COMMIT_MSG
+- Update settings.json"
+        fi
+        if git diff --cached --name-only | grep -q "rules/"; then
+            COMMIT_MSG="$COMMIT_MSG
+- Update custom rules"
+        fi
+        if git diff --cached --name-only | grep -q "hooks/"; then
+            COMMIT_MSG="$COMMIT_MSG
+- Update hooks"
+        fi
+        if git diff --cached --name-only | grep -q "scripts/"; then
+            COMMIT_MSG="$COMMIT_MSG
+- Update scripts"
+        fi
+
+        git commit -m "$COMMIT_MSG"
         echo "✅ Git 커밋 완료! ($FILES_CHANGED 개 파일)"
         echo ""
 
