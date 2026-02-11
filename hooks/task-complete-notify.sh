@@ -3,6 +3,11 @@
 # Claude Code Task Completion Notification Script
 # Sends Slack notification when Claude Code task completes
 
+# DEBUG: Log hook invocation
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] task-complete-notify.sh called" >> /tmp/claude-hook-debug.log
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] CLAUDE_SLACK_WEBHOOK_URL set: $([ -n \"$CLAUDE_SLACK_WEBHOOK_URL\" ] && echo 'YES' || echo 'NO')" >> /tmp/claude-hook-debug.log
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] ENV: TERM_PROGRAM=$TERM_PROGRAM TMUX=$TMUX TMUX_PANE=$TMUX_PANE" >> /tmp/claude-hook-debug.log
+
 # Get terminal info
 TERMINAL_NAME="${TERM_PROGRAM:-Unknown Terminal}"
 PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$(pwd)}"

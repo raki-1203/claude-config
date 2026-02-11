@@ -1,7 +1,6 @@
 #!/bin/bash
 
-# Claude Code Question Notification Script
-# Sends Slack notification when Sisyphus asks a question
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] question-notify.sh called" >> /tmp/claude-hook-debug.log
 
 # Get terminal info
 TERMINAL_NAME="${TERM_PROGRAM:-Unknown Terminal}"
