@@ -21,10 +21,10 @@
       "model": "anthropic/claude-opus-4-6"
     },
     "sisyphus-junior": {
-      "model": "anthropic/claude-sonnet-4-5-20250929"
+      "model": "anthropic/claude-opus-4-6"
     },
     "atlas": {
-      "model": "anthropic/claude-sonnet-4-5-20250929"
+      "model": "anthropic/claude-opus-4-6"
     },
     "hephaestus": {
       "model": "quotio/gpt-5.3-codex"
@@ -33,7 +33,7 @@
       "model": "anthropic/claude-opus-4-6"
     },
     "metis": {
-      "model": "anthropic/claude-sonnet-4-5-20250929"
+      "model": "quotio/gpt-5.3-codex"
     },
     "momus": {
       "model": "anthropic/claude-opus-4-6"
@@ -77,7 +77,7 @@
       "model": "anthropic/claude-opus-4-6"
     },
     "writing": {
-      "model": "google/antigravity-gemini-3-flash"
+      "model": "google/antigravity-gemini-3-pro"
     }
   },
   "lsp": {
