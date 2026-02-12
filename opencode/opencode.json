@@ -3,7 +3,7 @@
   "model": "anthropic/claude-sonnet-4-5-20250929",
   "plugin": [
     "oh-my-opencode@3.5.2",
-    "opencode-antigravity-auth@1.4.6"
+    "opencode-antigravity-auth@1.5.1"
   ],
   "agent": {
     "build-error-resolver": {

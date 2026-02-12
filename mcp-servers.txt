@@ -1,4 +1,6 @@
 # MCP 서버 설치 명령어
 # API 키는 환경변수로 설정하세요
 
-# 설치된 MCP 서버가 없습니다
+
+# Project-level MCP servers
+claude mcp add hyperbrowser -s user -- npx --yes hyperbrowser-mcp
