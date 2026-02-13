@@ -33,10 +33,10 @@
       "model": "anthropic/claude-opus-4-6"
     },
     "metis": {
-      "model": "quotio/gpt-5.3-codex"
+      "model": "anthropic/claude-opus-4-6"
     },
     "momus": {
-      "model": "anthropic/claude-opus-4-6"
+      "model": "quotio/gpt-5.3-codex"
     },
     "oracle": {
       "model": "quotio/gpt-5.3-codex"
