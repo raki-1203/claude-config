@@ -18,32 +18,30 @@
   },
   "agents": {
     "sisyphus": {
-      // "model": "anthropic/claude-opus-4-6"
+      "model": "anthropic/claude-opus-4-6"
       // "model": "github-copilot/claude-opus-4.5"
-      "model": "quotio/claude-opus-4-6-thinking"
+      // "model": "quotio/claude-opus-4-6-thinking"
     },
     "sisyphus-junior": {
-      // "model": "anthropic/claude-opus-4-6"
+      "model": "anthropic/claude-opus-4-6"
       // "model": "github-copilot/claude-opus-4.5"
-      "model": "quotio/claude-opus-4-6-thinking"
+      // "model": "quotio/claude-opus-4-6-thinking"
     },
     "atlas": {
-      // "model": "anthropic/claude-opus-4-6"
-      // "model": "github-copilot/claude-opus-4.5"
-      "model": "quotio/claude-opus-4-6-thinking"
+      "model": "anthropic/claude-sonnet-4-5-20250929"
     },
     "hephaestus": {
       "model": "quotio/gpt-5.3-codex"
     },
     "prometheus": {
-      // "model": "anthropic/claude-opus-4-6"
+      "model": "anthropic/claude-opus-4-6"
       // "model": "github-copilot/claude-opus-4.5"
-      "model": "quotio/claude-opus-4-6-thinking"
+      // "model": "quotio/claude-opus-4-6-thinking"
     },
     "metis": {
-      // "model": "anthropic/claude-opus-4-6"
+      "model": "anthropic/claude-opus-4-6"
       // "model": "github-copilot/claude-opus-4.5"
-      "model": "quotio/claude-opus-4-6-thinking"
+      // "model": "quotio/claude-opus-4-6-thinking"
     },
     "momus": {
       "model": "quotio/gpt-5.3-codex"
@@ -86,9 +84,9 @@
       "model": "github-copilot/claude-sonnet-4.5"
     },
     "unspecified-high": {
-      // "model": "anthropic/claude-opus-4-6"
+      "model": "anthropic/claude-opus-4-6"
       // "model": "github-copilot/claude-opus-4.5"
-      "model": "quotio/gemini-claude-opus-4-6-thinking"
+      // "model": "quotio/gemini-claude-opus-4-6-thinking"
     },
     "writing": {
       "model": "quotio/gemini-3-pro-high"
