@@ -220,6 +220,43 @@ if [ -d "$OPENCODE_DIR" ]; then
         fi
     fi
 
+    # Sync opencode.jsonc (only if changed)
+    if [ -f "$OPENCODE_DIR/opencode.jsonc" ]; then
+        if ! cmp -s "$OPENCODE_DIR/opencode.jsonc" "$OPENCODE_DEST/opencode.jsonc" 2>/dev/null; then
+            cp "$OPENCODE_DIR/opencode.jsonc" "$OPENCODE_DEST/opencode.jsonc"
+
+            # Replace QUOTIO_API_KEY with placeholder for repo
+            if [ -n "$QUOTIO_API_KEY" ]; then
+                # Escape special characters for sed
+                ESCAPED_KEY=$(printf '%s\n' "$QUOTIO_API_KEY" | sed -e 's/[\/&]/\\&/g')
+                sed -i '' "s/$ESCAPED_KEY/\${QUOTIO_API_KEY}/g" "$OPENCODE_DEST/opencode.jsonc"
+                echo "✅ opencode.jsonc 동기화 완료 (로컬 기준, QUOTIO_API_KEY → placeholder)"
+            else
+                echo "✅ opencode.jsonc 동기화 완료 (로컬 기준)"
+            fi
+            SYNC_COUNT=$((SYNC_COUNT + 1))
+
+            # Keep only the latest version in local ~/.config/opencode
+            ls -t "$OPENCODE_DIR/opencode.jsonc"* 2>/dev/null | grep -v "^$OPENCODE_DIR/opencode.jsonc$" | tail -n +2 | xargs -r rm 2>/dev/null || true
+        else
+            echo "✅ opencode.jsonc (변경 없음)"
+        fi
+    fi
+
+    # Sync oh-my-opencode.jsonc (only if changed)
+    if [ -f "$OPENCODE_DIR/oh-my-opencode.jsonc" ]; then
+        if ! cmp -s "$OPENCODE_DIR/oh-my-opencode.jsonc" "$OPENCODE_DEST/oh-my-opencode.jsonc" 2>/dev/null; then
+            cp "$OPENCODE_DIR/oh-my-opencode.jsonc" "$OPENCODE_DEST/oh-my-opencode.jsonc"
+            echo "✅ oh-my-opencode.jsonc 동기화 완료 (로컬 기준)"
+            SYNC_COUNT=$((SYNC_COUNT + 1))
+
+            # Keep only the latest version in local ~/.config/opencode
+            ls -t "$OPENCODE_DIR/oh-my-opencode.jsonc"* 2>/dev/null | grep -v "^$OPENCODE_DIR/oh-my-opencode.jsonc$" | tail -n +2 | xargs -r rm 2>/dev/null || true
+        else
+            echo "✅ oh-my-opencode.jsonc (변경 없음)"
+        fi
+    fi
+
     # Sync antigravity.json (only if changed)
     if [ -f "$OPENCODE_DIR/antigravity.json" ]; then
         if ! cmp -s "$OPENCODE_DIR/antigravity.json" "$OPENCODE_DEST/antigravity.json" 2>/dev/null; then

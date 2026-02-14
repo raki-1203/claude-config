@@ -187,6 +187,46 @@ if [ -d "$OPENCODE_SRC" ]; then
         echo "✅ oh-my-opencode.json 적용 완료 (저장소 기준)"
     fi
 
+    # Apply opencode.jsonc (replace completely)
+    if [ -f "$OPENCODE_SRC/opencode.jsonc" ]; then
+        if [ -f "$OPENCODE_DIR/opencode.jsonc" ]; then
+            if ! cmp -s "$OPENCODE_DIR/opencode.jsonc" "$OPENCODE_SRC/opencode.jsonc"; then
+                BACKUP="$OPENCODE_DIR/opencode.jsonc.backup.$(date +%Y%m%d%H%M%S)"
+                cp "$OPENCODE_DIR/opencode.jsonc" "$BACKUP"
+                echo "📦 기존 opencode.jsonc 백업: $BACKUP"
+
+                ls -t "$OPENCODE_DIR/opencode.jsonc.backup."* 2>/dev/null | tail -n +2 | xargs -r rm
+            fi
+        fi
+
+        cp "$OPENCODE_SRC/opencode.jsonc" "$OPENCODE_DIR/opencode.jsonc"
+
+        if [ -n "$QUOTIO_API_KEY" ]; then
+            ESCAPED_KEY=$(printf '%s\n' "$QUOTIO_API_KEY" | sed -e 's/[\/&]/\\&/g')
+            sed -i '' "s/\${QUOTIO_API_KEY}/$ESCAPED_KEY/g" "$OPENCODE_DIR/opencode.jsonc"
+            echo "✅ opencode.jsonc 적용 완료 (저장소 기준, QUOTIO_API_KEY 자동 설정)"
+        else
+            echo "✅ opencode.jsonc 적용 완료 (저장소 기준)"
+            echo "⚠️  QUOTIO_API_KEY 환경변수가 없습니다. 수동으로 설정하세요."
+        fi
+    fi
+
+    # Apply oh-my-opencode.jsonc (replace completely)
+    if [ -f "$OPENCODE_SRC/oh-my-opencode.jsonc" ]; then
+        if [ -f "$OPENCODE_DIR/oh-my-opencode.jsonc" ]; then
+            if ! cmp -s "$OPENCODE_DIR/oh-my-opencode.jsonc" "$OPENCODE_SRC/oh-my-opencode.jsonc"; then
+                BACKUP="$OPENCODE_DIR/oh-my-opencode.jsonc.backup.$(date +%Y%m%d%H%M%S)"
+                cp "$OPENCODE_DIR/oh-my-opencode.jsonc" "$BACKUP"
+                echo "📦 기존 oh-my-opencode.jsonc 백업: $BACKUP"
+
+                ls -t "$OPENCODE_DIR/oh-my-opencode.jsonc.backup."* 2>/dev/null | tail -n +2 | xargs -r rm
+            fi
+        fi
+
+        cp "$OPENCODE_SRC/oh-my-opencode.jsonc" "$OPENCODE_DIR/oh-my-opencode.jsonc"
+        echo "✅ oh-my-opencode.jsonc 적용 완료 (저장소 기준)"
+    fi
+
     # Apply antigravity.json (replace completely)
     if [ -f "$OPENCODE_SRC/antigravity.json" ]; then
         if [ -f "$OPENCODE_DIR/antigravity.json" ]; then

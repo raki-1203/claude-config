@@ -1,0 +1,121 @@
+{
+  "$schema": "https://raw.githubusercontent.com/code-yeongyu/oh-my-opencode/master/assets/oh-my-opencode.schema.json",
+  "google_auth": false,
+  "claude_code": {
+    "mcp": true,
+    "commands": true,
+    "skills": true,
+    "agents": true,
+    "hooks": true,
+    "rules": true,
+    "plugins": true
+  },
+  "sisyphus_agent": {
+    "disabled": false,
+    "default_builder_enabled": false,
+    "planner_enabled": true,
+    "replace_plan": true
+  },
+  "agents": {
+    "sisyphus": {
+      // "model": "anthropic/claude-opus-4-6"
+      // "model": "github-copilot/claude-opus-4.5"
+      "model": "quotio/claude-opus-4-6-thinking"
+    },
+    "sisyphus-junior": {
+      // "model": "anthropic/claude-opus-4-6"
+      // "model": "github-copilot/claude-opus-4.5"
+      "model": "quotio/claude-opus-4-6-thinking"
+    },
+    "atlas": {
+      // "model": "anthropic/claude-opus-4-6"
+      // "model": "github-copilot/claude-opus-4.5"
+      "model": "quotio/claude-opus-4-6-thinking"
+    },
+    "hephaestus": {
+      "model": "quotio/gpt-5.3-codex"
+    },
+    "prometheus": {
+      // "model": "anthropic/claude-opus-4-6"
+      // "model": "github-copilot/claude-opus-4.5"
+      "model": "quotio/claude-opus-4-6-thinking"
+    },
+    "metis": {
+      // "model": "anthropic/claude-opus-4-6"
+      // "model": "github-copilot/claude-opus-4.5"
+      "model": "quotio/claude-opus-4-6-thinking"
+    },
+    "momus": {
+      "model": "quotio/gpt-5.3-codex"
+    },
+    "oracle": {
+      "model": "quotio/gpt-5.3-codex"
+    },
+    "frontend-ui-ux-engineer": {
+      "model": "quotio/gemini-3-pro-high"
+    },
+    "librarian": {
+      "model": "quotio/gemini-3-flash"
+    },
+    "explore": {
+      "model": "quotio/gemini-3-flash"
+    },
+    "document-writer": {
+      "model": "quotio/gemini-3-pro-high"
+    },
+    "multimodal-looker": {
+      "model": "quotio/gemini-3-flash"
+    }
+  },
+  "categories": {
+    "visual-engineering": {
+      "model": "quotio/gemini-3-pro-high"
+    },
+    "ultrabrain": {
+      "model": "quotio/gpt-5.3-codex"
+    },
+    "artistry": {
+      "model": "quotio/gemini-3-pro-high"
+    },
+    "quick": {
+      // "model": "anthropic/claude-sonnet-4-5-20250929"
+      "model": "github-copilot/claude-sonnet-4.5"
+    },
+    "unspecified-low": {
+      // "model": "anthropic/claude-sonnet-4-5-20250929"
+      "model": "github-copilot/claude-sonnet-4.5"
+    },
+    "unspecified-high": {
+      // "model": "anthropic/claude-opus-4-6"
+      // "model": "github-copilot/claude-opus-4.5"
+      "model": "quotio/gemini-claude-opus-4-6-thinking"
+    },
+    "writing": {
+      "model": "quotio/gemini-3-pro-high"
+    }
+  },
+  "lsp": {
+    "typescript-language-server": {
+      "command": [
+        "typescript-language-server",
+        "--stdio"
+      ],
+      "extensions": [
+        ".ts",
+        ".tsx"
+      ],
+      "priority": 10
+    }
+  },
+  "tmux": {
+    "enabled": true,
+    "layout": "main-vertical",
+    "main_pane_size": 60,
+    "main_pane_min_width": 120,
+    "agent_pane_min_width": 40
+  },
+  "disabled_hooks": [
+    "session-notification",
+    "directory-agents-injector"
+  ]
+}
