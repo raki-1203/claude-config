@@ -292,27 +292,31 @@ else
     echo "📊 변경 예정 항목:"
     echo "================================"
 
-    # Show tracked and untracked changes (no pager)
-    echo "=== Tracked changes ==="
-    git --no-pager diff --name-only 2>/dev/null || true
-    git --no-pager diff --cached --name-only 2>/dev/null || true
-
-    echo ""
-    echo "=== Untracked files ==="
-    git ls-files --others --exclude-standard 2>/dev/null || true
-
-    echo ""
     git add .
 
-    # Show commit diff preview (no pager)
-    echo "📋 변경 내용 요약:"
-    echo "================================"
+    # Show diff summary + full diff (no pager)
+    echo ""
     git --no-pager diff --cached --stat
+    echo ""
+    echo "📋 변경 내용 (diff):"
+    echo "================================"
+    git --no-pager diff --cached --color
+    echo ""
+    echo "================================"
     echo ""
 
     # Ask for confirmation before push
-    read -p "변경사항을 커밋하고 푸시하시겠습니까? (y/n) " -n 1 -r
+    read -p "변경사항을 커밋하고 푸시하시겠습니까? (y/n/d) [d=diff 다시 보기] " -n 1 -r
     echo ""
+
+    # Allow re-viewing diff
+    while [[ $REPLY =~ ^[Dd]$ ]]; do
+        echo ""
+        git --no-pager diff --cached --color
+        echo ""
+        read -p "변경사항을 커밋하고 푸시하시겠습니까? (y/n) " -n 1 -r
+        echo ""
+    done
 
     if [[ $REPLY =~ ^[Yy]$ ]]; then
         FILES_CHANGED=$(git diff --cached --name-only | wc -l)
