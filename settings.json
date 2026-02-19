@@ -1,4 +1,8 @@
 {
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1",
+    "ENABLE_TOOL_SEARCH": "true"
+  },
   "permissions": {
     "allow": [
       "Bash(grep:*)",
@@ -8,7 +12,8 @@
       "Bash(~/.tmux.conf)",
       "Skill(claude-hud:setup)",
       "WebSearch",
-      "mcp__context7__resolve-library-id"
+      "mcp__context7__resolve-library-id",
+      "Read(~/.claude)"
     ],
     "deny": [],
     "ask": [],
@@ -179,5 +184,6 @@
   "alwaysThinkingEnabled": false,
   "promptSuggestionEnabled": false,
   "autoUpdatesChannel": "stable",
-  "minimumVersion": "2.1.7"
+  "minimumVersion": "2.1.7",
+  "teammateMode": "tmux"
 }
