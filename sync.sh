@@ -292,10 +292,10 @@ else
     echo "📊 변경 예정 항목:"
     echo "================================"
 
-    # Show tracked and untracked changes
+    # Show tracked and untracked changes (no pager)
     echo "=== Tracked changes ==="
-    git diff --name-only 2>/dev/null || true
-    git diff --cached --name-only 2>/dev/null || true
+    git --no-pager diff --name-only 2>/dev/null || true
+    git --no-pager diff --cached --name-only 2>/dev/null || true
 
     echo ""
     echo "=== Untracked files ==="
@@ -304,10 +304,10 @@ else
     echo ""
     git add .
 
-    # Show commit diff preview
+    # Show commit diff preview (no pager)
     echo "📋 변경 내용 요약:"
     echo "================================"
-    git diff --cached --stat
+    git --no-pager diff --cached --stat
     echo ""
 
     # Ask for confirmation before push
