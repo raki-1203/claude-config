@@ -1,6 +1,9 @@
 #!/bin/bash
 
-echo "[$(date '+%Y-%m-%d %H:%M:%S')] question-notify.sh called" >> /tmp/claude-hook-debug.log
+# Notify type: "question" (default) or "permission" (set via NOTIFY_TYPE env var)
+NOTIFY_TYPE="${NOTIFY_TYPE:-question}"
+
+echo "[$(date '+%Y-%m-%d %H:%M:%S')] question-notify.sh called (type=$NOTIFY_TYPE)" >> /tmp/claude-hook-debug.log
 
 # Get terminal info
 TERMINAL_NAME="${TERM_PROGRAM:-Unknown Terminal}"
@@ -24,8 +27,27 @@ elif [ "$TERMINAL_NAME" = "WarpTerminal" ]; then
     TAB_NAME=$(osascript -e 'tell application "System Events" to get name of first window of process "Warp"' 2>/dev/null || echo "")
 fi
 
-# Read hook input from stdin (for potential future use)
+# Read hook input from stdin
 HOOK_INPUT=$(cat)
+
+# Extract tool name for permission requests
+TOOL_NAME=""
+if [ "$NOTIFY_TYPE" = "permission" ]; then
+    TOOL_NAME=$(echo "$HOOK_INPUT" | jq -r '.tool_name // .tool // empty' 2>/dev/null || echo "")
+fi
+
+# Build notification message based on type
+if [ "$NOTIFY_TYPE" = "permission" ]; then
+    EMOJI="\\u26a0\\ufe0f"
+    if [ -n "$TOOL_NAME" ]; then
+        STATUS_MSG="권한 승인 대기중 ($TOOL_NAME)"
+    else
+        STATUS_MSG="권한 승인 대기중"
+    fi
+else
+    EMOJI="\\u2753"
+    STATUS_MSG="질문 대기중"
+fi
 
 # Slack Webhook Notification
 SLACK_WEBHOOK_URL="${CLAUDE_SLACK_WEBHOOK_URL:-}"
@@ -39,8 +61,10 @@ if [ -n "$SLACK_WEBHOOK_URL" ]; then
         --arg tab "$TAB_DISPLAY" \
         --arg project "$PROJECT_NAME" \
         --arg path "$PROJECT_DIR" \
+        --arg status "$STATUS_MSG" \
+        --arg emoji "$EMOJI" \
         '{
-            "text": "*\($terminal)* : \($tab) 질문 대기중 \u2753\n*프로젝트* : \($project)\n*경로* : \($path)\n============================================"
+            "text": "*\($terminal)* : \($tab) \($status) \($emoji)\n*프로젝트* : \($project)\n*경로* : \($path)\n============================================"
         }')
 
     curl -s -X POST -H 'Content-type: application/json' \

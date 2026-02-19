@@ -8,6 +8,7 @@
  * preserve important state that might get lost in summarization.
  */
 
+const fs = require('fs');
 const path = require('path');
 const {
   getSessionsDir,
@@ -16,6 +17,8 @@ const {
   findFiles,
   ensureDir,
   appendFile,
+  readFile,
+  writeFile,
   log
 } = require('../lib/utils');
 
@@ -36,6 +39,35 @@ async function main() {
     const activeSession = sessions[0].path;
     const timeStr = getTimeString();
     appendFile(activeSession, `\n---\n**[Compaction occurred at ${timeStr}]** - Context was summarized\n`);
+  }
+
+  // Autopilot state preservation
+  const autopilotStatePath = path.join(process.cwd(), '.claude', 'autopilot-state.local.json');
+  if (fs.existsSync(autopilotStatePath)) {
+    try {
+      const stateRaw = readFile(autopilotStatePath);
+      const state = JSON.parse(stateRaw);
+      if (state.active) {
+        // Save autopilot context to session file for post-compaction recovery
+        const autopilotContext = [
+          `\n---\n**[Autopilot State at Compaction - ${timestamp}]**`,
+          `- Mode: ${state.mode || 'tdd'}`,
+          `- Iteration: ${state.iteration || 0}`,
+          `- Gate failures: ${state.gate_failure_count || 0}`,
+          `- Stuck count: ${state.stuck_count || 0}`,
+          `- Last gate: ${state.last_gate_result || 'unknown'}`,
+          `- Original prompt: ${(state.original_prompt || '').slice(0, 200)}`,
+          ''
+        ].join('\n');
+
+        if (sessions.length > 0) {
+          appendFile(sessions[0].path, autopilotContext);
+        }
+        log('[PreCompact] Autopilot state preserved before compaction');
+      }
+    } catch (err) {
+      log(`[PreCompact] WARNING: Failed to parse autopilot state: ${err.message}. State not preserved.`);
+    }
   }
 
   log('[PreCompact] State saved before compaction');

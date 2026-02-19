@@ -106,6 +106,18 @@
         ]
       }
     ],
+    "PermissionRequest": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "NOTIFY_TYPE=permission ~/.claude/hooks/question-notify.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ],
     "SessionStart": [
       {
         "matcher": "*",
@@ -129,6 +141,16 @@
       }
     ],
     "Stop": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node /Users/raki-1203/.claude/scripts/hooks/autopilot-gate.js",
+            "timeout": 120
+          }
+        ]
+      },
       {
         "matcher": "*",
         "hooks": [
@@ -172,13 +194,15 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "bash -c '\"/Users/raki-1203/.bun/bin/bun\" \"$(ls -td ~/.claude/plugins/cache/claude-hud/claude-hud/*/ 2>/dev/null | head -1)src/index.ts\"'"
+    "command": "bash -c 'RUNTIME=$(command -v bun 2>/dev/null || command -v node 2>/dev/null); SOURCE=$([ \"$(basename \"$RUNTIME\")\" = \"bun\" ] && echo \"src/index.ts\" || echo \"dist/index.js\"); \"$RUNTIME\" \"$(ls -td ~/.claude/plugins/cache/claude-hud/claude-hud/*/ 2>/dev/null | head -1)$SOURCE\"'"
   },
   "enabledPlugins": {
     "code-simplifier@claude-plugins-official": true,
     "firebase@claude-plugins-official": true,
+    "ralph-loop@claude-plugins-official": true,
     "ui-ux-pro-max@ui-ux-pro-max-skill": true,
-    "claude-hud@claude-hud": true
+    "claude-hud@claude-hud": true,
+    "typescript-lsp@claude-plugins-official": true
   },
   "language": "Korean",
   "alwaysThinkingEnabled": false,
