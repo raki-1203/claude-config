@@ -68,6 +68,31 @@
       ]
     }
   },
-  "hotPaths": [],
+  "hotPaths": [
+    {
+      "path": "README.md",
+      "accessCount": 8,
+      "lastAccessed": 1771560886533,
+      "type": "file"
+    },
+    {
+      "path": "install.sh",
+      "accessCount": 3,
+      "lastAccessed": 1771560911779,
+      "type": "file"
+    },
+    {
+      "path": "",
+      "accessCount": 2,
+      "lastAccessed": 1771560915280,
+      "type": "directory"
+    },
+    {
+      "path": "sync.sh",
+      "accessCount": 1,
+      "lastAccessed": 1771560938302,
+      "type": "directory"
+    }
+  ],
   "userDirectives": []
 }
