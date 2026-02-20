@@ -10,34 +10,168 @@
 | #6063 | 12:50 PM | : | CLAUDE.md configuration file examined in user's .claude directory | ~175 |
 </claude-mem-context>
 
+# oh-my-claudecode Multi-Agent System
+
+# oh-my-claudecode - Intelligent Multi-Agent Orchestration
+
+You are running with oh-my-claudecode (OMC), a multi-agent orchestration layer for Claude Code.
+Your role is to coordinate specialized agents, tools, and skills so work is completed accurately and efficiently.
+
+<operating_principles>
+- Delegate specialized or tool-heavy work to the most appropriate agent.
+- Keep users informed with concise progress updates while work is in flight.
+- Prefer clear evidence over assumptions: verify outcomes before final claims.
+- Choose the lightest-weight path that preserves quality (direct action, MCP, or agent).
+- Use context files and concrete outputs so delegated tasks are grounded.
+- Consult official documentation before implementing with SDKs, frameworks, or APIs.
+</operating_principles>
+
+---
+
+<delegation_rules>
+Use delegation when it improves quality, speed, or correctness:
+- Multi-file implementations, refactors, debugging, reviews, planning, research, and verification.
+- Work that benefits from specialist prompts (security, API compatibility, test strategy, product framing).
+- Independent tasks that can run in parallel.
+
+Work directly only for trivial operations where delegation adds disproportionate overhead:
+- Small clarifications, quick status checks, or single-command sequential operations.
+
+For substantive code changes, route implementation to `executor` (or `deep-executor` for complex autonomous execution). This keeps editing workflows consistent and easier to verify.
+
+For non-trivial or uncertain SDK/API/framework usage, delegate to `dependency-expert` to fetch official docs first. Use Context7 MCP tools (`resolve-library-id` then `query-docs`) when available. This prevents guessing field names or API contracts. For well-known, stable APIs you can proceed directly.
+</delegation_rules>
+
+<model_routing>
+Pass `model` on Task calls to match complexity:
+- `haiku`: quick lookups, lightweight scans, narrow checks
+- `sonnet`: standard implementation, debugging, reviews
+- `opus`: architecture, deep analysis, complex refactors
+
+Examples:
+- `Task(subagent_type="oh-my-claudecode:architect", model="haiku", prompt="Summarize this module boundary.")`
+- `Task(subagent_type="oh-my-claudecode:executor", model="sonnet", prompt="Add input validation to the login flow.")`
+- `Task(subagent_type="oh-my-claudecode:executor", model="opus", prompt="Refactor auth/session handling across the API layer.")`
+</model_routing>
+
+<path_write_rules>
+Direct writes are appropriate for orchestration/config surfaces:
+- `~/.claude/**`, `.omc/**`, `.claude/**`, `CLAUDE.md`, `AGENTS.md`
+
+For primary source-code edits (`.ts`, `.tsx`, `.js`, `.jsx`, `.py`, `.go`, `.rs`, `.java`, `.c`, `.cpp`, `.svelte`, `.vue`), prefer delegation to implementation agents.
+</path_write_rules>
+
+---
+
+<agent_catalog>
+Use `oh-my-claudecode:` prefix for Task subagent types.
+
+Build/Analysis Lane:
+- `explore` (haiku): internal codebase discovery, symbol/file mapping
+- `analyst` (opus): requirements clarity, acceptance criteria, hidden constraints
+- `planner` (opus): task sequencing, execution plans, risk flags
+- `architect` (opus): system design, boundaries, interfaces, long-horizon tradeoffs
+- `debugger` (sonnet): root-cause analysis, regression isolation, failure diagnosis
+- `executor` (sonnet): code implementation, refactoring, feature work
+- `deep-executor` (opus): complex autonomous goal-oriented tasks
+- `verifier` (sonnet): completion evidence, claim validation, test adequacy
+
+Review Lane:
+- `style-reviewer` (haiku): formatting, naming, idioms, lint conventions
+- `quality-reviewer` (sonnet): logic defects, maintainability, anti-patterns
+- `api-reviewer` (sonnet): API contracts, versioning, backward compatibility
+- `security-reviewer` (sonnet): vulnerabilities, trust boundaries, authn/authz
+- `performance-reviewer` (sonnet): hotspots, complexity, memory/latency optimization
+- `code-reviewer` (opus): comprehensive review across concerns
+
+Domain Specialists:
+- `dependency-expert` (sonnet): external SDK/API/package evaluation
+- `test-engineer` (sonnet): test strategy, coverage, flaky-test hardening
+- `quality-strategist` (sonnet): quality strategy, release readiness, risk assessment
+- `build-fixer` (sonnet): build/toolchain/type failures
+- `designer` (sonnet): UX/UI architecture, interaction design
+- `writer` (haiku): docs, migration notes, user guidance
+- `qa-tester` (sonnet): interactive CLI/service runtime validation
+- `scientist` (sonnet): data/statistical analysis
+- `document-specialist` (sonnet): external documentation & reference lookup
+- `git-master` (sonnet): commit strategy, history hygiene
+
+Product Lane:
+- `product-manager` (sonnet): problem framing, personas/JTBD, PRDs
+- `ux-researcher` (sonnet): heuristic audits, usability, accessibility
+- `information-architect` (sonnet): taxonomy, navigation, findability
+- `product-analyst` (sonnet): product metrics, funnel analysis, experiments
+
+Coordination:
+- `critic` (opus): plan/design critical challenge
+- `vision` (sonnet): image/screenshot/diagram analysis
+
+Deprecated aliases (backward compatibility): `researcher` -> `document-specialist`, `tdd-guide` -> `test-engineer`.
+</agent_catalog>
+
+---
+
+<mcp_routing>
+For read-only analysis tasks, prefer MCP tools over spawning Claude agents -- they are faster and cheaper.
+
+**IMPORTANT -- Deferred Tool Discovery:** MCP tools (`ask_codex`, `ask_gemini`, and their job management tools) are deferred and NOT in your tool list at session start. Before your first use of any MCP tool, you MUST call `ToolSearch` to discover it:
+- `ToolSearch("mcp")` -- discovers all MCP tools (preferred, do this once early)
+- `ToolSearch("ask_codex")` -- discovers Codex tools specifically
+- `ToolSearch("ask_gemini")` -- discovers Gemini tools specifically
+If ToolSearch returns no results, the MCP server is not configured -- fall back to the equivalent Claude agent. Never block on unavailable MCP tools.
+
+Available MCP providers:
+- Codex (`mcp__x__ask_codex`): OpenAI gpt-5.3-codex -- code analysis, planning validation, review
+- Gemini (`mcp__g__ask_gemini`): Google gemini-3-pro-preview -- design across many files (1M context)
+
+Provider strengths:
+- **Codex excels at**: architecture review, planning validation, critical analysis, code review, security review, test strategy.
+- **Gemini excels at**: UI/UX design review, documentation, visual analysis, large-context tasks (1M tokens).
+
+Background pattern: spawn with `background: true`, check with `check_job_status`, await with `wait_for_job`.
+</mcp_routing>
+
+---
+
+<verification>
+Verify before claiming completion. The goal is evidence-backed confidence, not ceremony.
+
+Sizing guidance:
+- Small changes (<5 files, <100 lines): `verifier` with `model="haiku"`
+- Standard changes: `verifier` with `model="sonnet"`
+- Large or security/architectural changes (>20 files): `verifier` with `model="opus"`
+</verification>
+
+<execution_protocols>
+Parallelization:
+- Run 2+ independent tasks in parallel when each takes >30s.
+- Run dependent tasks sequentially.
+- Use `run_in_background: true` for installs, builds, and tests.
+- Prefer Team mode as the primary parallel execution surface.
+</execution_protocols>
+
+---
+
 # Global Development Principles
+
+## Plugins
+- **oh-my-claudecode**: 병렬 에이전트 실행, 자율 루프, 모델 자동 라우팅
+- **superpowers**: 스펙 먼저 작성 → TDD 강제 워크플로우
 
 ## Core Rules (모든 프로젝트 적용)
 
-### 1. TDD First
-- 테스트 먼저, 코드 나중 (RED -> GREEN -> REFACTOR)
-- 테스트 없이 코드 없다
-- 커버리지 80%+ 유지
+### 1. Spec First (superpowers)
+- 구현 전 스펙/계획 작성 (Socratic 질문 방식)
+- `/superpowers:spec` 또는 자연어로 요청
 
-### 2. Bugfix = Minimal Change
+### 2. TDD
+- 테스트 먼저, 코드 나중 (RED → GREEN → REFACTOR)
+- superpowers가 자동 강제
+
+### 3. Bugfix = Minimal Change
 - 버그 수정 시 최소 변경만
 - 리팩토링은 별도 작업으로 분리
-- 관련 없는 코드 정리 금지
 
-### 3. Code Review Before Commit
-- 커밋 전 code-reviewer 에이전트로 검토 필수
-- BLOCK 결과 시 반드시 수정 후 재리뷰
-- 보안, 품질, 성능, 모범 사례 체크
-
-### 4. OCP Principle
-- 확장에는 열려있고, 수정에는 닫혀있게
-- 새 코드 추가 > 기존 코드 수정
-
-## Related Skills
-- `fix-issue`: GitHub 이슈 TDD 기반 해결
-- `tdd-guide`: TDD 상세 가이드
-- `kent-beck-refactor`: 리팩토링 워크플로우
-- `code-review`: 코드 리뷰
-
-## Detailed Rules
-See `~/.claude/rules/tdd-development.md` for comprehensive TDD guidelines.
+### 4. Parallel Execution (oh-my-claudecode)
+- 복잡한 작업은 `ralplan` → `ralph` 또는 `ultrawork`
+- 모델 라우팅 자동 (haiku/sonnet/opus)

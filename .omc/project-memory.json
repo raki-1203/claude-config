@@ -1,0 +1,73 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1771553339601,
+  "projectRoot": "/Users/raki-1203/workspace/claude-config",
+  "techStack": {
+    "languages": [],
+    "frameworks": [],
+    "packageManager": null,
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": null,
+    "testCommand": null,
+    "lintCommand": null,
+    "devCommand": null,
+    "scripts": {}
+  },
+  "conventions": {
+    "namingStyle": null,
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": null
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [],
+    "gitBranches": {
+      "defaultBranch": "main",
+      "branchingStrategy": null
+    }
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "hooks": {
+      "path": "hooks",
+      "purpose": null,
+      "fileCount": 3,
+      "lastAccessed": 1771553339591,
+      "keyFiles": [
+        "CLAUDE.md",
+        "question-notify.sh",
+        "task-complete-notify.sh"
+      ]
+    },
+    "opencode": {
+      "path": "opencode",
+      "purpose": null,
+      "fileCount": 5,
+      "lastAccessed": 1771553339591,
+      "keyFiles": [
+        "antigravity.json",
+        "oh-my-opencode.json",
+        "oh-my-opencode.jsonc",
+        "opencode.json",
+        "opencode.jsonc"
+      ]
+    },
+    "rules": {
+      "path": "rules",
+      "purpose": null,
+      "fileCount": 3,
+      "lastAccessed": 1771553339591,
+      "keyFiles": [
+        "git-workflow.md",
+        "security.md",
+        "testing.md"
+      ]
+    }
+  },
+  "hotPaths": [],
+  "userDirectives": []
+}
