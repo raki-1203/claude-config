@@ -129,125 +129,22 @@ extract_plugin_agents() {
 
 extract_plugin_agents
 
+# Copy tmux.conf
+if [ -f "$SCRIPT_DIR/tmux.conf" ]; then
+    if [ -f "$HOME/.tmux.conf" ]; then
+        if ! cmp -s "$HOME/.tmux.conf" "$SCRIPT_DIR/tmux.conf"; then
+            BACKUP="$HOME/.tmux.conf.backup.$(date +%Y%m%d%H%M%S)"
+            cp "$HOME/.tmux.conf" "$BACKUP"
+            echo "📦 기존 tmux.conf 백업: $BACKUP"
+            ls -t "$HOME/.tmux.conf.backup."* 2>/dev/null | tail -n +2 | xargs -r rm
+        fi
+    fi
+    cp "$SCRIPT_DIR/tmux.conf" "$HOME/.tmux.conf"
+    echo "✅ tmux.conf 적용 완료 (저장소 기준)"
+fi
+
 echo ""
 echo "🎉 Claude Code 설정 설치 완료!"
-
-# ============================================
-# OpenCode 설정 설치
-# ============================================
-echo ""
-echo "🚀 OpenCode 설정 설치 시작..."
-
-OPENCODE_DIR="$HOME/.config/opencode"
-OPENCODE_SRC="$SCRIPT_DIR/opencode"
-
-if [ -d "$OPENCODE_SRC" ]; then
-    mkdir -p "$OPENCODE_DIR"
-
-    if [ -f "$OPENCODE_SRC/opencode.json" ]; then
-        if [ -f "$OPENCODE_DIR/opencode.json" ]; then
-            if ! cmp -s "$OPENCODE_DIR/opencode.json" "$OPENCODE_SRC/opencode.json"; then
-                BACKUP="$OPENCODE_DIR/opencode.json.backup.$(date +%Y%m%d%H%M%S)"
-                cp "$OPENCODE_DIR/opencode.json" "$BACKUP"
-                echo "📦 기존 opencode.json 백업: $BACKUP"
-
-                # Keep only the latest backup, delete older ones
-                ls -t "$OPENCODE_DIR/opencode.json.backup."* 2>/dev/null | tail -n +2 | xargs -r rm
-            fi
-        fi
-
-        # Apply repo config (overwrite)
-        cp "$OPENCODE_SRC/opencode.json" "$OPENCODE_DIR/opencode.json"
-
-        if [ -n "$QUOTIO_API_KEY" ]; then
-            # Escape special characters for sed
-            ESCAPED_KEY=$(printf '%s\n' "$QUOTIO_API_KEY" | sed -e 's/[\/&]/\\&/g')
-            sed -i '' "s/\${QUOTIO_API_KEY}/$ESCAPED_KEY/g" "$OPENCODE_DIR/opencode.json"
-            echo "✅ opencode.json 적용 완료 (저장소 기준, QUOTIO_API_KEY 자동 설정)"
-        else
-            echo "✅ opencode.json 적용 완료 (저장소 기준)"
-            echo "⚠️  QUOTIO_API_KEY 환경변수가 없습니다. 수동으로 설정하세요."
-        fi
-    fi
-
-    # Apply oh-my-opencode.json (replace completely)
-    if [ -f "$OPENCODE_SRC/oh-my-opencode.json" ]; then
-        if [ -f "$OPENCODE_DIR/oh-my-opencode.json" ]; then
-            if ! cmp -s "$OPENCODE_DIR/oh-my-opencode.json" "$OPENCODE_SRC/oh-my-opencode.json"; then
-                BACKUP="$OPENCODE_DIR/oh-my-opencode.json.backup.$(date +%Y%m%d%H%M%S)"
-                cp "$OPENCODE_DIR/oh-my-opencode.json" "$BACKUP"
-                echo "📦 기존 oh-my-opencode.json 백업: $BACKUP"
-
-                # Keep only the latest backup, delete older ones
-                ls -t "$OPENCODE_DIR/oh-my-opencode.json.backup."* 2>/dev/null | tail -n +2 | xargs -r rm
-            fi
-        fi
-
-        cp "$OPENCODE_SRC/oh-my-opencode.json" "$OPENCODE_DIR/oh-my-opencode.json"
-        echo "✅ oh-my-opencode.json 적용 완료 (저장소 기준)"
-    fi
-
-    # Apply opencode.jsonc (replace completely)
-    if [ -f "$OPENCODE_SRC/opencode.jsonc" ]; then
-        if [ -f "$OPENCODE_DIR/opencode.jsonc" ]; then
-            if ! cmp -s "$OPENCODE_DIR/opencode.jsonc" "$OPENCODE_SRC/opencode.jsonc"; then
-                BACKUP="$OPENCODE_DIR/opencode.jsonc.backup.$(date +%Y%m%d%H%M%S)"
-                cp "$OPENCODE_DIR/opencode.jsonc" "$BACKUP"
-                echo "📦 기존 opencode.jsonc 백업: $BACKUP"
-
-                ls -t "$OPENCODE_DIR/opencode.jsonc.backup."* 2>/dev/null | tail -n +2 | xargs -r rm
-            fi
-        fi
-
-        cp "$OPENCODE_SRC/opencode.jsonc" "$OPENCODE_DIR/opencode.jsonc"
-
-        if [ -n "$QUOTIO_API_KEY" ]; then
-            ESCAPED_KEY=$(printf '%s\n' "$QUOTIO_API_KEY" | sed -e 's/[\/&]/\\&/g')
-            sed -i '' "s/\${QUOTIO_API_KEY}/$ESCAPED_KEY/g" "$OPENCODE_DIR/opencode.jsonc"
-            echo "✅ opencode.jsonc 적용 완료 (저장소 기준, QUOTIO_API_KEY 자동 설정)"
-        else
-            echo "✅ opencode.jsonc 적용 완료 (저장소 기준)"
-            echo "⚠️  QUOTIO_API_KEY 환경변수가 없습니다. 수동으로 설정하세요."
-        fi
-    fi
-
-    # Apply oh-my-opencode.jsonc (replace completely)
-    if [ -f "$OPENCODE_SRC/oh-my-opencode.jsonc" ]; then
-        if [ -f "$OPENCODE_DIR/oh-my-opencode.jsonc" ]; then
-            if ! cmp -s "$OPENCODE_DIR/oh-my-opencode.jsonc" "$OPENCODE_SRC/oh-my-opencode.jsonc"; then
-                BACKUP="$OPENCODE_DIR/oh-my-opencode.jsonc.backup.$(date +%Y%m%d%H%M%S)"
-                cp "$OPENCODE_DIR/oh-my-opencode.jsonc" "$BACKUP"
-                echo "📦 기존 oh-my-opencode.jsonc 백업: $BACKUP"
-
-                ls -t "$OPENCODE_DIR/oh-my-opencode.jsonc.backup."* 2>/dev/null | tail -n +2 | xargs -r rm
-            fi
-        fi
-
-        cp "$OPENCODE_SRC/oh-my-opencode.jsonc" "$OPENCODE_DIR/oh-my-opencode.jsonc"
-        echo "✅ oh-my-opencode.jsonc 적용 완료 (저장소 기준)"
-    fi
-
-    # Apply antigravity.json (replace completely)
-    if [ -f "$OPENCODE_SRC/antigravity.json" ]; then
-        if [ -f "$OPENCODE_DIR/antigravity.json" ]; then
-            if ! cmp -s "$OPENCODE_DIR/antigravity.json" "$OPENCODE_SRC/antigravity.json"; then
-                BACKUP="$OPENCODE_DIR/antigravity.json.backup.$(date +%Y%m%d%H%M%S)"
-                cp "$OPENCODE_DIR/antigravity.json" "$BACKUP"
-                echo "📦 기존 antigravity.json 백업: $BACKUP"
-
-                # Keep only the latest backup, delete older ones
-                ls -t "$OPENCODE_DIR/antigravity.json.backup."* 2>/dev/null | tail -n +2 | xargs -r rm
-            fi
-        fi
-
-        cp "$OPENCODE_SRC/antigravity.json" "$OPENCODE_DIR/antigravity.json"
-        echo "✅ antigravity.json 적용 완료 (저장소 기준)"
-    fi
-
-    echo "🎉 OpenCode 설정 설치 완료!"
-else
-    echo "⏭️  opencode/ 폴더 없음 (OpenCode 설정 건너뜀)"
-fi
 
 # Show required plugins
 if [ -f "$SCRIPT_DIR/plugins.txt" ]; then

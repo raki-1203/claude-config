@@ -1,8 +1,5 @@
 # Slack 알림용 Webhook URL
 CLAUDE_SLACK_WEBHOOK_URL="your-slack-webhook-url"
 
-# OpenCode Quotio API 키 (Quotio 앱에서 발급)
-QUOTIO_API_KEY="quotio-local-XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
-
 # MCP 서버 API 키 (사용하는 경우)
 # HYPERBROWSER_API_KEY="your-api-key"

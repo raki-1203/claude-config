@@ -158,124 +158,26 @@ fi
 
 echo "✅ mcp-servers.txt 생성 완료"
 
+# Sync ~/.tmux.conf (only if changed)
+if [ -f "$HOME/.tmux.conf" ]; then
+    if ! cmp -s "$HOME/.tmux.conf" "$SCRIPT_DIR/tmux.conf" 2>/dev/null; then
+        cp "$HOME/.tmux.conf" "$SCRIPT_DIR/tmux.conf"
+        echo "✅ tmux.conf 동기화 완료 (로컬 기준)"
+        SYNC_COUNT=$((SYNC_COUNT + 1))
+    else
+        echo "✅ tmux.conf (변경 없음)"
+    fi
+fi
+
 # Generate env-template.txt
 cat > "$SCRIPT_DIR/env-template.txt" << 'EOF'
 # Slack 알림용 Webhook URL
 CLAUDE_SLACK_WEBHOOK_URL="your-slack-webhook-url"
 
-# OpenCode Quotio API 키 (Quotio 앱에서 발급)
-QUOTIO_API_KEY="quotio-local-XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX"
-
 # MCP 서버 API 키 (사용하는 경우)
 # HYPERBROWSER_API_KEY="your-api-key"
 EOF
 echo "✅ env-template.txt 생성 완료"
-
-echo ""
-echo "🎉 Claude Code 동기화 완료!"
-
-OPENCODE_DIR="$HOME/.config/opencode"
-OPENCODE_DEST="$SCRIPT_DIR/opencode"
-
-if [ -d "$OPENCODE_DIR" ]; then
-    echo ""
-    echo "🔄 OpenCode 설정 동기화 시작..."
-
-    mkdir -p "$OPENCODE_DEST"
-
-    # Sync opencode.json (only if changed)
-    if [ -f "$OPENCODE_DIR/opencode.json" ]; then
-        if ! cmp -s "$OPENCODE_DIR/opencode.json" "$OPENCODE_DEST/opencode.json" 2>/dev/null; then
-            cp "$OPENCODE_DIR/opencode.json" "$OPENCODE_DEST/opencode.json"
-
-            # Replace QUOTIO_API_KEY with placeholder for repo
-            if [ -n "$QUOTIO_API_KEY" ]; then
-                # Escape special characters for sed
-                ESCAPED_KEY=$(printf '%s\n' "$QUOTIO_API_KEY" | sed -e 's/[\/&]/\\&/g')
-                sed -i '' "s/$ESCAPED_KEY/\${QUOTIO_API_KEY}/g" "$OPENCODE_DEST/opencode.json"
-                echo "✅ opencode.json 동기화 완료 (로컬 기준, QUOTIO_API_KEY → placeholder)"
-            else
-                echo "✅ opencode.json 동기화 완료 (로컬 기준)"
-            fi
-            SYNC_COUNT=$((SYNC_COUNT + 1))
-
-            # Keep only the latest version in local ~/.config/opencode
-            ls -t "$OPENCODE_DIR/opencode.json"* 2>/dev/null | grep -v "^$OPENCODE_DIR/opencode.json$" | tail -n +2 | xargs -r rm 2>/dev/null || true
-        else
-            echo "✅ opencode.json (변경 없음)"
-        fi
-    fi
-
-    # Sync oh-my-opencode.json (only if changed)
-    if [ -f "$OPENCODE_DIR/oh-my-opencode.json" ]; then
-        if ! cmp -s "$OPENCODE_DIR/oh-my-opencode.json" "$OPENCODE_DEST/oh-my-opencode.json" 2>/dev/null; then
-            cp "$OPENCODE_DIR/oh-my-opencode.json" "$OPENCODE_DEST/oh-my-opencode.json"
-            echo "✅ oh-my-opencode.json 동기화 완료 (로컬 기준)"
-            SYNC_COUNT=$((SYNC_COUNT + 1))
-
-            # Keep only the latest version in local ~/.config/opencode
-            ls -t "$OPENCODE_DIR/oh-my-opencode.json"* 2>/dev/null | grep -v "^$OPENCODE_DIR/oh-my-opencode.json$" | tail -n +2 | xargs -r rm 2>/dev/null || true
-        else
-            echo "✅ oh-my-opencode.json (변경 없음)"
-        fi
-    fi
-
-    # Sync opencode.jsonc (only if changed)
-    if [ -f "$OPENCODE_DIR/opencode.jsonc" ]; then
-        if ! cmp -s "$OPENCODE_DIR/opencode.jsonc" "$OPENCODE_DEST/opencode.jsonc" 2>/dev/null; then
-            cp "$OPENCODE_DIR/opencode.jsonc" "$OPENCODE_DEST/opencode.jsonc"
-
-            # Replace QUOTIO_API_KEY with placeholder for repo
-            if [ -n "$QUOTIO_API_KEY" ]; then
-                # Escape special characters for sed
-                ESCAPED_KEY=$(printf '%s\n' "$QUOTIO_API_KEY" | sed -e 's/[\/&]/\\&/g')
-                sed -i '' "s/$ESCAPED_KEY/\${QUOTIO_API_KEY}/g" "$OPENCODE_DEST/opencode.jsonc"
-                echo "✅ opencode.jsonc 동기화 완료 (로컬 기준, QUOTIO_API_KEY → placeholder)"
-            else
-                echo "✅ opencode.jsonc 동기화 완료 (로컬 기준)"
-            fi
-            SYNC_COUNT=$((SYNC_COUNT + 1))
-
-            # Keep only the latest version in local ~/.config/opencode
-            ls -t "$OPENCODE_DIR/opencode.jsonc"* 2>/dev/null | grep -v "^$OPENCODE_DIR/opencode.jsonc$" | tail -n +2 | xargs -r rm 2>/dev/null || true
-        else
-            echo "✅ opencode.jsonc (변경 없음)"
-        fi
-    fi
-
-    # Sync oh-my-opencode.jsonc (only if changed)
-    if [ -f "$OPENCODE_DIR/oh-my-opencode.jsonc" ]; then
-        if ! cmp -s "$OPENCODE_DIR/oh-my-opencode.jsonc" "$OPENCODE_DEST/oh-my-opencode.jsonc" 2>/dev/null; then
-            cp "$OPENCODE_DIR/oh-my-opencode.jsonc" "$OPENCODE_DEST/oh-my-opencode.jsonc"
-            echo "✅ oh-my-opencode.jsonc 동기화 완료 (로컬 기준)"
-            SYNC_COUNT=$((SYNC_COUNT + 1))
-
-            # Keep only the latest version in local ~/.config/opencode
-            ls -t "$OPENCODE_DIR/oh-my-opencode.jsonc"* 2>/dev/null | grep -v "^$OPENCODE_DIR/oh-my-opencode.jsonc$" | tail -n +2 | xargs -r rm 2>/dev/null || true
-        else
-            echo "✅ oh-my-opencode.jsonc (변경 없음)"
-        fi
-    fi
-
-    # Sync antigravity.json (only if changed)
-    if [ -f "$OPENCODE_DIR/antigravity.json" ]; then
-        if ! cmp -s "$OPENCODE_DIR/antigravity.json" "$OPENCODE_DEST/antigravity.json" 2>/dev/null; then
-            cp "$OPENCODE_DIR/antigravity.json" "$OPENCODE_DEST/antigravity.json"
-            echo "✅ antigravity.json 동기화 완료 (로컬 기준)"
-            SYNC_COUNT=$((SYNC_COUNT + 1))
-
-            # Keep only the latest version in local ~/.config/opencode
-            ls -t "$OPENCODE_DIR/antigravity.json"* 2>/dev/null | grep -v "^$OPENCODE_DIR/antigravity.json$" | tail -n +2 | xargs -r rm 2>/dev/null || true
-        else
-            echo "✅ antigravity.json (변경 없음)"
-        fi
-    fi
-
-    echo "🎉 OpenCode 동기화 완료!"
-else
-    echo ""
-    echo "⏭️  ~/.config/opencode 폴더 없음 (OpenCode 동기화 건너뜀)"
-fi
 
 echo ""
 echo "🎉 전체 동기화 완료! ($SYNC_COUNT 개 파일 변경됨)"

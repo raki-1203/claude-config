@@ -2,5 +2,6 @@ claude-hud@claude-hud
 code-simplifier@claude-plugins-official
 firebase@claude-plugins-official
 ralph-loop@claude-plugins-official
+swift-lsp@claude-plugins-official
 typescript-lsp@claude-plugins-official
 ui-ux-pro-max@ui-ux-pro-max-skill

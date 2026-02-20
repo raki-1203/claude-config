@@ -56,7 +56,6 @@
       "Bash(> /dev/sda*)",
       "Bash(mkfs *)",
       "Bash(dd if=*)",
-      "Bash(:(){:|:&};:)",
       "Read(.env)",
       "Read(.env.*)"
     ],
@@ -249,7 +248,8 @@
     "ralph-loop@claude-plugins-official": true,
     "ui-ux-pro-max@ui-ux-pro-max-skill": true,
     "claude-hud@claude-hud": true,
-    "typescript-lsp@claude-plugins-official": true
+    "typescript-lsp@claude-plugins-official": true,
+    "swift-lsp@claude-plugins-official": true
   },
   "language": "Korean",
   "alwaysThinkingEnabled": false,
