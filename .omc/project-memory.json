@@ -76,22 +76,34 @@
       "type": "file"
     },
     {
+      "path": "",
+      "accessCount": 4,
+      "lastAccessed": 1771560999023,
+      "type": "directory"
+    },
+    {
       "path": "install.sh",
       "accessCount": 3,
       "lastAccessed": 1771560911779,
       "type": "file"
     },
     {
-      "path": "",
-      "accessCount": 2,
-      "lastAccessed": 1771560915280,
+      "path": "sync.sh",
+      "accessCount": 3,
+      "lastAccessed": 1771560996010,
       "type": "directory"
     },
     {
-      "path": "sync.sh",
-      "accessCount": 1,
-      "lastAccessed": 1771560938302,
-      "type": "directory"
+      "path": "mcp-servers.txt",
+      "accessCount": 2,
+      "lastAccessed": 1771560994177,
+      "type": "file"
+    },
+    {
+      "path": "env-template.txt",
+      "accessCount": 2,
+      "lastAccessed": 1771560995225,
+      "type": "file"
     }
   ],
   "userDirectives": []

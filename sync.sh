@@ -174,8 +174,6 @@ cat > "$SCRIPT_DIR/env-template.txt" << 'EOF'
 # Slack 알림용 Webhook URL
 CLAUDE_SLACK_WEBHOOK_URL="your-slack-webhook-url"
 
-# MCP 서버 API 키 (사용하는 경우)
-# HYPERBROWSER_API_KEY="your-api-key"
 EOF
 echo "✅ env-template.txt 생성 완료"
 
