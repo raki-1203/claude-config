@@ -1,4 +1,5 @@
 claude-hud@claude-hud
+code-simplifier@claude-plugins-official
 firebase@claude-plugins-official
 oh-my-claudecode@omc
 ralph-loop@claude-plugins-official
