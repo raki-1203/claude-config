@@ -1,2 +1,4 @@
+# etc
 .DS_Store
 firebase-debug.log
+.omc/
