@@ -6,8 +6,12 @@
   "permissions": {
     "allow": [
       "Edit(*)",
+      "Edit(~/.claude/**)",
       "Write(*)",
+      "Write(~/.claude/**)",
       "Read(*)",
+      "Read(~/.claude/**)",
+      "Glob(~/.claude/**)",
       "Skill(*)",
       "WebSearch",
       "WebFetch(*)",
