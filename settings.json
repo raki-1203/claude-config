@@ -133,7 +133,7 @@
   },
   "statusLine": {
     "type": "command",
-    "command": "bash -c '\"/Users/raki-1203/.bun/bin/bun\" \"$(ls -td ~/.claude/plugins/cache/claude-hud/claude-hud/*/ 2>/dev/null | head -1)src/index.ts\"'"
+    "command": "bash -c 'HUD=\"$(ls -td ~/.claude/plugins/cache/claude-hud/claude-hud/*/ 2>/dev/null | head -1)\"; [ -z \"$HUD\" ] && exit 0; if command -v bun &>/dev/null; then bun \"${HUD}src/index.ts\"; else node \"${HUD}dist/index.js\"; fi'"
   },
   "enabledPlugins": {
     "claude-hud@claude-hud": true,
