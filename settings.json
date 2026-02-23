@@ -108,7 +108,12 @@
       "Bash(brew upgrade:*)",
       "Bash(wc:*)",
       "Bash(ls:*)",
-      "Bash(find:*)"
+      "Bash(find:*)",
+      "Bash(./sync.sh:*)",
+      "Bash(./install.sh:*)",
+      "Bash(claude mcp list:*)",
+      "Bash(bash -n install.sh)",
+      "Bash(/usr/bin/security find-generic-password:*)"
     ],
     "deny": [
       "Bash(rm -rf /)",
@@ -124,7 +129,7 @@
       "Bash(git push --force*)",
       "Bash(git reset --hard*)"
     ],
-    "defaultMode": "dontAsk"
+    "defaultMode": "default"
   },
   "hooks": {
     "PreToolUse": [

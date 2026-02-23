@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "lastScanned": 1771553339601,
+  "lastScanned": 1771825877972,
   "projectRoot": "/Users/raki-1203/workspace/claude-config",
   "techStack": {
     "languages": [],
@@ -32,35 +32,35 @@
   },
   "customNotes": [],
   "directoryMap": {
+    "agents": {
+      "path": "agents",
+      "purpose": null,
+      "fileCount": 35,
+      "lastAccessed": 1771825877962,
+      "keyFiles": [
+        "AGENTS.md",
+        "analyst.md",
+        "api-reviewer.md",
+        "architect.md",
+        "build-fixer.md"
+      ]
+    },
     "hooks": {
       "path": "hooks",
       "purpose": null,
       "fileCount": 3,
-      "lastAccessed": 1771553339591,
+      "lastAccessed": 1771825877962,
       "keyFiles": [
         "CLAUDE.md",
         "question-notify.sh",
         "task-complete-notify.sh"
       ]
     },
-    "opencode": {
-      "path": "opencode",
-      "purpose": null,
-      "fileCount": 5,
-      "lastAccessed": 1771553339591,
-      "keyFiles": [
-        "antigravity.json",
-        "oh-my-opencode.json",
-        "oh-my-opencode.jsonc",
-        "opencode.json",
-        "opencode.jsonc"
-      ]
-    },
     "rules": {
       "path": "rules",
       "purpose": null,
       "fileCount": 3,
-      "lastAccessed": 1771553339591,
+      "lastAccessed": 1771825877963,
       "keyFiles": [
         "git-workflow.md",
         "security.md",
@@ -68,43 +68,6 @@
       ]
     }
   },
-  "hotPaths": [
-    {
-      "path": "README.md",
-      "accessCount": 8,
-      "lastAccessed": 1771560886533,
-      "type": "file"
-    },
-    {
-      "path": "",
-      "accessCount": 4,
-      "lastAccessed": 1771560999023,
-      "type": "directory"
-    },
-    {
-      "path": "sync.sh",
-      "accessCount": 4,
-      "lastAccessed": 1771562549827,
-      "type": "directory"
-    },
-    {
-      "path": "install.sh",
-      "accessCount": 3,
-      "lastAccessed": 1771560911779,
-      "type": "file"
-    },
-    {
-      "path": "mcp-servers.txt",
-      "accessCount": 2,
-      "lastAccessed": 1771560994177,
-      "type": "file"
-    },
-    {
-      "path": "env-template.txt",
-      "accessCount": 2,
-      "lastAccessed": 1771560995225,
-      "type": "file"
-    }
-  ],
+  "hotPaths": [],
   "userDirectives": []
 }
