@@ -175,3 +175,10 @@ Parallelization:
 ### 4. Parallel Execution (oh-my-claudecode)
 - 복잡한 작업은 `ralplan` → `ralph` 또는 `ultrawork`
 - 모델 라우팅 자동 (haiku/sonnet/opus)
+
+## GitHub
+
+- **인증 방식**: SSH (HTTPS 사용 금지 — 인증 에러 발생)
+- **remote URL 형식**: `git@github.com:raki-1203/{repo}.git`
+- HTTPS URL(`https://github.com/...`)로 되어있으면 SSH로 전환: `git remote set-url origin git@github.com:raki-1203/{repo}.git`
+- GitHub 계정: `raki-1203`

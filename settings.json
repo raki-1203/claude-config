@@ -159,7 +159,9 @@
       "Bash(mkfs *)",
       "Bash(dd if=*)",
       "Read(.env)",
-      "Read(.env.*)"
+      "Read(.env.local)",
+      "Read(.env.test)",
+      "Read(.env.e2e)"
     ],
     "ask": [
       "Bash(git push --force*)",
