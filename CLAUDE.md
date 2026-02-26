@@ -176,6 +176,15 @@ Parallelization:
 - 복잡한 작업은 `ralplan` → `ralph` 또는 `ultrawork`
 - 모델 라우팅 자동 (haiku/sonnet/opus)
 
+## Python (Python 프로젝트에만 적용)
+
+- **패키지 매니저**: `uv` 사용 (pip, pip3 사용 금지)
+- **Python 실행**: `uv run python3` 사용 (bare `python3` 사용 금지)
+- **패키지 설치**: `uv add <package>` (dev: `uv add --dev <package>`)
+- **스크립트 내 python 호출**: `uv run python3 -c "..."` 형식으로 통일
+- 쉘 스크립트에서 python 사용 시 `command -v uv` 사전 검사 필수
+- Python 프로젝트 판별: `pyproject.toml` 또는 `uv.lock` 존재 여부로 확인
+
 ## GitHub
 
 - **인증 방식**: SSH (HTTPS 사용 금지 — 인증 에러 발생)

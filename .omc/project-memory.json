@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "lastScanned": 1771915831242,
+  "lastScanned": 1772070024204,
   "projectRoot": "/Users/raki-1203/workspace/claude-config",
   "techStack": {
     "languages": [],
@@ -38,7 +38,7 @@
       "path": "agents",
       "purpose": null,
       "fileCount": 35,
-      "lastAccessed": 1771915831224,
+      "lastAccessed": 1772070024192,
       "keyFiles": [
         "AGENTS.md",
         "analyst.md",
@@ -51,7 +51,7 @@
       "path": "commands",
       "purpose": null,
       "fileCount": 5,
-      "lastAccessed": 1771915831224,
+      "lastAccessed": 1772070024193,
       "keyFiles": [
         "autopilot.md",
         "cancel-autopilot.md",
@@ -64,7 +64,7 @@
       "path": "hooks",
       "purpose": null,
       "fileCount": 3,
-      "lastAccessed": 1771915831224,
+      "lastAccessed": 1772070024194,
       "keyFiles": [
         "CLAUDE.md",
         "question-notify.sh",
@@ -75,7 +75,7 @@
       "path": "rules",
       "purpose": null,
       "fileCount": 3,
-      "lastAccessed": 1771915831225,
+      "lastAccessed": 1772070024195,
       "keyFiles": [
         "git-workflow.md",
         "security.md",
@@ -86,7 +86,7 @@
       "path": "scripts",
       "purpose": "Build/utility scripts",
       "fileCount": 2,
-      "lastAccessed": 1771915831225,
+      "lastAccessed": 1772070024195,
       "keyFiles": [
         "autopilot-setup.js",
         "git-pr-merge.sh"
@@ -96,14 +96,14 @@
       "path": "skills",
       "purpose": null,
       "fileCount": 0,
-      "lastAccessed": 1771915831226,
+      "lastAccessed": 1772070024195,
       "keyFiles": []
     },
     "scripts/lib": {
       "path": "scripts/lib",
       "purpose": "Library code",
       "fileCount": 3,
-      "lastAccessed": 1771915831227,
+      "lastAccessed": 1772070024197,
       "keyFiles": [
         "package-manager.js",
         "project-detector.js",
@@ -111,13 +111,6 @@
       ]
     }
   },
-  "hotPaths": [
-    {
-      "path": "sync.sh",
-      "accessCount": 1,
-      "lastAccessed": 1771915861130,
-      "type": "file"
-    }
-  ],
+  "hotPaths": [],
   "userDirectives": []
 }

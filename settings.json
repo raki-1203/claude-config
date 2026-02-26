@@ -157,11 +157,7 @@
       "Bash(sudo rm *)",
       "Bash(> /dev/sda*)",
       "Bash(mkfs *)",
-      "Bash(dd if=*)",
-      "Read(.env)",
-      "Read(.env.local)",
-      "Read(.env.test)",
-      "Read(.env.e2e)"
+      "Bash(dd if=*)"
     ],
     "ask": [
       "Bash(git push --force*)",
@@ -221,5 +217,6 @@
   "language": "Korean",
   "promptSuggestionEnabled": false,
   "autoUpdatesChannel": "latest",
-  "teammateMode": "tmux"
+  "teammateMode": "tmux",
+  "model": "opusplan"
 }
