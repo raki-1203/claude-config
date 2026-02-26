@@ -149,7 +149,8 @@
       "WebFetch(domain:www.backslash.security)",
       "WebFetch(domain:pasqualepillitteri.it)",
       "WebFetch(domain:claudelog.com)",
-      "Bash(xargs:*)"
+      "Bash(xargs:*)",
+      "Bash(du:*)"
     ],
     "deny": [
       "Bash(rm -rf /)",
@@ -163,8 +164,9 @@
       "Bash(git push --force*)",
       "Bash(git reset --hard*)"
     ],
-    "defaultMode": "acceptEdits"
+    "defaultMode": "plan"
   },
+  "model": "opusplan",
   "hooks": {
     "PreToolUse": [
       {
@@ -217,6 +219,5 @@
   "language": "Korean",
   "promptSuggestionEnabled": false,
   "autoUpdatesChannel": "latest",
-  "teammateMode": "tmux",
-  "model": "opusplan"
+  "teammateMode": "tmux"
 }
