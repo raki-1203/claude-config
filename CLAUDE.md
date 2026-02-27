@@ -154,26 +154,53 @@ Parallelization:
 
 # Global Development Principles
 
-## Plugins
-- **oh-my-claudecode**: 병렬 에이전트 실행, 자율 루프, 모델 자동 라우팅
-- **superpowers**: 스펙 먼저 작성 → TDD 강제 워크플로우
+## Plugins 역할 분담
+
+- **oh-my-claudecode (OMC)**: 실행 오케스트레이션 — team/ralph/ultrawork, 에이전트 위임, HUD, MCP, 모델 라우팅
+- **superpowers**: 개발 규율 — brainstorming, TDD, systematic-debugging, verification, 리뷰 수신
+
+### 플러그인 라우팅 규칙
+
+| 단계 | 주 플러그인 | 이유 |
+|------|-----------|------|
+| 아이디어 탐색 | **Superpowers** (`/brainstorming`) | 소크라테스식 질문, 설계 문서 |
+| 계획 수립 | **OMC** (`/plan`, `/ralplan`) | 인터뷰+합의+critic 루프 |
+| 태스크 분할 | **Superpowers** (`/writing-plans`) | 2-5분 단위 구체적 태스크 |
+| 실행/구현 | **OMC** (`/team`, `/ralph`, `/ultrawork`) | 병렬 에이전트, 모델 라우팅 |
+| TDD 강제 | **Superpowers** (`/test-driven-development`) | 더 엄격, 핑계 차단 (OMC tdd 대신 사용) |
+| 디버깅 | **Superpowers** (`/systematic-debugging`) | OMC에 없는 4단계 근본 원인 분석 |
+| 코드 리뷰 실행 | **OMC** (`/code-review`) | 32개 전문 에이전트 활용 |
+| 코드 리뷰 수신 | **Superpowers** (`/receiving-code-review`) | 기술적 반론, 맹목 동의 방지 |
+| 완료 검증 | **Superpowers** (`/verification-before-completion`) | 증거 기반 주장 필수 |
+| 브랜치 정리 | **Superpowers** (`/finishing-a-development-branch`) | merge/PR/보존/폐기 4가지 옵션 |
+| 상태 모니터링 | **OMC** (HUD) | 실시간 시각화 |
+
+### 상황별 워크플로우
+
+**새 기능 구현**: `/brainstorming` → `/plan` → `/team` 또는 `/ralph` (TDD는 Superpowers 자동 강제) → `/code-review` → `/finishing-a-development-branch`
+
+**버그 수정**: `/systematic-debugging` → `/ralph` → `/verification-before-completion`
+
+**대규모 리팩토링**: `/brainstorming` → `/ralplan` → `/ultrawork` → `/code-review`
+
+**코드 리뷰 받았을 때**: `/receiving-code-review` → 수정 필요시 `/ralph`
 
 ## Core Rules (모든 프로젝트 적용)
 
 ### 1. Spec First (superpowers)
 - 구현 전 스펙/계획 작성 (Socratic 질문 방식)
-- `/superpowers:spec` 또는 자연어로 요청
+- `/brainstorming` 또는 자연어로 요청
 
-### 2. TDD
+### 2. TDD (superpowers)
 - 테스트 먼저, 코드 나중 (RED → GREEN → REFACTOR)
-- superpowers가 자동 강제
+- Superpowers `test-driven-development` 사용 (OMC tdd 대신)
 
 ### 3. Bugfix = Minimal Change
-- 버그 수정 시 최소 변경만
+- 버그 수정 시 최소 변경만, `/systematic-debugging` 먼저
 - 리팩토링은 별도 작업으로 분리
 
 ### 4. Parallel Execution (oh-my-claudecode)
-- 복잡한 작업은 `ralplan` → `ralph` 또는 `ultrawork`
+- 복잡한 작업은 `/ralplan` → `/ralph` 또는 `/ultrawork`
 - 모델 라우팅 자동 (haiku/sonnet/opus)
 
 ## Python (Python 프로젝트에만 적용)

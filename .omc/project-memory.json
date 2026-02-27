@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "lastScanned": 1772070024204,
+  "lastScanned": 1772200104817,
   "projectRoot": "/Users/raki-1203/workspace/claude-config",
   "techStack": {
     "languages": [],
@@ -38,7 +38,7 @@
       "path": "agents",
       "purpose": null,
       "fileCount": 35,
-      "lastAccessed": 1772070024192,
+      "lastAccessed": 1772200104795,
       "keyFiles": [
         "AGENTS.md",
         "analyst.md",
@@ -51,7 +51,7 @@
       "path": "commands",
       "purpose": null,
       "fileCount": 5,
-      "lastAccessed": 1772070024193,
+      "lastAccessed": 1772200104796,
       "keyFiles": [
         "autopilot.md",
         "cancel-autopilot.md",
@@ -64,7 +64,7 @@
       "path": "hooks",
       "purpose": null,
       "fileCount": 3,
-      "lastAccessed": 1772070024194,
+      "lastAccessed": 1772200104796,
       "keyFiles": [
         "CLAUDE.md",
         "question-notify.sh",
@@ -75,7 +75,7 @@
       "path": "rules",
       "purpose": null,
       "fileCount": 3,
-      "lastAccessed": 1772070024195,
+      "lastAccessed": 1772200104797,
       "keyFiles": [
         "git-workflow.md",
         "security.md",
@@ -86,7 +86,7 @@
       "path": "scripts",
       "purpose": "Build/utility scripts",
       "fileCount": 2,
-      "lastAccessed": 1772070024195,
+      "lastAccessed": 1772200104797,
       "keyFiles": [
         "autopilot-setup.js",
         "git-pr-merge.sh"
@@ -96,14 +96,14 @@
       "path": "skills",
       "purpose": null,
       "fileCount": 0,
-      "lastAccessed": 1772070024195,
+      "lastAccessed": 1772200104797,
       "keyFiles": []
     },
     "scripts/lib": {
       "path": "scripts/lib",
       "purpose": "Library code",
       "fileCount": 3,
-      "lastAccessed": 1772070024197,
+      "lastAccessed": 1772200104799,
       "keyFiles": [
         "package-manager.js",
         "project-detector.js",
@@ -111,6 +111,109 @@
       ]
     }
   },
-  "hotPaths": [],
+  "hotPaths": [
+    {
+      "path": "CLAUDE.md",
+      "accessCount": 3,
+      "lastAccessed": 1772201505365,
+      "type": "file"
+    },
+    {
+      "path": "oh-my-claudecode/CLAUDE.md",
+      "accessCount": 1,
+      "lastAccessed": 1772200192683,
+      "type": "file"
+    },
+    {
+      "path": "oh-my-claudecode/AGENTS.md",
+      "accessCount": 1,
+      "lastAccessed": 1772200192874,
+      "type": "file"
+    },
+    {
+      "path": "oh-my-claudecode/CHANGELOG.md",
+      "accessCount": 1,
+      "lastAccessed": 1772200193617,
+      "type": "file"
+    },
+    {
+      "path": "oh-my-claudecode/docs/ARCHITECTURE.md",
+      "accessCount": 1,
+      "lastAccessed": 1772200193718,
+      "type": "file"
+    },
+    {
+      "path": "oh-my-claudecode/docs/REFERENCE.md",
+      "accessCount": 1,
+      "lastAccessed": 1772200197845,
+      "type": "file"
+    },
+    {
+      "path": "oh-my-claudecode/docs/FEATURES.md",
+      "accessCount": 1,
+      "lastAccessed": 1772200198850,
+      "type": "file"
+    },
+    {
+      "path": "oh-my-claudecode/docs/MIGRATION.md",
+      "accessCount": 1,
+      "lastAccessed": 1772200204606,
+      "type": "file"
+    },
+    {
+      "path": "oh-my-claudecode/skills/ralph/SKILL.md",
+      "accessCount": 1,
+      "lastAccessed": 1772200210430,
+      "type": "file"
+    },
+    {
+      "path": "oh-my-claudecode/skills/team/SKILL.md",
+      "accessCount": 1,
+      "lastAccessed": 1772200211046,
+      "type": "file"
+    },
+    {
+      "path": "oh-my-claudecode/skills/ultrawork/SKILL.md",
+      "accessCount": 1,
+      "lastAccessed": 1772200211185,
+      "type": "file"
+    },
+    {
+      "path": "oh-my-claudecode/skills/hud/SKILL.md",
+      "accessCount": 1,
+      "lastAccessed": 1772200211208,
+      "type": "file"
+    },
+    {
+      "path": "oh-my-claudecode/package.json",
+      "accessCount": 1,
+      "lastAccessed": 1772200433932,
+      "type": "file"
+    },
+    {
+      "path": "oh-my-claudecode/README.md",
+      "accessCount": 1,
+      "lastAccessed": 1772200434354,
+      "type": "file"
+    },
+    {
+      "path": "oh-my-claudecode/src/hud/index.ts",
+      "accessCount": 1,
+      "lastAccessed": 1772200451316,
+      "type": "file"
+    },
+    {
+      "path": "oh-my-claudecode/src/hud/types.ts",
+      "accessCount": 1,
+      "lastAccessed": 1772200451675,
+      "type": "file"
+    },
+    {
+      "path": "oh-my-claudecode/src/hud/render.ts",
+      "accessCount": 1,
+      "lastAccessed": 1772200451843,
+      "type": "file"
+    }
+  ],
   "userDirectives": []
 }
