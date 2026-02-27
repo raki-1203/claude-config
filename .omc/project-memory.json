@@ -114,9 +114,15 @@
   "hotPaths": [
     {
       "path": "CLAUDE.md",
-      "accessCount": 3,
-      "lastAccessed": 1772201505365,
+      "accessCount": 7,
+      "lastAccessed": 1772203054014,
       "type": "file"
+    },
+    {
+      "path": "",
+      "accessCount": 2,
+      "lastAccessed": 1772202493650,
+      "type": "directory"
     },
     {
       "path": "oh-my-claudecode/CLAUDE.md",
@@ -212,6 +218,30 @@
       "path": "oh-my-claudecode/src/hud/render.ts",
       "accessCount": 1,
       "lastAccessed": 1772200451843,
+      "type": "file"
+    },
+    {
+      "path": "oh-my-claudecode/.mcp.json",
+      "accessCount": 1,
+      "lastAccessed": 1772202464769,
+      "type": "file"
+    },
+    {
+      "path": "mcp-servers.txt",
+      "accessCount": 1,
+      "lastAccessed": 1772202465331,
+      "type": "file"
+    },
+    {
+      "path": ".claude/settings.local.json",
+      "accessCount": 1,
+      "lastAccessed": 1772202474925,
+      "type": "file"
+    },
+    {
+      "path": "settings.json",
+      "accessCount": 1,
+      "lastAccessed": 1772202475094,
       "type": "file"
     }
   ],

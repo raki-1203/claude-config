@@ -111,25 +111,17 @@ Deprecated aliases (backward compatibility): `researcher` -> `document-specialis
 
 ---
 
-<mcp_routing>
-For read-only analysis tasks, prefer MCP tools over spawning Claude agents -- they are faster and cheaper.
+<external_models>
+Codex/Gemini는 tmux CLI 워커로 활용한다 (MCP 서버는 OMC 4.4.0에서 제거됨).
 
-**IMPORTANT -- Deferred Tool Discovery:** MCP tools (`ask_codex`, `ask_gemini`, and their job management tools) are deferred and NOT in your tool list at session start. Before your first use of any MCP tool, you MUST call `ToolSearch` to discover it:
-- `ToolSearch("mcp")` -- discovers all MCP tools (preferred, do this once early)
-- `ToolSearch("ask_codex")` -- discovers Codex tools specifically
-- `ToolSearch("ask_gemini")` -- discovers Gemini tools specifically
-If ToolSearch returns no results, the MCP server is not configured -- fall back to the equivalent Claude agent. Never block on unavailable MCP tools.
+사용법:
+- `/omc-teams N:codex "task"` — Codex CLI 워커 N개 (코드 분석, 아키텍처 리뷰, 보안 리뷰)
+- `/omc-teams N:gemini "task"` — Gemini CLI 워커 N개 (UI/UX 리뷰, 문서화, 대용량 컨텍스트)
+- `/ccg "task"` — Codex+Gemini 동시 실행 후 Claude가 결과 종합
 
-Available MCP providers:
-- Codex (`mcp__x__ask_codex`): OpenAI gpt-5.3-codex -- code analysis, planning validation, review
-- Gemini (`mcp__g__ask_gemini`): Google gemini-3-pro-preview -- design across many files (1M context)
-
-Provider strengths:
-- **Codex excels at**: architecture review, planning validation, critical analysis, code review, security review, test strategy.
-- **Gemini excels at**: UI/UX design review, documentation, visual analysis, large-context tasks (1M tokens).
-
-Background pattern: spawn with `background: true`, check with `check_job_status`, await with `wait_for_job`.
-</mcp_routing>
+전제 조건: tmux 세션 내에서 실행, CLI 설치 필요 (`@openai/codex`, `@google/gemini-cli`)
+CLI 미설치 시 자동으로 Claude Task 에이전트로 폴백.
+</external_models>
 
 ---
 
