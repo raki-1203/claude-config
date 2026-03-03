@@ -1,6 +1,6 @@
 {
   "version": "1.0.0",
-  "lastScanned": 1772200104817,
+  "lastScanned": 1772546216531,
   "projectRoot": "/Users/raki-1203/workspace/claude-config",
   "techStack": {
     "languages": [],
@@ -38,7 +38,7 @@
       "path": "agents",
       "purpose": null,
       "fileCount": 35,
-      "lastAccessed": 1772200104795,
+      "lastAccessed": 1772546216511,
       "keyFiles": [
         "AGENTS.md",
         "analyst.md",
@@ -51,7 +51,7 @@
       "path": "commands",
       "purpose": null,
       "fileCount": 5,
-      "lastAccessed": 1772200104796,
+      "lastAccessed": 1772546216511,
       "keyFiles": [
         "autopilot.md",
         "cancel-autopilot.md",
@@ -64,18 +64,31 @@
       "path": "hooks",
       "purpose": null,
       "fileCount": 3,
-      "lastAccessed": 1772200104796,
+      "lastAccessed": 1772546216512,
       "keyFiles": [
         "CLAUDE.md",
         "question-notify.sh",
         "task-complete-notify.sh"
       ]
     },
+    "oh-my-claudecode": {
+      "path": "oh-my-claudecode",
+      "purpose": null,
+      "fileCount": 35,
+      "lastAccessed": 1772546216512,
+      "keyFiles": [
+        "AGENTS.md",
+        "ANALYSIS.md",
+        "CATEGORY_IMPLEMENTATION.md",
+        "CHANGELOG.md",
+        "CLAUDE.md"
+      ]
+    },
     "rules": {
       "path": "rules",
       "purpose": null,
       "fileCount": 3,
-      "lastAccessed": 1772200104797,
+      "lastAccessed": 1772546216514,
       "keyFiles": [
         "git-workflow.md",
         "security.md",
@@ -86,7 +99,7 @@
       "path": "scripts",
       "purpose": "Build/utility scripts",
       "fileCount": 2,
-      "lastAccessed": 1772200104797,
+      "lastAccessed": 1772546216515,
       "keyFiles": [
         "autopilot-setup.js",
         "git-pr-merge.sh"
@@ -96,14 +109,14 @@
       "path": "skills",
       "purpose": null,
       "fileCount": 0,
-      "lastAccessed": 1772200104797,
+      "lastAccessed": 1772546216517,
       "keyFiles": []
     },
     "scripts/lib": {
       "path": "scripts/lib",
       "purpose": "Library code",
       "fileCount": 3,
-      "lastAccessed": 1772200104799,
+      "lastAccessed": 1772546216518,
       "keyFiles": [
         "package-manager.js",
         "project-detector.js",
@@ -113,135 +126,81 @@
   },
   "hotPaths": [
     {
-      "path": "CLAUDE.md",
-      "accessCount": 7,
-      "lastAccessed": 1772203054014,
-      "type": "file"
-    },
-    {
       "path": "",
-      "accessCount": 2,
-      "lastAccessed": 1772202493650,
+      "accessCount": 5,
+      "lastAccessed": 1772546348807,
       "type": "directory"
     },
     {
-      "path": "oh-my-claudecode/CLAUDE.md",
-      "accessCount": 1,
-      "lastAccessed": 1772200192683,
+      "path": "sync.sh",
+      "accessCount": 3,
+      "lastAccessed": 1772550816473,
       "type": "file"
     },
     {
-      "path": "oh-my-claudecode/AGENTS.md",
-      "accessCount": 1,
-      "lastAccessed": 1772200192874,
+      "path": "install.sh",
+      "accessCount": 3,
+      "lastAccessed": 1772550818966,
       "type": "file"
     },
     {
-      "path": "oh-my-claudecode/CHANGELOG.md",
-      "accessCount": 1,
-      "lastAccessed": 1772200193617,
-      "type": "file"
+      "path": "oh-my-claudecode/src",
+      "accessCount": 2,
+      "lastAccessed": 1772546281913,
+      "type": "directory"
     },
     {
-      "path": "oh-my-claudecode/docs/ARCHITECTURE.md",
-      "accessCount": 1,
-      "lastAccessed": 1772200193718,
-      "type": "file"
-    },
-    {
-      "path": "oh-my-claudecode/docs/REFERENCE.md",
-      "accessCount": 1,
-      "lastAccessed": 1772200197845,
-      "type": "file"
-    },
-    {
-      "path": "oh-my-claudecode/docs/FEATURES.md",
-      "accessCount": 1,
-      "lastAccessed": 1772200198850,
-      "type": "file"
-    },
-    {
-      "path": "oh-my-claudecode/docs/MIGRATION.md",
-      "accessCount": 1,
-      "lastAccessed": 1772200204606,
-      "type": "file"
-    },
-    {
-      "path": "oh-my-claudecode/skills/ralph/SKILL.md",
-      "accessCount": 1,
-      "lastAccessed": 1772200210430,
-      "type": "file"
-    },
-    {
-      "path": "oh-my-claudecode/skills/team/SKILL.md",
-      "accessCount": 1,
-      "lastAccessed": 1772200211046,
-      "type": "file"
-    },
-    {
-      "path": "oh-my-claudecode/skills/ultrawork/SKILL.md",
-      "accessCount": 1,
-      "lastAccessed": 1772200211185,
-      "type": "file"
-    },
-    {
-      "path": "oh-my-claudecode/skills/hud/SKILL.md",
-      "accessCount": 1,
-      "lastAccessed": 1772200211208,
-      "type": "file"
-    },
-    {
-      "path": "oh-my-claudecode/package.json",
-      "accessCount": 1,
-      "lastAccessed": 1772200433932,
-      "type": "file"
-    },
-    {
-      "path": "oh-my-claudecode/README.md",
-      "accessCount": 1,
-      "lastAccessed": 1772200434354,
-      "type": "file"
-    },
-    {
-      "path": "oh-my-claudecode/src/hud/index.ts",
-      "accessCount": 1,
-      "lastAccessed": 1772200451316,
-      "type": "file"
+      "path": "oh-my-claudecode",
+      "accessCount": 2,
+      "lastAccessed": 1772546293885,
+      "type": "directory"
     },
     {
       "path": "oh-my-claudecode/src/hud/types.ts",
       "accessCount": 1,
-      "lastAccessed": 1772200451675,
+      "lastAccessed": 1772546319097,
       "type": "file"
     },
     {
       "path": "oh-my-claudecode/src/hud/render.ts",
       "accessCount": 1,
-      "lastAccessed": 1772200451843,
+      "lastAccessed": 1772546319488,
       "type": "file"
     },
     {
-      "path": "oh-my-claudecode/.mcp.json",
+      "path": "oh-my-claudecode/src/hud/elements/session.ts",
       "accessCount": 1,
-      "lastAccessed": 1772202464769,
+      "lastAccessed": 1772546325792,
       "type": "file"
     },
     {
-      "path": "mcp-servers.txt",
+      "path": "oh-my-claudecode/src/hud/elements/limits.ts",
       "accessCount": 1,
-      "lastAccessed": 1772202465331,
+      "lastAccessed": 1772546326363,
       "type": "file"
     },
     {
-      "path": ".claude/settings.local.json",
+      "path": "oh-my-claudecode/src/hud/usage-api.ts",
       "accessCount": 1,
-      "lastAccessed": 1772202474925,
+      "lastAccessed": 1772546326726,
+      "type": "file"
+    },
+    {
+      "path": "tmux.conf",
+      "accessCount": 1,
+      "lastAccessed": 1772546339670,
       "type": "file"
     },
     {
       "path": "settings.json",
       "accessCount": 1,
-      "lastAccessed": 1772202475094,
+      "lastAccessed": 1772546340042,
+      "type": "file"
+    },
+    {
+      "path": "oh-my-claudecode/src/hud/index.ts",
+      "accessCount": 1,
+      "lastAccessed": 1772546340462,
       "type": "file"
     }
   ],

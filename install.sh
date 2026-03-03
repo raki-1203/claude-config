@@ -129,6 +129,13 @@ extract_plugin_agents() {
 
 extract_plugin_agents
 
+# Restore claude-hud config
+if [ -f "$SCRIPT_DIR/claude-hud/config.json" ]; then
+    mkdir -p "$HOME/.claude/plugins/claude-hud"
+    cp "$SCRIPT_DIR/claude-hud/config.json" "$HOME/.claude/plugins/claude-hud/config.json"
+    echo "✅ claude-hud config.json 복원 완료"
+fi
+
 # Copy tmux.conf
 if [ -f "$SCRIPT_DIR/tmux.conf" ]; then
     if [ -f "$HOME/.tmux.conf" ]; then

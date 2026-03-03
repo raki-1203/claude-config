@@ -158,6 +158,19 @@ fi
 
 echo "✅ mcp-servers.txt 생성 완료"
 
+# Sync claude-hud config
+HUD_CONFIG="$CLAUDE_DIR/plugins/claude-hud/config.json"
+if [ -f "$HUD_CONFIG" ]; then
+    mkdir -p "$SCRIPT_DIR/claude-hud"
+    if ! cmp -s "$HUD_CONFIG" "$SCRIPT_DIR/claude-hud/config.json" 2>/dev/null; then
+        cp "$HUD_CONFIG" "$SCRIPT_DIR/claude-hud/config.json"
+        echo "✅ claude-hud config.json 동기화 완료"
+        SYNC_COUNT=$((SYNC_COUNT + 1))
+    else
+        echo "✅ claude-hud config.json (변경 없음)"
+    fi
+fi
+
 # Sync ~/.tmux.conf (only if changed)
 if [ -f "$HOME/.tmux.conf" ]; then
     if ! cmp -s "$HOME/.tmux.conf" "$SCRIPT_DIR/tmux.conf" 2>/dev/null; then
