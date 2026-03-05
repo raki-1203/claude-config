@@ -218,5 +218,6 @@
   "language": "Korean",
   "promptSuggestionEnabled": false,
   "autoUpdatesChannel": "latest",
+  "skipDangerousModePermissionPrompt": true,
   "teammateMode": "tmux"
 }
