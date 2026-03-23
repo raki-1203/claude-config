@@ -69,12 +69,14 @@ if [ -d "$SCRIPT_DIR/hooks" ]; then
     echo "✅ hooks 복사 완료"
 fi
 
-# Copy skills (replace completely)
+# Copy skills (merge: templates를 덮어쓰되 auto/의 사용자 생성 스킬은 보존)
 if [ -d "$SCRIPT_DIR/skills" ]; then
-    rm -rf "$HOME/.claude/skills"
-    mkdir -p "$HOME/.claude/skills"
-    cp -r "$SCRIPT_DIR/skills"/* "$HOME/.claude/skills/"
-    echo "✅ skills 적용 완료 (저장소 기준)"
+    mkdir -p "$HOME/.claude/skills/auto"
+    mkdir -p "$HOME/.claude/skills/templates"
+    if [ -d "$SCRIPT_DIR/skills/templates" ]; then
+        cp -r "$SCRIPT_DIR/skills/templates"/* "$HOME/.claude/skills/templates/" 2>/dev/null || true
+    fi
+    echo "✅ skills 적용 완료 (auto/ 보존, templates 업데이트)"
 fi
 
 # Copy agents (replace completely, exclude .gitkeep)
@@ -100,6 +102,13 @@ if [ -d "$SCRIPT_DIR/rules" ]; then
     find "$SCRIPT_DIR/rules" -maxdepth 1 -type f ! -name ".gitkeep" -exec cp {} "$HOME/.claude/rules/" \; 2>/dev/null || true
     echo "✅ rules 적용 완료 (저장소 기준)"
 fi
+
+# Create growth data directory
+mkdir -p "$HOME/.claude/growth"
+if [ ! -f "$HOME/.claude/growth/skill-registry.json" ]; then
+    echo '{"skills":{},"last_review":null,"version":1}' > "$HOME/.claude/growth/skill-registry.json"
+fi
+echo "✅ growth 디렉토리 준비 완료"
 
 # Copy CLAUDE.md
 if [ -f "$SCRIPT_DIR/CLAUDE.md" ]; then
