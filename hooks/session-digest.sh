@@ -56,4 +56,29 @@ else
     echo "{\"date\":\"$DATE\",\"time\":\"$TIME\",\"project\":\"$PROJECT_DIR\",\"project_name\":\"$PROJECT_NAME\",\"session_id\":\"$SESSION_ID\"}" >> "$LOG_FILE"
 fi
 
+# --- Knowledge Extractor: pending insights 파일 생성 ---
+PENDING_DIR="$GROWTH_DIR/pending-insights"
+mkdir -p "$PENDING_DIR"
+
+# transcript 경로 (hook input 또는 환경변수에서)
+TRANSCRIPT_PATH=$(echo "$HOOK_INPUT" | jq -r '.transcript_path // empty' 2>/dev/null || echo "")
+if [ -z "$TRANSCRIPT_PATH" ]; then
+    TRANSCRIPT_PATH="${CLAUDE_TRANSCRIPT_PATH:-}"
+fi
+
+# transcript 경로가 있고 파일이 존재하면 pending 생성
+if [ -n "$TRANSCRIPT_PATH" ] && [ -f "$TRANSCRIPT_PATH" ]; then
+    if command -v jq &>/dev/null; then
+        jq -n -c \
+            --arg session_id "$SESSION_ID" \
+            --arg transcript "$TRANSCRIPT_PATH" \
+            --arg project "$PROJECT_DIR" \
+            --arg project_name "$PROJECT_NAME" \
+            --arg date "$DATE" \
+            --arg time "$TIME" \
+            '{session_id: $session_id, transcript: $transcript, project: $project, project_name: $project_name, date: $date, time: $time}' \
+            > "$PENDING_DIR/${SESSION_ID}.json"
+    fi
+fi
+
 echo '{"suppressOutput": true}'

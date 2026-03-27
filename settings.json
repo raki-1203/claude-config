@@ -213,6 +213,18 @@
           }
         ]
       }
+    ],
+    "UserPromptSubmit": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/knowledge-check.sh",
+            "timeout": 5
+          }
+        ]
+      }
     ]
   },
   "statusLine": {

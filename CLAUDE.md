@@ -210,3 +210,65 @@ Parallelization:
 - **remote URL 형식**: `git@github.com:raki-1203/{repo}.git`
 - HTTPS URL(`https://github.com/...`)로 되어있으면 SSH로 전환: `git remote set-url origin git@github.com:raki-1203/{repo}.git`
 - GitHub 계정: `raki-1203`
+
+---
+
+## Hermes Growth Protocol
+
+이 프로토콜은 사용자의 작업 패턴을 관찰하여 시스템을 점진적으로 개선하는 자동 성장 시스템이다.
+
+### 관찰 규칙
+
+작업 중 다음 패턴을 능동적으로 감지한다:
+
+1. **교정 패턴**: 사용자가 결과를 수정하거나 거부할 때 → 즉시 feedback 메모리 저장
+2. **반복 절차**: 같은 형태의 작업을 세션 내 2회 이상 수행 → 스킬 후보
+3. **선호 패턴**: 사용자가 특정 방식을 선택하거나 긍정적 반응 → feedback 메모리 저장
+4. **프로젝트 컨텍스트**: 기술 스택, 아키텍처, 주의사항 발견 → project 메모리 저장
+
+메모리 저장은 사용자가 "기억해"라고 말하지 않아도 능동적으로 수행한다.
+교정과 성공 모두 기록한다 (실패만 기록하면 과도하게 보수적이 됨).
+
+### 제안 규칙
+
+패턴을 발견하면 작업 흐름을 끊지 않는 자연스러운 시점에 제안한다:
+- 작업 완료 직후 (커밋 후, PR 생성 후)
+- 사용자가 명시적으로 교정했을 때
+
+제안 형태:
+```
+[패턴 발견] {관찰 내용}
+→ {메모리/규칙/스킬}로 저장할까요? "{제안 내용}"
+```
+
+3채널 분류 기준:
+- **메모리**: 컨텍스트, 관찰 기록 (자동 저장, 제안 불필요)
+- **CLAUDE.md 규칙**: 항상 적용할 행동 지침 (승인 필요)
+- **스킬**: 재사용 가능한 절차/워크플로우 (승인 필요)
+
+### 스킬 관리
+
+자동 생성 스킬 저장 위치:
+- 범용: `~/.claude/skills/auto/{skill-name}.md`
+- 프로젝트 특화: `{project}/.claude/skills/auto/{skill-name}.md`
+
+스킬 생성 시 이 CLAUDE.md의 "자동 스킬 인덱스" 섹션도 업데이트한다.
+스킬 파일은 `~/.claude/skills/templates/skill-template.md` 형식을 따른다.
+
+### 누적 리뷰
+
+세션 시작 시 `~/.claude/growth/session-counter` 파일을 확인한다.
+값이 5 이상이면 누적 리뷰를 수행한다:
+
+1. 최근 추가된 메모리를 프로젝트별로 스캔
+2. 반복 패턴 식별 (같은 feedback이 여러 프로젝트에서 발견되면 규칙 승격 후보)
+3. 스킬 생성 후보, 기존 스킬 개선/삭제 후보 정리
+4. 사용자에게 제안 목록 제시
+5. 승인된 항목 적용 후 `echo "0" > ~/.claude/growth/session-counter`로 리셋
+
+리뷰는 간결하게. 변경 제안 목록만 보여주고 승인/거부를 받는다.
+
+## 자동 스킬 인덱스
+
+- **unified-workflow**: 작업 지시 시 ouroboros + superpowers 통합 파이프라인 자동 진행 → `~/.claude/skills/auto/unified-workflow.md`
+- **knowledge-extractor**: 세션 트랜스크립트에서 인사이트 추출 → Obsidian 개념 노트 자동 생성 → `~/.claude/skills/auto/knowledge-extractor.md`
