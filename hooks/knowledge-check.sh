@@ -1,47 +1,39 @@
 #!/bin/bash
-# knowledge-check.sh - 세션 전환 감지 및 pending insights 처리 지시
+# knowledge-check.sh - 세션 시작 시 context-summary.md 로드
 # Hook: UserPromptSubmit (timeout: 5s)
-# 세션 ID가 변경되었고 pending insights가 있으면 Claude에게 처리 지시 출력
+# 세션 첫 메시지에서만 실행: 파일시스템에서 직접 읽기 (Obsidian CLI 의존 없음)
 
-PENDING_DIR="$HOME/.claude/growth/pending-insights"
 LAST_SESSION_FILE="$HOME/.claude/growth/.last-session-id"
 
-# stdin에서 현재 세션 정보 읽기
 HOOK_INPUT=$(cat)
 CURRENT_SESSION=$(echo "$HOOK_INPUT" | jq -r '.session_id // empty' 2>/dev/null)
 
-# 이전 세션 ID 읽기
 LAST_SESSION=$(cat "$LAST_SESSION_FILE" 2>/dev/null || echo "")
 
-# 현재 세션 ID 저장
 if [ -n "$CURRENT_SESSION" ]; then
     mkdir -p "$(dirname "$LAST_SESSION_FILE")"
     echo "$CURRENT_SESSION" > "$LAST_SESSION_FILE"
 fi
 
-# pending insights 확인
-if [ ! -d "$PENDING_DIR" ]; then
+# 같은 세션이면 스킵 (첫 메시지에서만 실행)
+if [ "$CURRENT_SESSION" = "$LAST_SESSION" ]; then
     echo '{"suppressOutput": true}'
     exit 0
 fi
 
-PENDING_COUNT=$(find "$PENDING_DIR" -name "*.json" -type f 2>/dev/null | wc -l | tr -d ' ')
+# context-summary.md 로드 (파일시스템 직접 읽기 — Obsidian 불필요)
+PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$(pwd)}"
+PROJECT_NAME=$(basename "$PROJECT_DIR")
+SUMMARY="$HOME/.claude/growth/sessions/$PROJECT_NAME/context-summary.md"
 
-# 세션이 전환됐고 pending이 있을 때만 출력
-if [ "$PENDING_COUNT" -gt 0 ] && [ "$CURRENT_SESSION" != "$LAST_SESSION" ]; then
-    # pending 파일 목록 수집 (최대 5개)
-    PENDING_LIST=""
-    for f in $(find "$PENDING_DIR" -name "*.json" -type f 2>/dev/null | head -5); do
-        if [ -n "$PENDING_LIST" ]; then
-            PENDING_LIST="$PENDING_LIST, "
-        fi
-        PENDING_LIST="$PENDING_LIST$(cat "$f" 2>/dev/null)"
-    done
-
-    # Claude에게 처리 지시 출력 (suppressOutput: false)
-    cat <<HOOKEOF
-{"result": "[Knowledge Extractor] 미처리 세션 ${PENDING_COUNT}건. knowledge-extractor 스킬을 invoke하여 인사이트를 추출하세요. Pending: [${PENDING_LIST}]", "suppressOutput": false}
-HOOKEOF
+if [ -f "$SUMMARY" ] && [ -s "$SUMMARY" ]; then
+    CONTENT=$(head -50 "$SUMMARY")
+    if command -v jq &>/dev/null; then
+        jq -n --arg ctx "[Session Memory] 이전 세션 맥락 (${PROJECT_NAME}):\n$CONTENT" \
+            '{"result": $ctx, "suppressOutput": false}'
+    else
+        echo "{\"result\": \"[Session Memory] context-summary 로드됨 (${PROJECT_NAME})\", \"suppressOutput\": false}"
+    fi
 else
     echo '{"suppressOutput": true}'
 fi

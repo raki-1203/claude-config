@@ -1,40 +1,40 @@
 #!/bin/bash
-
-# session-digest.sh - 세션 종료 시 경량 메타데이터를 수집하여 session-log.jsonl에 기록
+# session-digest.sh - 세션 종료 시:
+#   1. session-log.jsonl 기록
+#   2. session-buffer.md → Obsidian daily note flush
+#   3. context-summary.md 재생성
+#   4. session-buffer.md + tool-counter 초기화
 # Hook: SessionEnd (timeout: 5s)
-# LLM 호출 없이 순수 shell로 동작
 
 GROWTH_DIR="$HOME/.claude/growth"
 LOG_FILE="$GROWTH_DIR/session-log.jsonl"
-
-# growth 디렉토리 보장
 mkdir -p "$GROWTH_DIR"
 
-# stdin에서 hook input 읽기
 HOOK_INPUT=$(cat)
 
-# 프로젝트 정보
 PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$(pwd)}"
 PROJECT_NAME=$(basename "$PROJECT_DIR")
+SESSIONS_DIR="$GROWTH_DIR/sessions/$PROJECT_NAME"
+BUFFER="$SESSIONS_DIR/session-buffer.md"
+SUMMARY="$SESSIONS_DIR/context-summary.md"
 
-# 날짜/시간
 DATE=$(date '+%Y-%m-%d')
 TIME=$(date '+%H:%M:%S')
 
-# session-stats에서 도구 사용 통계 추출 (있으면)
-STATS_FILE="$HOME/.claude/.session-stats.json"
-TOOL_STATS="{}"
-if [ -f "$STATS_FILE" ] && command -v jq &>/dev/null; then
-    TOOL_STATS=$(jq -c '.tool_counts // {}' "$STATS_FILE" 2>/dev/null || echo "{}")
-fi
-
-# 세션 ID (hook input에서 추출 시도, 없으면 타임스탬프 기반)
 SESSION_ID=$(echo "$HOOK_INPUT" | jq -r '.session_id // empty' 2>/dev/null || echo "")
 if [ -z "$SESSION_ID" ]; then
     SESSION_ID="session-$(date '+%Y%m%d-%H%M%S')"
 fi
 
-# JSONL 한 줄 기록
+mkdir -p "$SESSIONS_DIR"
+
+# --- 1. session-log.jsonl 기록 ---
+TOOL_STATS="{}"
+STATS_FILE="$HOME/.claude/.session-stats.json"
+if [ -f "$STATS_FILE" ] && command -v jq &>/dev/null; then
+    TOOL_STATS=$(jq -c '.tool_counts // {}' "$STATS_FILE" 2>/dev/null || echo "{}")
+fi
+
 if command -v jq &>/dev/null; then
     jq -n -c \
         --arg date "$DATE" \
@@ -43,42 +43,62 @@ if command -v jq &>/dev/null; then
         --arg project_name "$PROJECT_NAME" \
         --arg session_id "$SESSION_ID" \
         --argjson tools "$TOOL_STATS" \
-        '{
-            date: $date,
-            time: $time,
-            project: $project,
-            project_name: $project_name,
-            session_id: $session_id,
-            tools: $tools
-        }' >> "$LOG_FILE"
-else
-    # jq가 없으면 기본 형태로 기록
-    echo "{\"date\":\"$DATE\",\"time\":\"$TIME\",\"project\":\"$PROJECT_DIR\",\"project_name\":\"$PROJECT_NAME\",\"session_id\":\"$SESSION_ID\"}" >> "$LOG_FILE"
+        '{date: $date, time: $time, project: $project, project_name: $project_name, session_id: $session_id, tools: $tools}' >> "$LOG_FILE"
 fi
 
-# --- Knowledge Extractor: pending insights 파일 생성 ---
-PENDING_DIR="$GROWTH_DIR/pending-insights"
-mkdir -p "$PENDING_DIR"
+# --- 2. session-buffer.md → Obsidian daily note flush ---
+if [ -s "$BUFFER" ]; then
+    # buffer에서 frontmatter 제외한 본문 추출
+    BODY=$(awk 'BEGIN{c=0} /^---$/{c++; next} c>=2{print}' "$BUFFER")
 
-# transcript 경로 (hook input 또는 환경변수에서)
-TRANSCRIPT_PATH=$(echo "$HOOK_INPUT" | jq -r '.transcript_path // empty' 2>/dev/null || echo "")
-if [ -z "$TRANSCRIPT_PATH" ]; then
-    TRANSCRIPT_PATH="${CLAUDE_TRANSCRIPT_PATH:-}"
-fi
-
-# transcript 경로가 있고 파일이 존재하면 pending 생성
-if [ -n "$TRANSCRIPT_PATH" ] && [ -f "$TRANSCRIPT_PATH" ]; then
-    if command -v jq &>/dev/null; then
-        jq -n -c \
-            --arg session_id "$SESSION_ID" \
-            --arg transcript "$TRANSCRIPT_PATH" \
-            --arg project "$PROJECT_DIR" \
-            --arg project_name "$PROJECT_NAME" \
-            --arg date "$DATE" \
-            --arg time "$TIME" \
-            '{session_id: $session_id, transcript: $transcript, project: $project, project_name: $project_name, date: $date, time: $time}' \
-            > "$PENDING_DIR/${SESSION_ID}.json"
+    if [ -n "$BODY" ] && command -v obsidian &>/dev/null; then
+        if obsidian eval code="1" &>/dev/null 2>&1; then
+            FLUSH_CONTENT="\n### 세션: ${PROJECT_NAME} (${TIME})\n${BODY}"
+            obsidian daily:append content="$FLUSH_CONTENT" silent 2>/dev/null
+        fi
     fi
 fi
+
+# --- 3. context-summary.md 재생성 ---
+if [ -s "$BUFFER" ]; then
+    BUFFER_BODY=$(awk 'BEGIN{c=0} /^---$/{c++; next} c>=2{print}' "$BUFFER")
+
+    # 기존 summary에서 이전 세션 보존 (최근 3건 유지)
+    PREV_SECTION=""
+    if [ -f "$SUMMARY" ]; then
+        # 기존 "마지막 세션" → 이전 세션으로 강등
+        OLD_LAST=$(awk '/^## 마지막 세션/,/^## 이전 세션/' "$SUMMARY" | grep -v '^## ' | head -10)
+        OLD_PREV=$(awk '/^## 이전 세션/,0' "$SUMMARY" | tail -n +2 | head -30)
+
+        if [ -n "$OLD_LAST" ]; then
+            # 이전 세션 블록 수 카운트
+            BLOCK_COUNT=$(echo "$OLD_PREV" | grep -c '^### ' 2>/dev/null || echo "0")
+            if [ "$BLOCK_COUNT" -ge 3 ]; then
+                # 3건 이상이면 마지막 블록 제거
+                OLD_PREV=$(echo "$OLD_PREV" | awk '/^### /{n++} n<=2{print}')
+            fi
+            PREV_SECTION="### ${DATE}\n${OLD_LAST}\n\n${OLD_PREV}"
+        else
+            PREV_SECTION="$OLD_PREV"
+        fi
+    fi
+
+    cat > "$SUMMARY" << SUMEOF
+---
+updated: ${DATE}T${TIME}
+project: $PROJECT_NAME
+---
+
+## 마지막 세션 (${DATE} ${TIME})
+${BUFFER_BODY}
+
+## 이전 세션 (최근 3건)
+$(echo -e "$PREV_SECTION")
+SUMEOF
+fi
+
+# --- 4. 초기화 ---
+echo "" > "$BUFFER"
+echo "0" > "$GROWTH_DIR/.tool-counter"
 
 echo '{"suppressOutput": true}'
