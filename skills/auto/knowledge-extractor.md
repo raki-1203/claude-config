@@ -1,12 +1,16 @@
 ---
 name: knowledge-extractor
-description: "세션 트랜스크립트에서 인사이트를 추출하여 Obsidian 개념 노트를 생성하는 스킬"
+description: "DEPRECATED — Session Memory 시스템으로 대체됨 (2026-03-31)"
 auto-generated: true
 created: 2026-03-27
+deprecated: 2026-03-31
 scope: global
 ---
 
 # Knowledge Extractor
+
+> **DEPRECATED**: Session Memory 시스템(session-buffer.md + hooks)으로 대체됨 (2026-03-31).
+> pending-insights 큐 방식은 제거됨. 새 시스템은 hook 기반 자동 기록/로드.
 
 세션 트랜스크립트를 읽고, 배운 개념/인사이트를 Obsidian 개념 노트로 변환한다.
 UserPromptSubmit hook(knowledge-check.sh)이 pending 세션을 감지하면 이 스킬이 호출된다.

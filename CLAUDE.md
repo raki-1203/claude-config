@@ -271,4 +271,5 @@ Parallelization:
 ## 자동 스킬 인덱스
 
 - **unified-workflow**: 작업 지시 시 ouroboros + superpowers 통합 파이프라인 자동 진행 → `~/.claude/skills/auto/unified-workflow.md`
-- **knowledge-extractor**: 세션 트랜스크립트에서 인사이트 추출 → Obsidian 개념 노트 자동 생성 → `~/.claude/skills/auto/knowledge-extractor.md`
+- **knowledge-extractor**: ~~DEPRECATED~~ Session Memory로 대체됨 → `~/.claude/skills/auto/knowledge-extractor.md`
+- **daily-digest**: 전날 Daily 노트 분석 → 프로젝트별 세션 노트 + 개념 노트 자동 생성 → `~/.claude/skills/auto/daily-digest.md`

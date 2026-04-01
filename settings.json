@@ -150,7 +150,26 @@
       "WebFetch(domain:pasqualepillitteri.it)",
       "WebFetch(domain:claudelog.com)",
       "Bash(xargs:*)",
-      "Bash(du:*)"
+      "Bash(du:*)",
+      "Bash(./sync.sh:*)",
+      "Bash(./install.sh:*)",
+      "Bash(python3:*)",
+      "Bash(claude mcp list:*)",
+      "Bash(bash -n install.sh)",
+      "Bash(/usr/bin/security find-generic-password:*)",
+      "mcp__plugin_oh-my-claudecode_t__state_list_active",
+      "mcp__plugin_oh-my-claudecode_t__state_clear",
+      "Bash(chmod +x ~/.claude/hooks/growth-counter.sh)",
+      "Bash(obsidian read:*)",
+      "Bash(obsidian create:*)",
+      "Bash(obsidian delete:*)",
+      "Bash(obsidian eval:*)",
+      "Bash(cp skills/auto/knowledge-extractor.md ~/.claude/skills/auto/knowledge-extractor.md)",
+      "Bash(cp skills/auto/unified-workflow.md ~/.claude/skills/auto/unified-workflow.md)",
+      "Bash(for f:*)",
+      "Bash(do echo:*)",
+      "Read(//Users/raki-1203/workspace/claude-config/**)",
+      "Bash(done)"
     ],
     "deny": [
       "Bash(rm -rf /)",
@@ -164,7 +183,7 @@
       "Bash(git push --force*)",
       "Bash(git reset --hard*)"
     ],
-    "defaultMode": "plan"
+    "defaultMode": "default"
   },
   "hooks": {
     "PreToolUse": [
@@ -225,6 +244,42 @@
           }
         ]
       }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "tool matches \"Write\" OR tool matches \"Edit\"",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/post-tool-buffer-reminder.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PreCompact": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/pre-compact.sh",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostCompact": [
+      {
+        "matcher": "*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash ~/.claude/hooks/post-compact.sh",
+            "timeout": 5
+          }
+        ]
+      }
     ]
   },
   "statusLine": {
@@ -235,10 +290,25 @@
     "claude-hud@claude-hud": true,
     "typescript-lsp@claude-plugins-official": true,
     "swift-lsp@claude-plugins-official": true,
-    "oh-my-claudecode@omc": true,
-    "superpowers@claude-plugins-official": true
+    "superpowers@claude-plugins-official": true,
+    "obsidian@obsidian-skills": true,
+    "ui-ux-pro-max@ui-ux-pro-max-skill": true,
+    "pyright-lsp@claude-plugins-official": true,
+    "claude-api@anthropic-agent-skills": true,
+    "document-skills@anthropic-agent-skills": true,
+    "example-skills@anthropic-agent-skills": true,
+    "codex@openai-codex": true
+  },
+  "extraKnownMarketplaces": {
+    "openai-codex": {
+      "source": {
+        "source": "github",
+        "repo": "openai/codex-plugin-cc"
+      }
+    }
   },
   "language": "Korean",
+  "effortLevel": "medium",
   "promptSuggestionEnabled": false,
   "autoUpdatesChannel": "latest",
   "skipDangerousModePermissionPrompt": true,
