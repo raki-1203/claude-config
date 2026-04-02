@@ -196,6 +196,16 @@
             "timeout": 10
           }
         ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/python-lint.sh",
+            "timeout": 15
+          }
+        ]
       }
     ],
     "PermissionRequest": [
@@ -297,7 +307,8 @@
     "claude-api@anthropic-agent-skills": true,
     "document-skills@anthropic-agent-skills": true,
     "example-skills@anthropic-agent-skills": true,
-    "codex@openai-codex": true
+    "codex@openai-codex": true,
+    "discord@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "openai-codex": {

@@ -8,7 +8,8 @@ echo "[$(date '+%Y-%m-%d %H:%M:%S')] question-notify.sh called (type=$NOTIFY_TYP
 # Get terminal info
 TERMINAL_NAME="${TERM_PROGRAM:-Unknown Terminal}"
 PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$(pwd)}"
-PROJECT_NAME=$(basename "$PROJECT_DIR")
+PROJECT_NAME=$(cd "$PROJECT_DIR" 2>/dev/null && git remote get-url origin 2>/dev/null | sed 's|.*/||;s|\.git$||')
+[ -z "$PROJECT_NAME" ] && PROJECT_NAME=$(basename "$PROJECT_DIR")
 
 # Get tab/window name based on terminal type
 TAB_NAME=""

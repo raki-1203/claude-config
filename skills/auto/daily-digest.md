@@ -1,8 +1,9 @@
 ---
 name: daily-digest
-description: "전날 Daily 노트를 분석하여 프로젝트별 세션 노트 + 개념 노트를 Obsidian에 생성"
+description: "전날 Daily 노트를 분석하여 프로젝트별 세션 노트 + 개념 노트를 Obsidian에 생성하고 지식 그래프를 구축"
 auto-generated: true
 created: 2026-04-01
+updated: 2026-04-02
 scope: global
 trigger: "knowledge-check.sh 훅이 미처리 Daily 감지 시 자동 안내"
 ---
@@ -33,6 +34,7 @@ Read 도구로 직접 읽어도 됨. Obsidian CLI 불필요.
 ### 2단계: 프로젝트별 세션 분류
 
 Daily 노트에서 `### 세션: {프로젝트명} ({시간})` 블록을 기준으로 파싱.
+`#session` 및 `#{프로젝트명}` 태그를 활용하여 분류 정확도를 높임.
 각 블록을 프로젝트명으로 그룹핑.
 
 ### 3단계: 프로젝트 세션 노트 생성
@@ -46,6 +48,14 @@ obsidian create \
   path="1-Projects/{프로젝트명}/sessions/YYYY-MM-DD.md" \
   content="..." \
   silent
+```
+
+생성 후 프로퍼티 설정:
+
+```bash
+obsidian property:set name="date" value="YYYY-MM-DD" file="1-Projects/{프로젝트명}/sessions/YYYY-MM-DD" silent
+obsidian property:set name="project" value="{프로젝트명}" file="1-Projects/{프로젝트명}/sessions/YYYY-MM-DD" silent
+obsidian property:set name="tags" value="session-log" file="1-Projects/{프로젝트명}/sessions/YYYY-MM-DD" silent
 ```
 
 **노트 형식:**
@@ -98,11 +108,14 @@ tags: [session-log]
 - 긴 세션: 2-5개
 - 배운 게 없으면 0개. 억지로 만들지 않는다.
 
-**중복 체크:**
+**중복 체크 (backlinks + search 병행):**
 
 ```bash
-# 생성 전 기존 노트 검색
+# 1. 기존 노트 검색
 obsidian search query="{개념 키워드}" limit=5
+
+# 2. 백링크로 연결 관계 확인
+obsidian backlinks file="3-Resources/{개념 이름}"
 ```
 
 이미 존재하면 append, 없으면 create.
@@ -149,7 +162,77 @@ obsidian append \
   silent
 ```
 
-### 5단계: 처리 완료 기록
+### 5단계: 백링크 검증 및 연결 강화
+
+모든 노트 생성 후 연결 상태를 검증:
+
+```bash
+# 프로젝트 노트에서 역방향 링크 확인
+obsidian backlinks file="1-Projects/{프로젝트명}/sessions/YYYY-MM-DD"
+
+# 개념 노트의 백링크 확인 — 고립된 노트 방지
+obsidian backlinks file="3-Resources/{개념 이름}"
+```
+
+백링크가 0인 개념 노트가 있으면 관련 세션 노트에 wikilink 추가.
+
+### 6단계: 프로젝트 아키텍처 Canvas 업데이트
+
+프로젝트에 새로운 모듈/컴포넌트/시스템이 추가된 세션이면, 해당 프로젝트의 아키텍처 Canvas를 업데이트:
+
+```bash
+# 기존 canvas 확인
+obsidian read file="1-Projects/{프로젝트명}/architecture"
+```
+
+**canvas가 없으면 생성:**
+
+```bash
+obsidian create \
+  name="architecture" \
+  path="1-Projects/{프로젝트명}/architecture.canvas" \
+  content='{"nodes":[],"edges":[]}' \
+  silent
+```
+
+**canvas 노드 구조:**
+- 각 모듈/컴포넌트를 텍스트 노드로 표현
+- 의존 관계를 엣지(edge)로 연결
+- 세션에서 변경된 모듈은 색상으로 구분 (color: "1" = 빨강)
+
+```json
+{
+  "nodes": [
+    {
+      "id": "module-auth",
+      "type": "text",
+      "text": "# Auth\n인증/세션 관리",
+      "x": 0, "y": 0, "width": 250, "height": 120
+    },
+    {
+      "id": "module-api",
+      "type": "text",
+      "text": "# API\nREST 엔드포인트",
+      "x": 300, "y": 0, "width": 250, "height": 120
+    }
+  ],
+  "edges": [
+    {
+      "id": "edge-auth-api",
+      "fromNode": "module-api",
+      "toNode": "module-auth",
+      "label": "uses"
+    }
+  ]
+}
+```
+
+**canvas 업데이트 규칙:**
+- 새 모듈/서비스가 추가됐을 때만 업데이트 (사소한 버그 수정에는 불필요)
+- 기존 노드 위치를 유지하며 새 노드만 추가
+- 단순한 프로젝트(설정 파일, 스크립트 모음 등)에는 canvas 불필요
+
+### 7단계: 처리 완료 기록
 
 모든 날짜 처리 후:
 
@@ -181,4 +264,5 @@ echo "YYYY-MM-DD" > ~/.claude/growth/.daily-digest-last
 2. 처리 결과를 사용자에게 간략히 보고:
    - 생성된 세션 노트 목록
    - 생성된 개념 노트 목록
+   - 업데이트된 canvas (있으면)
    - 처리 완료 날짜

@@ -6,7 +6,8 @@
 HOOK_INPUT=$(cat)
 
 PROJECT_DIR="${CLAUDE_PROJECT_DIR:-$(pwd)}"
-PROJECT_NAME=$(basename "$PROJECT_DIR")
+PROJECT_NAME=$(cd "$PROJECT_DIR" 2>/dev/null && git remote get-url origin 2>/dev/null | sed 's|.*/||;s|\.git$||')
+[ -z "$PROJECT_NAME" ] && PROJECT_NAME=$(basename "$PROJECT_DIR")
 BUFFER="$HOME/.claude/growth/sessions/$PROJECT_NAME/session-buffer.md"
 mkdir -p "$(dirname "$BUFFER")"
 

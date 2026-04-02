@@ -2,6 +2,7 @@ claude-api@anthropic-agent-skills
 claude-hud@claude-hud
 codex@openai-codex
 context7@claude-plugins-official
+discord@claude-plugins-official
 document-skills@anthropic-agent-skills
 example-skills@anthropic-agent-skills
 figma@claude-plugins-official
