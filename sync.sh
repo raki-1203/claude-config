@@ -52,48 +52,58 @@ if [ -d "$CLAUDE_DIR/skills" ]; then
     echo "✅ skills 동기화 완료"
 fi
 
-# Sync agents (from ~/.claude/agents and plugin cache)
-sync_agents() {
+# Sync agents (user-created only, skip plugin-managed agents)
+if [ -d "$CLAUDE_DIR/agents" ]; then
+    # Build list of plugin-managed agent names
+    PLUGIN_AGENTS=""
+    PLUGINS_CACHE="$CLAUDE_DIR/plugins/cache"
+    if [ -d "$PLUGINS_CACHE" ]; then
+        PLUGIN_AGENTS=$(find "$PLUGINS_CACHE" -path "*/agents/*.md" -type f -exec basename {} \; 2>/dev/null | sort -u)
+    fi
+
     rm -rf "$SCRIPT_DIR/agents"
     mkdir -p "$SCRIPT_DIR/agents"
-    touch "$SCRIPT_DIR/agents/.gitkeep"
-    local FOUND_AGENTS=false
-
-    # Copy from ~/.claude/agents
-    if [ -d "$CLAUDE_DIR/agents" ]; then
-        for f in "$CLAUDE_DIR/agents"/*; do
-            [ -e "$f" ] || continue
-            [[ "$(basename "$f")" == ".gitkeep" ]] && continue
+    AGENT_COUNT=0
+    SKIP_COUNT=0
+    for f in "$CLAUDE_DIR/agents"/*; do
+        [ -e "$f" ] || continue
+        local_name="$(basename "$f")"
+        [[ "$local_name" == ".gitkeep" ]] && continue
+        if echo "$PLUGIN_AGENTS" | grep -q "^${local_name}$"; then
+            SKIP_COUNT=$((SKIP_COUNT + 1))
+        else
             cp -r "$f" "$SCRIPT_DIR/agents/"
-            FOUND_AGENTS=true
-        done
-    fi
+            AGENT_COUNT=$((AGENT_COUNT + 1))
+        fi
+    done
+    echo "✅ agents 동기화 완료 (${AGENT_COUNT}개 수집, ${SKIP_COUNT}개 플러그인 제외)"
+fi
 
-    # Extract from plugin cache
-    local PLUGINS_CACHE="$CLAUDE_DIR/plugins/cache"
-    if [ -d "$PLUGINS_CACHE" ]; then
-        while IFS= read -r -d '' agent_file; do
-            local agent_name=$(basename "$agent_file")
-            cp "$agent_file" "$SCRIPT_DIR/agents/$agent_name"
-            FOUND_AGENTS=true
-        done < <(find "$PLUGINS_CACHE" -path "*/agents/*.md" -type f -print0 2>/dev/null)
-    fi
-
-    if [ "$FOUND_AGENTS" = true ]; then
-        echo "✅ agents 동기화 완료"
-    else
-        echo "✅ agents 동기화 완료 (비어있음)"
-    fi
-}
-
-sync_agents
-
-# Sync commands
+# Sync commands (user-created only, skip plugin-managed commands)
 if [ -d "$CLAUDE_DIR/commands" ]; then
+    # Build list of plugin-managed command names
+    PLUGIN_COMMANDS=""
+    PLUGINS_CACHE="$CLAUDE_DIR/plugins/cache"
+    if [ -d "$PLUGINS_CACHE" ]; then
+        PLUGIN_COMMANDS=$(find "$PLUGINS_CACHE" -path "*/commands/*.md" -type f -exec basename {} \; 2>/dev/null | sort -u)
+    fi
+
     rm -rf "$SCRIPT_DIR/commands"
     mkdir -p "$SCRIPT_DIR/commands"
-    cp -r "$CLAUDE_DIR/commands"/* "$SCRIPT_DIR/commands/" 2>/dev/null || true
-    echo "✅ commands 동기화 완료"
+    CMD_COUNT=0
+    CMD_SKIP=0
+    for f in "$CLAUDE_DIR/commands"/*; do
+        [ -e "$f" ] || continue
+        local_name="$(basename "$f")"
+        [[ "$local_name" == ".gitkeep" ]] && continue
+        if echo "$PLUGIN_COMMANDS" | grep -q "^${local_name}$"; then
+            CMD_SKIP=$((CMD_SKIP + 1))
+        else
+            cp -r "$f" "$SCRIPT_DIR/commands/"
+            CMD_COUNT=$((CMD_COUNT + 1))
+        fi
+    done
+    echo "✅ commands 동기화 완료 (${CMD_COUNT}개 수집, ${CMD_SKIP}개 플러그인 제외)"
 fi
 
 # Sync rules

@@ -79,20 +79,18 @@ if [ -d "$SCRIPT_DIR/skills" ]; then
     echo "✅ skills 적용 완료 (auto/ 보존, templates 업데이트)"
 fi
 
-# Copy agents (replace completely, exclude .gitkeep)
+# Copy agents (merge: repo agents + preserve existing, plugin agents managed separately)
 if [ -d "$SCRIPT_DIR/agents" ]; then
-    rm -rf "$HOME/.claude/agents"
     mkdir -p "$HOME/.claude/agents"
     find "$SCRIPT_DIR/agents" -maxdepth 1 -type f ! -name ".gitkeep" -exec cp {} "$HOME/.claude/agents/" \; 2>/dev/null || true
-    echo "✅ agents 적용 완료 (저장소 기준)"
+    echo "✅ agents 적용 완료 (저장소 기준, 기존 보존)"
 fi
 
-# Copy commands (replace completely, exclude .gitkeep)
+# Copy commands (merge: repo commands + preserve existing, plugin commands managed separately)
 if [ -d "$SCRIPT_DIR/commands" ]; then
-    rm -rf "$HOME/.claude/commands"
     mkdir -p "$HOME/.claude/commands"
     find "$SCRIPT_DIR/commands" -maxdepth 1 -type f ! -name ".gitkeep" -exec cp {} "$HOME/.claude/commands/" \; 2>/dev/null || true
-    echo "✅ commands 적용 완료 (저장소 기준)"
+    echo "✅ commands 적용 완료 (저장소 기준, 기존 보존)"
 fi
 
 # Copy rules (replace completely, exclude .gitkeep)
@@ -116,27 +114,7 @@ if [ -f "$SCRIPT_DIR/CLAUDE.md" ]; then
     echo "✅ CLAUDE.md 복사 완료"
 fi
 
-# Extract agents from installed plugins
-extract_plugin_agents() {
-    local PLUGINS_CACHE="$HOME/.claude/plugins/cache"
-    if [ -d "$PLUGINS_CACHE" ]; then
-        mkdir -p "$HOME/.claude/agents"
-        local FOUND_AGENTS=false
-
-        # Find all agent .md files in plugin cache
-        while IFS= read -r -d '' agent_file; do
-            local agent_name=$(basename "$agent_file")
-            cp "$agent_file" "$HOME/.claude/agents/$agent_name"
-            FOUND_AGENTS=true
-        done < <(find "$PLUGINS_CACHE" -path "*/agents/*.md" -type f -print0 2>/dev/null)
-
-        if [ "$FOUND_AGENTS" = true ]; then
-            echo "✅ 플러그인 agents 추출 완료"
-        fi
-    fi
-}
-
-extract_plugin_agents
+# Plugin agents are managed by plugin system — no manual extraction needed
 
 # Restore claude-hud config
 if [ -f "$SCRIPT_DIR/claude-hud/config.json" ]; then
@@ -162,29 +140,83 @@ fi
 echo ""
 echo "🎉 Claude Code 설정 설치 완료!"
 
-# Show required plugins
-if [ -f "$SCRIPT_DIR/plugins.txt" ]; then
+# Auto-install plugins
+if [ -f "$SCRIPT_DIR/plugins.txt" ] && command -v claude &> /dev/null; then
     echo ""
-    echo "📦 플러그인 설치가 필요합니다."
-    echo "Claude Code 실행 후 다음 명령어를 입력하세요:"
-    echo ""
+    echo "📦 플러그인 자동 설치 시작..."
+
+    INSTALLED_FILE="$HOME/.claude/plugins/installed_plugins.json"
+    INSTALLED_LIST=""
+    if [ -f "$INSTALLED_FILE" ]; then
+        INSTALLED_LIST=$(jq -r '.plugins | keys[]' "$INSTALLED_FILE" 2>/dev/null)
+    fi
+
+    INSTALL_COUNT=0
+    SKIP_COUNT=0
+
     while IFS= read -r plugin || [ -n "$plugin" ]; do
         [ -z "$plugin" ] && continue
-        echo "  /install $plugin"
+        if echo "$INSTALLED_LIST" | grep -q "^${plugin}$"; then
+            SKIP_COUNT=$((SKIP_COUNT + 1))
+        else
+            echo "  📥 설치 중: $plugin"
+            if claude plugin install "$plugin" 2>/dev/null; then
+                INSTALL_COUNT=$((INSTALL_COUNT + 1))
+            else
+                echo "  ⚠️  설치 실패: $plugin (수동 설치 필요: /install $plugin)"
+            fi
+        fi
     done < "$SCRIPT_DIR/plugins.txt"
+
+    if [ "$INSTALL_COUNT" -gt 0 ] || [ "$SKIP_COUNT" -gt 0 ]; then
+        echo "✅ 플러그인: ${INSTALL_COUNT}개 설치, ${SKIP_COUNT}개 이미 설치됨"
+    fi
+else
+    if [ -f "$SCRIPT_DIR/plugins.txt" ]; then
+        echo ""
+        echo "📦 Claude Code CLI가 없어 플러그인 수동 설치가 필요합니다."
+        echo "Claude Code 실행 후 다음 명령어를 입력하세요:"
+        echo ""
+        while IFS= read -r plugin || [ -n "$plugin" ]; do
+            [ -z "$plugin" ] && continue
+            echo "  /install $plugin"
+        done < "$SCRIPT_DIR/plugins.txt"
+    fi
 fi
 
-# Show required MCP servers
-if [ -f "$SCRIPT_DIR/mcp-servers.txt" ]; then
+# Auto-install MCP servers
+if [ -f "$SCRIPT_DIR/mcp-servers.txt" ] && command -v claude &> /dev/null; then
     echo ""
-    echo "🔌 MCP 서버 설치가 필요합니다."
-    echo "다음 명령어를 터미널에서 실행하세요:"
-    echo ""
+    echo "🔌 MCP 서버 설치 확인 중..."
+    MCP_INSTALL_COUNT=0
+
     while IFS= read -r line || [ -n "$line" ]; do
         [ -z "$line" ] && continue
         [[ "$line" == \#* ]] && continue
-        echo "  $line"
+
+        # Extract server name from "claude mcp add <name> ..."
+        SERVER_NAME=$(echo "$line" | sed -n 's/^claude mcp add \([^ ]*\).*/\1/p')
+        if [ -n "$SERVER_NAME" ]; then
+            # Check if already installed in ~/.claude.json
+            if [ -f "$HOME/.claude.json" ] && jq -e ".mcpServers.\"$SERVER_NAME\" // .projects[].mcpServers.\"$SERVER_NAME\"" "$HOME/.claude.json" &>/dev/null; then
+                continue
+            fi
+            echo "  📥 MCP 설치 중: $SERVER_NAME"
+            eval "$line" 2>/dev/null && MCP_INSTALL_COUNT=$((MCP_INSTALL_COUNT + 1)) || echo "  ⚠️  설치 실패: $SERVER_NAME"
+        fi
     done < "$SCRIPT_DIR/mcp-servers.txt"
+
+    [ "$MCP_INSTALL_COUNT" -gt 0 ] && echo "✅ MCP 서버: ${MCP_INSTALL_COUNT}개 설치"
+else
+    if [ -f "$SCRIPT_DIR/mcp-servers.txt" ]; then
+        echo ""
+        echo "🔌 MCP 서버 수동 설치가 필요합니다:"
+        while IFS= read -r line || [ -n "$line" ]; do
+            [ -z "$line" ] && continue
+            [[ "$line" == \#* ]] && continue
+            echo "  $line"
+        done < "$SCRIPT_DIR/mcp-servers.txt"
+    fi
 fi
 
 # Show required environment variables
