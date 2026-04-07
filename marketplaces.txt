@@ -1,6 +1,4 @@
 # 커스텀 마켓플레이스 (GitHub repo 형식)
 # 공식 마켓플레이스(claude-plugins-official 등)는 자동 포함되므로 여기에 적지 않음
-jarrodwatts/claude-hud
-nextlevelbuilder/ui-ux-pro-max-skill
 openai/codex-plugin-cc
 raki-1203/obsidian-wiki-plugin
