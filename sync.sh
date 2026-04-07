@@ -125,6 +125,17 @@ if [ -f "$CLAUDE_DIR/CLAUDE.md" ]; then
     fi
 fi
 
+# Generate marketplaces.txt from extraKnownMarketplaces in settings.json
+if [ -f "$CLAUDE_DIR/settings.json" ]; then
+    CUSTOM_MPS=$(jq -r '.extraKnownMarketplaces // {} | to_entries[] | select(.value.source.source == "github") | .value.source.repo' "$CLAUDE_DIR/settings.json" 2>/dev/null)
+    if [ -n "$CUSTOM_MPS" ]; then
+        echo "# 커스텀 마켓플레이스 (GitHub repo 형식)" > "$SCRIPT_DIR/marketplaces.txt"
+        echo "# 공식 마켓플레이스(claude-plugins-official 등)는 자동 포함되므로 여기에 적지 않음" >> "$SCRIPT_DIR/marketplaces.txt"
+        echo "$CUSTOM_MPS" >> "$SCRIPT_DIR/marketplaces.txt"
+        echo "✅ marketplaces.txt 생성 완료"
+    fi
+fi
+
 # Generate plugins.txt from installed plugins
 PLUGINS_FILE="$CLAUDE_DIR/plugins/installed_plugins.json"
 if [ -f "$PLUGINS_FILE" ]; then

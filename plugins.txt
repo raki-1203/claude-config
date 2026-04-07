@@ -8,7 +8,7 @@ example-skills@anthropic-agent-skills
 figma@claude-plugins-official
 firebase@claude-plugins-official
 frontend-design@claude-plugins-official
-obsidian@obsidian-skills
+obsidian-wiki@obsidian-wiki-plugin
 pyright-lsp@claude-plugins-official
 ralph-loop@claude-plugins-official
 supabase@claude-plugins-official

@@ -140,6 +140,35 @@ fi
 echo ""
 echo "🎉 Claude Code 설정 설치 완료!"
 
+# Auto-install marketplaces (must run before plugins)
+if [ -f "$SCRIPT_DIR/marketplaces.txt" ] && command -v claude &> /dev/null; then
+    echo ""
+    echo "🏪 커스텀 마켓플레이스 설치 확인 중..."
+    MP_INSTALL_COUNT=0
+    MP_SKIP_COUNT=0
+
+    while IFS= read -r repo || [ -n "$repo" ]; do
+        [ -z "$repo" ] && continue
+        [[ "$repo" == \#* ]] && continue
+        MP_NAME=$(basename "$repo")
+        # Check if marketplace already exists in local cache
+        if [ -d "$HOME/.claude/plugins/marketplaces/$MP_NAME" ]; then
+            MP_SKIP_COUNT=$((MP_SKIP_COUNT + 1))
+        else
+            echo "  📥 마켓플레이스 추가 중: $repo"
+            if claude plugin marketplace add "$repo" 2>/dev/null; then
+                MP_INSTALL_COUNT=$((MP_INSTALL_COUNT + 1))
+            else
+                echo "  ⚠️  추가 실패: $repo"
+            fi
+        fi
+    done < "$SCRIPT_DIR/marketplaces.txt"
+
+    if [ "$MP_INSTALL_COUNT" -gt 0 ] || [ "$MP_SKIP_COUNT" -gt 0 ]; then
+        echo "✅ 마켓플레이스: ${MP_INSTALL_COUNT}개 추가, ${MP_SKIP_COUNT}개 이미 존재"
+    fi
+fi
+
 # Auto-install plugins
 if [ -f "$SCRIPT_DIR/plugins.txt" ] && command -v claude &> /dev/null; then
     echo ""
