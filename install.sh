@@ -140,6 +140,36 @@ fi
 echo ""
 echo "🎉 Claude Code 설정 설치 완료!"
 
+# Clean stale plugin cache before marketplace/plugin install
+PLUGINS_CACHE_DIR="$HOME/.claude/plugins/cache"
+if [ -d "$PLUGINS_CACHE_DIR" ]; then
+    CACHE_CLEANED=0
+
+    # 1. Remove temp directories (failed install/uninstall leftovers)
+    for tmp_dir in "$PLUGINS_CACHE_DIR"/temp_*; do
+        [ -d "$tmp_dir" ] || continue
+        rm -rf "$tmp_dir"
+        CACHE_CLEANED=$((CACHE_CLEANED + 1))
+    done
+
+    # 2. Remove cache dirs for uninstalled plugins (marketplace level)
+    INSTALLED_FILE="$HOME/.claude/plugins/installed_plugins.json"
+    if [ -f "$INSTALLED_FILE" ]; then
+        ACTIVE_MARKETS=$(jq -r '.plugins | to_entries[] | .value[0].installPath' "$INSTALLED_FILE" 2>/dev/null | sed 's|.*/cache/||' | cut -d'/' -f1 | sort -u)
+        for cache_dir in "$PLUGINS_CACHE_DIR"/*/; do
+            [ -d "$cache_dir" ] || continue
+            dir_name="$(basename "$cache_dir")"
+            [[ "$dir_name" == temp_* ]] && continue
+            if ! echo "$ACTIVE_MARKETS" | grep -q "^${dir_name}$"; then
+                rm -rf "$cache_dir"
+                CACHE_CLEANED=$((CACHE_CLEANED + 1))
+            fi
+        done
+    fi
+
+    [ "$CACHE_CLEANED" -gt 0 ] && echo "🧹 플러그인 캐시 정리: ${CACHE_CLEANED}개 stale 항목 제거"
+fi
+
 # Auto-install marketplaces (must run before plugins)
 if [ -f "$SCRIPT_DIR/marketplaces.txt" ] && command -v claude &> /dev/null; then
     echo ""

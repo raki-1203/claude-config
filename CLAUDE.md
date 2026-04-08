@@ -28,7 +28,7 @@
 
 ## Obsidian LLM Wiki
 
-- **플러그인**: `obsidian-wiki@obsidian-wiki-plugin`
+- **플러그인**: `rakis@raki-claude-plugins`
 - **스킬**: `wiki-ingest`, `wiki-query`, `wiki-lint`
 - **Vault 경로**: `~/Library/Mobile Documents/com~apple~CloudDocs/Documents/Vault`
 - **구조**: Karpathy 3-Layer (raw/ → wiki/ → schema)
