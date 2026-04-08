@@ -14,3 +14,5 @@ superpowers@claude-plugins-official
 swift-lsp@claude-plugins-official
 typescript-lsp@claude-plugins-official
 ui-ux-pro-max@ui-ux-pro-max-skill
+obsidian-wiki@obsidian-wiki-plugin
+obsidian@obsidian-skills

@@ -171,28 +171,29 @@ if [ -d "$PLUGINS_CACHE_DIR" ]; then
 fi
 
 # Auto-install marketplaces (must run before plugins)
-if [ -f "$SCRIPT_DIR/marketplaces.txt" ] && command -v claude &> /dev/null; then
+# Single source of truth: settings.json extraKnownMarketplaces
+if command -v claude &> /dev/null; then
     echo ""
     echo "🏪 커스텀 마켓플레이스 설치 확인 중..."
     MP_INSTALL_COUNT=0
     MP_SKIP_COUNT=0
 
-    while IFS= read -r repo || [ -n "$repo" ]; do
-        [ -z "$repo" ] && continue
-        [[ "$repo" == \#* ]] && continue
-        MP_NAME=$(basename "$repo")
-        # Check if marketplace already exists in local cache
+    # Read all marketplaces from settings.json extraKnownMarketplaces
+    MP_NAMES=$(jq -r '.extraKnownMarketplaces // {} | keys[]' "$NEW" 2>/dev/null)
+    for MP_NAME in $MP_NAMES; do
+        REPO=$(jq -r ".extraKnownMarketplaces.\"$MP_NAME\".source.repo // empty" "$NEW" 2>/dev/null)
+        [ -z "$REPO" ] && continue
         if [ -d "$HOME/.claude/plugins/marketplaces/$MP_NAME" ]; then
             MP_SKIP_COUNT=$((MP_SKIP_COUNT + 1))
         else
-            echo "  📥 마켓플레이스 추가 중: $repo"
-            if claude plugin marketplace add "$repo" 2>/dev/null; then
+            echo "  📥 마켓플레이스 추가 중: $REPO"
+            if claude plugin marketplace add "$REPO" 2>/dev/null; then
                 MP_INSTALL_COUNT=$((MP_INSTALL_COUNT + 1))
             else
-                echo "  ⚠️  추가 실패: $repo"
+                echo "  ⚠️  추가 실패: $REPO"
             fi
         fi
-    done < "$SCRIPT_DIR/marketplaces.txt"
+    done
 
     if [ "$MP_INSTALL_COUNT" -gt 0 ] || [ "$MP_SKIP_COUNT" -gt 0 ]; then
         echo "✅ 마켓플레이스: ${MP_INSTALL_COUNT}개 추가, ${MP_SKIP_COUNT}개 이미 존재"
