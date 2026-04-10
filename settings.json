@@ -318,13 +318,6 @@
         "repo": "openai/codex-plugin-cc"
       }
     },
-    "obsidian-wiki-plugin": {
-      "source": {
-        "source": "github",
-        "repo": "raki-1203/obsidian-wiki-plugin"
-      },
-      "autoUpdate": true
-    },
     "raki-claude-plugins": {
       "source": {
         "source": "github",
@@ -336,12 +329,6 @@
       "source": {
         "source": "github",
         "repo": "jarrodwatts/claude-hud"
-      }
-    },
-    "obsidian-skills": {
-      "source": {
-        "source": "github",
-        "repo": "kepano/obsidian-skills"
       }
     },
     "ui-ux-pro-max-skill": {

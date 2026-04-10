@@ -170,15 +170,16 @@ if [ -d "$PLUGINS_CACHE_DIR" ]; then
     [ "$CACHE_CLEANED" -gt 0 ] && echo "🧹 플러그인 캐시 정리: ${CACHE_CLEANED}개 stale 항목 제거"
 fi
 
-# Auto-install marketplaces (must run before plugins)
+# Auto-install marketplaces (declarative: install missing + remove extra)
 # Single source of truth: settings.json extraKnownMarketplaces
 if command -v claude &> /dev/null; then
     echo ""
-    echo "🏪 커스텀 마켓플레이스 설치 확인 중..."
+    echo "🏪 커스텀 마켓플레이스 동기화 중..."
     MP_INSTALL_COUNT=0
     MP_SKIP_COUNT=0
+    MP_REMOVE_COUNT=0
 
-    # Read all marketplaces from settings.json extraKnownMarketplaces
+    # Read desired marketplaces from settings.json extraKnownMarketplaces
     MP_NAMES=$(jq -r '.extraKnownMarketplaces // {} | keys[]' "$NEW" 2>/dev/null)
     for MP_NAME in $MP_NAMES; do
         REPO=$(jq -r ".extraKnownMarketplaces.\"$MP_NAME\".source.repo // empty" "$NEW" 2>/dev/null)
@@ -195,15 +196,34 @@ if command -v claude &> /dev/null; then
         fi
     done
 
-    if [ "$MP_INSTALL_COUNT" -gt 0 ] || [ "$MP_SKIP_COUNT" -gt 0 ]; then
-        echo "✅ 마켓플레이스: ${MP_INSTALL_COUNT}개 추가, ${MP_SKIP_COUNT}개 이미 존재"
+    # Remove marketplaces not in settings.json
+    MP_DIR="$HOME/.claude/plugins/marketplaces"
+    if [ -d "$MP_DIR" ]; then
+        for mp_path in "$MP_DIR"/*/; do
+            [ -d "$mp_path" ] || continue
+            mp_name="$(basename "$mp_path")"
+            # Skip official marketplaces (claude-plugins-official etc.)
+            if ! echo "$MP_NAMES" | grep -q "^${mp_name}$"; then
+                # Check if it's a custom marketplace (has source in extraKnownMarketplaces originally)
+                # Only remove if it's not a built-in marketplace
+                if [ -f "$mp_path/marketplace.json" ]; then
+                    IS_OFFICIAL=$(jq -r '.official // false' "$mp_path/marketplace.json" 2>/dev/null)
+                    [ "$IS_OFFICIAL" = "true" ] && continue
+                fi
+                echo "  🗑️  마켓플레이스 제거 중: $mp_name (settings.json에 없음)"
+                rm -rf "$mp_path"
+                MP_REMOVE_COUNT=$((MP_REMOVE_COUNT + 1))
+            fi
+        done
     fi
+
+    echo "✅ 마켓플레이스: ${MP_INSTALL_COUNT}개 추가, ${MP_SKIP_COUNT}개 유지, ${MP_REMOVE_COUNT}개 제거"
 fi
 
-# Auto-install plugins
+# Auto-install plugins (declarative: install missing + remove extra)
 if [ -f "$SCRIPT_DIR/plugins.txt" ] && command -v claude &> /dev/null; then
     echo ""
-    echo "📦 플러그인 자동 설치 시작..."
+    echo "📦 플러그인 동기화 시작..."
 
     INSTALLED_FILE="$HOME/.claude/plugins/installed_plugins.json"
     INSTALLED_LIST=""
@@ -211,6 +231,15 @@ if [ -f "$SCRIPT_DIR/plugins.txt" ] && command -v claude &> /dev/null; then
         INSTALLED_LIST=$(jq -r '.plugins | keys[]' "$INSTALLED_FILE" 2>/dev/null)
     fi
 
+    # Build desired plugin list from plugins.txt
+    DESIRED_LIST=""
+    while IFS= read -r plugin || [ -n "$plugin" ]; do
+        [ -z "$plugin" ] && continue
+        DESIRED_LIST="$DESIRED_LIST
+$plugin"
+    done < "$SCRIPT_DIR/plugins.txt"
+
+    # 1. Install missing plugins
     INSTALL_COUNT=0
     SKIP_COUNT=0
 
@@ -228,9 +257,21 @@ if [ -f "$SCRIPT_DIR/plugins.txt" ] && command -v claude &> /dev/null; then
         fi
     done < "$SCRIPT_DIR/plugins.txt"
 
-    if [ "$INSTALL_COUNT" -gt 0 ] || [ "$SKIP_COUNT" -gt 0 ]; then
-        echo "✅ 플러그인: ${INSTALL_COUNT}개 설치, ${SKIP_COUNT}개 이미 설치됨"
-    fi
+    # 2. Remove plugins not in plugins.txt
+    REMOVE_COUNT=0
+    for installed in $INSTALLED_LIST; do
+        [ -z "$installed" ] && continue
+        if ! echo "$DESIRED_LIST" | grep -q "^${installed}$"; then
+            echo "  🗑️  제거 중: $installed (plugins.txt에 없음)"
+            if claude plugin uninstall "$installed" 2>/dev/null; then
+                REMOVE_COUNT=$((REMOVE_COUNT + 1))
+            else
+                echo "  ⚠️  제거 실패: $installed"
+            fi
+        fi
+    done
+
+    echo "✅ 플러그인: ${INSTALL_COUNT}개 설치, ${SKIP_COUNT}개 유지, ${REMOVE_COUNT}개 제거"
 else
     if [ -f "$SCRIPT_DIR/plugins.txt" ]; then
         echo ""
