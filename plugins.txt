@@ -6,6 +6,7 @@ discord@claude-plugins-official
 figma@claude-plugins-official
 firebase@claude-plugins-official
 frontend-design@claude-plugins-official
+obsidian@obsidian-skills
 pyright-lsp@claude-plugins-official
 rakis@raki-claude-plugins
 ralph-loop@claude-plugins-official
