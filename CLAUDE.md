@@ -45,7 +45,7 @@
 ## Obsidian LLM Wiki
 
 - **플러그인**: `rakis@raki-claude-plugins`
-- **Vault 경로**: `~/Library/Mobile Documents/com~apple~CloudDocs/Documents/Vault`
+- **Vault 경로**: `~/Nextcloud/Vault` (symlink → `~/Library/CloudStorage/Nextcloud-admin@…/Vault`)
 - **구조**: Karpathy 3-Layer (raw/ → wiki/ → schema)
 
 ### 스킬 사용 (필수)

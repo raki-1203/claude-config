@@ -251,9 +251,7 @@
     "ui-ux-pro-max@ui-ux-pro-max-skill": true,
     "pyright-lsp@claude-plugins-official": true,
     "codex@openai-codex": true,
-    "discord@claude-plugins-official": true,
     "context7@claude-plugins-official": true,
-    "figma@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true,
     "supabase@claude-plugins-official": true,
     "rakis@raki-claude-plugins": true
@@ -278,5 +276,7 @@
   "promptSuggestionEnabled": false,
   "autoUpdatesChannel": "latest",
   "skipDangerousModePermissionPrompt": true,
-  "teammateMode": "tmux"
+  "teammateMode": "tmux",
+  "verbose": true,
+  "agentPushNotifEnabled": true
 }
