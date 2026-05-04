@@ -276,7 +276,7 @@
   "promptSuggestionEnabled": false,
   "autoUpdatesChannel": "latest",
   "skipDangerousModePermissionPrompt": true,
-  "teammateMode": "tmux",
   "verbose": true,
+  "teammateMode": "tmux",
   "agentPushNotifEnabled": true
 }
