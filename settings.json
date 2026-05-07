@@ -172,7 +172,16 @@
       "Bash(for f:*)",
       "Bash(do echo:*)",
       "Read(//Users/raki-1203/workspace/claude-config/**)",
-      "Bash(done)"
+      "Bash(done)",
+      "Bash(docker info *)",
+      "Read(//var/lib/docker/**)",
+      "Read(//data1/cskim-remote/**)",
+      "Read(//home/cskim-remote/**)",
+      "Bash(getent group *)",
+      "Read(//data1/**)",
+      "Bash(sudo -n -v)",
+      "Bash(chmod +x /data1/cskim-remote/workspace/lasp/install_minikube.sh)",
+      "Bash(bash /data1/cskim-remote/workspace/lasp/install_minikube.sh)"
     ],
     "deny": [
       "Bash(rm -rf /)",
@@ -198,7 +207,7 @@
       "Bash(*DROP DATABASE*)",
       "Bash(*TRUNCATE TABLE*)"
     ],
-    "defaultMode": "default"
+    "defaultMode": "auto"
   },
   "hooks": {
     "PreToolUse": [
@@ -254,7 +263,8 @@
     "context7@claude-plugins-official": true,
     "frontend-design@claude-plugins-official": true,
     "supabase@claude-plugins-official": true,
-    "rakis@raki-claude-plugins": true
+    "rakis@raki-claude-plugins": true,
+    "ralph-loop@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
     "openai-codex": {
@@ -273,10 +283,16 @@
   },
   "language": "Korean",
   "effortLevel": "high",
-  "promptSuggestionEnabled": false,
-  "autoUpdatesChannel": "latest",
+  "autoUpdatesChannel": "stable",
   "skipDangerousModePermissionPrompt": true,
-  "verbose": true,
+  "verbose": false,
+  "preferredNotifChannel": "ghostty",
+  "autoCompactEnabled": true,
+  "showTurnDuration": true,
   "teammateMode": "tmux",
-  "agentPushNotifEnabled": true
+  "inputNeededNotifEnabled": true,
+  "agentPushNotifEnabled": true,
+  "skipAutoPermissionPrompt": true,
+  "useAutoModeDuringPlan": true,
+  "remoteControlAtStartup": true
 }
