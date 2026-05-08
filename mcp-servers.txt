@@ -3,6 +3,4 @@
 
 # User-level MCP servers
 claude mcp add obsidian -s user -- npx @bitbonsai/mcpvault@latest /Users/raki-1203/Library/Mobile Documents/com~apple~CloudDocs/Documents/Vault
-
-# Project-level MCP servers
 claude mcp add ios-simulator -s user -- npx -y ios-simulator-mcp@latest
