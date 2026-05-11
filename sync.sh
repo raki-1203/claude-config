@@ -233,6 +233,18 @@ if [ -f "$HOME/.tmux.conf" ]; then
     fi
 fi
 
+# Sync Ghostty config (only if changed)
+GHOSTTY_CONFIG="$HOME/Library/Application Support/com.mitchellh.ghostty/config.ghostty"
+if [ -f "$GHOSTTY_CONFIG" ]; then
+    if ! cmp -s "$GHOSTTY_CONFIG" "$SCRIPT_DIR/ghostty.config" 2>/dev/null; then
+        cp "$GHOSTTY_CONFIG" "$SCRIPT_DIR/ghostty.config"
+        echo "✅ ghostty.config 동기화 완료 (로컬 기준)"
+        SYNC_COUNT=$((SYNC_COUNT + 1))
+    else
+        echo "✅ ghostty.config (변경 없음)"
+    fi
+fi
+
 # Generate env-template.txt
 cat > "$SCRIPT_DIR/env-template.txt" << 'EOF'
 # Slack 알림용 Webhook URL

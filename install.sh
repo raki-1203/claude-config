@@ -137,6 +137,23 @@ if [ -f "$SCRIPT_DIR/tmux.conf" ]; then
     echo "✅ tmux.conf 적용 완료 (저장소 기준)"
 fi
 
+# Copy Ghostty config
+if [ -f "$SCRIPT_DIR/ghostty.config" ]; then
+    GHOSTTY_DIR="$HOME/Library/Application Support/com.mitchellh.ghostty"
+    GHOSTTY_CONFIG="$GHOSTTY_DIR/config.ghostty"
+    mkdir -p "$GHOSTTY_DIR"
+    if [ -f "$GHOSTTY_CONFIG" ]; then
+        if ! cmp -s "$GHOSTTY_CONFIG" "$SCRIPT_DIR/ghostty.config"; then
+            BACKUP="$GHOSTTY_CONFIG.backup.$(date +%Y%m%d%H%M%S)"
+            cp "$GHOSTTY_CONFIG" "$BACKUP"
+            echo "📦 기존 ghostty config 백업: $BACKUP"
+            ls -t "$GHOSTTY_CONFIG.backup."* 2>/dev/null | tail -n +2 | xargs -r rm
+        fi
+    fi
+    cp "$SCRIPT_DIR/ghostty.config" "$GHOSTTY_CONFIG"
+    echo "✅ ghostty config 적용 완료 (저장소 기준)"
+fi
+
 echo ""
 echo "🎉 Claude Code 설정 설치 완료!"
 
