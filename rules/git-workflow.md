@@ -35,11 +35,6 @@ When creating PRs:
    - Refactor (IMPROVE)
    - Verify 80%+ coverage
 
-3. **Code Review**
-   - Use **code-reviewer** agent immediately after writing code
-   - Address CRITICAL and HIGH issues
-   - Fix MEDIUM issues when possible
-
-4. **Commit & Push**
+3. **Commit & Push**
    - Detailed commit messages
    - Follow conventional commits format

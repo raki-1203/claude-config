@@ -160,8 +160,6 @@
       "Bash(claude mcp list:*)",
       "Bash(bash -n install.sh)",
       "Bash(/usr/bin/security find-generic-password:*)",
-      "mcp__plugin_oh-my-claudecode_t__state_list_active",
-      "mcp__plugin_oh-my-claudecode_t__state_clear",
       "Bash(chmod +x ~/.claude/hooks/growth-counter.sh)",
       "Bash(obsidian read:*)",
       "Bash(obsidian create:*)",

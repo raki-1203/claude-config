@@ -7,7 +7,7 @@
 
 ## Purpose
 
-This directory defines all agents available in oh-my-claudecode:
+This directory defines all available agents:
 
 - **18 base agents** with default model assignments
 - **Tiered variants** (LOW/MEDIUM/HIGH) for smart routing
@@ -80,12 +80,9 @@ const agents = getAgentDefinitions();
 | CLI testing | `qa-tester` | sonnet | Bash, Read, Grep, Glob, TodoWrite |
 | Data analysis | `scientist` | sonnet | Read, Glob, Grep, Bash, python_repl |
 | ML/hypothesis | `scientist-high` | opus | Read, Glob, Grep, Bash, python_repl |
-| Security audit | `security-reviewer` | opus | Read, Grep, Glob, Bash |
-| Quick security scan | `security-reviewer-low` | haiku | Read, Grep, Glob, Bash |
 | Build errors | `debugger` | sonnet | Read, Grep, Glob, Edit, Write, Bash |
 | TDD workflow | `test-engineer` | sonnet | Read, Grep, Glob, Edit, Write, Bash |
 | Test suggestions | `test-engineer` (model=haiku) | haiku | Read, Grep, Glob, Bash |
-| Code review | `code-reviewer` | opus | Read, Grep, Glob, Bash |
 
 #### Creating a New Agent
 
@@ -237,9 +234,7 @@ None - pure TypeScript definitions.
 | Visual | vision | Image/screenshot analysis |
 | Planning | planner, analyst, critic | Strategic planning |
 | Testing | qa-tester | Interactive testing |
-| Security | security-reviewer, security-reviewer-low | Security audits |
 | TDD | test-engineer | Test-driven development |
-| Review | code-reviewer | Code quality + style + performance |
 | Data | scientist, scientist-high | Data analysis |
 
 <!-- MANUAL:
