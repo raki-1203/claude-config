@@ -213,21 +213,25 @@ if command -v claude &> /dev/null; then
         fi
     done
 
-    # Remove marketplaces not in settings.json
+    # Remove marketplaces not in settings.json, but keep those with installed plugins
     MP_DIR="$HOME/.claude/plugins/marketplaces"
+    INSTALLED_FILE="$HOME/.claude/plugins/installed_plugins.json"
     if [ -d "$MP_DIR" ]; then
         for mp_path in "$MP_DIR"/*/; do
             [ -d "$mp_path" ] || continue
             mp_name="$(basename "$mp_path")"
-            # Skip official marketplaces (claude-plugins-official etc.)
             if ! echo "$MP_NAMES" | grep -q "^${mp_name}$"; then
-                # Check if it's a custom marketplace (has source in extraKnownMarketplaces originally)
-                # Only remove if it's not a built-in marketplace
-                if [ -f "$mp_path/marketplace.json" ]; then
-                    IS_OFFICIAL=$(jq -r '.official // false' "$mp_path/marketplace.json" 2>/dev/null)
-                    [ "$IS_OFFICIAL" = "true" ] && continue
+                # Safety net: never remove a marketplace that still has installed plugins
+                if [ -f "$INSTALLED_FILE" ]; then
+                    PLUGIN_COUNT=$(jq -r --arg mp "$mp_name" \
+                        '[.plugins | keys[] | select(endswith("@" + $mp))] | length' \
+                        "$INSTALLED_FILE" 2>/dev/null)
+                    if [ "${PLUGIN_COUNT:-0}" -gt 0 ]; then
+                        echo "  ⏭️  마켓플레이스 유지: $mp_name (설치된 플러그인 ${PLUGIN_COUNT}개)"
+                        continue
+                    fi
                 fi
-                echo "  🗑️  마켓플레이스 제거 중: $mp_name (settings.json에 없음)"
+                echo "  🗑️  마켓플레이스 제거 중: $mp_name (settings.json에 없음, 설치된 플러그인 없음)"
                 rm -rf "$mp_path"
                 MP_REMOVE_COUNT=$((MP_REMOVE_COUNT + 1))
             fi
