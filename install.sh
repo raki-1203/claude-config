@@ -79,18 +79,24 @@ if [ -d "$SCRIPT_DIR/skills" ]; then
     echo "✅ skills 적용 완료 (auto/ 보존, templates 업데이트)"
 fi
 
-# Copy agents (merge: repo agents + preserve existing, plugin agents managed separately)
+# Copy agents (replace: 저장소가 source of truth, 사용자 레벨만 정리. 플러그인 agents는 plugins/cache/에 있어 영향 없음)
 if [ -d "$SCRIPT_DIR/agents" ]; then
+    if [ -d "$HOME/.claude/agents" ]; then
+        find "$HOME/.claude/agents" -maxdepth 1 -type f ! -name ".gitkeep" -delete 2>/dev/null || true
+    fi
     mkdir -p "$HOME/.claude/agents"
     find "$SCRIPT_DIR/agents" -maxdepth 1 -type f ! -name ".gitkeep" -exec cp {} "$HOME/.claude/agents/" \; 2>/dev/null || true
-    echo "✅ agents 적용 완료 (저장소 기준, 기존 보존)"
+    echo "✅ agents 적용 완료 (저장소 기준)"
 fi
 
-# Copy commands (merge: repo commands + preserve existing, plugin commands managed separately)
+# Copy commands (replace: 저장소가 source of truth, 사용자 레벨만 정리. 플러그인 commands는 plugins/cache/에 있어 영향 없음)
 if [ -d "$SCRIPT_DIR/commands" ]; then
+    if [ -d "$HOME/.claude/commands" ]; then
+        find "$HOME/.claude/commands" -maxdepth 1 -type f ! -name ".gitkeep" -delete 2>/dev/null || true
+    fi
     mkdir -p "$HOME/.claude/commands"
     find "$SCRIPT_DIR/commands" -maxdepth 1 -type f ! -name ".gitkeep" -exec cp {} "$HOME/.claude/commands/" \; 2>/dev/null || true
-    echo "✅ commands 적용 완료 (저장소 기준, 기존 보존)"
+    echo "✅ commands 적용 완료 (저장소 기준)"
 fi
 
 # Copy rules (replace completely, exclude .gitkeep)
