@@ -5,6 +5,7 @@ context7@claude-plugins-official
 firebase@claude-plugins-official
 frontend-design@claude-plugins-official
 obsidian@obsidian-skills
+ponytail@ponytail
 pyright-lsp@claude-plugins-official
 rakis@raki-claude-plugins
 ralph-loop@claude-plugins-official
@@ -13,3 +14,4 @@ superpowers@claude-plugins-official
 swift-lsp@claude-plugins-official
 typescript-lsp@claude-plugins-official
 ui-ux-pro-max@ui-ux-pro-max-skill
+vercel@claude-plugins-official

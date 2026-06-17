@@ -18,7 +18,6 @@
       "Skill(*)",
       "WebSearch",
       "WebFetch(*)",
-      "mcp__*",
       "Bash(git *)",
       "Bash(npm *)",
       "Bash(npx *)",
@@ -133,11 +132,9 @@
       "Bash(node -e:*)",
       "Bash(node:*)",
       "Bash(test:*)",
-      "Bash(NOTIFY_TYPE=permission CLAUDE_SLACK_WEBHOOK_URL=\"\" /Users/raki-1203/.claude/hooks/question-notify.sh:*)",
       "Bash(# TDD 모드 테스트: 테스트 커맨드가 없는 generic 프로젝트에서 cd /tmp/autopilot-test && rm .claude/autopilot-state.local.json && AUTOPILOT_MODE=tdd AUTOPILOT_PROMPT=\"\"Build something\"\" AUTOPILOT_MAX_ITER=10 AUTOPILOT_PROMISE=COMPLETE node /Users/raki-1203/.claude/scripts/autopilot-setup.js 2>&1 && echo ''{\"\"transcript_path\"\":\"\"/dev/null\"\"}'')",
       "Bash(# Node 프로젝트에서 TDD 게이트 테스트 \\(테스트 실패 시나리오\\) cd /tmp && rm -rf autopilot-node-test && mkdir -p autopilot-node-test/.claude && cd autopilot-node-test && echo ''{\"\"name\"\":\"\"test\"\",\"\"scripts\"\":{\"\"test\"\":\"\"node -e \\\\\"\"process.exit\\(1\\)\\\\\"\"\"\"}}'' && AUTOPILOT_MODE=tdd AUTOPILOT_PROMPT=\"\"Fix tests\"\" AUTOPILOT_MAX_ITER=10 AUTOPILOT_PROMISE=COMPLETE node /Users/raki-1203/.claude/scripts/autopilot-setup.js 2>&1 && echo ''{\"\"transcript_path\"\":\"\"/dev/null\"\"}'')",
       "Bash(# Node 프로젝트에서 TDD 게이트 성공 시나리오 cd /tmp && rm -rf autopilot-pass-test && mkdir -p autopilot-pass-test/.claude && cd autopilot-pass-test && echo ''{\"\"name\"\":\"\"test\"\",\"\"scripts\"\":{\"\"test\"\":\"\"echo ok\"\"}}'' && AUTOPILOT_MODE=tdd AUTOPILOT_PROMPT=\"\"Build API\"\" AUTOPILOT_MAX_ITER=10 AUTOPILOT_PROMISE=COMPLETE node /Users/raki-1203/.claude/scripts/autopilot-setup.js 2>&1 && echo ''{\"\"transcript_path\"\":\"\"/dev/null\"\"}'')",
-      "Bash(NOTIFY_TYPE=permission CLAUDE_SLACK_WEBHOOK_URL=\"\" /Users/raki-1203/.claude/hooks/question-notify.sh tail -1 /tmp/claude-hook-debug.log)",
       "WebFetch(domain:elliotbonneville.com)",
       "WebFetch(domain:zenn.dev)",
       "WebFetch(domain:petesena.medium.com)",
@@ -208,42 +205,6 @@
     "defaultMode": "auto"
   },
   "hooks": {
-    "PreToolUse": [
-      {
-        "matcher": "tool matches \"question\"",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/question-notify.sh",
-            "timeout": 10
-          }
-        ]
-      }
-    ],
-    "PermissionRequest": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "NOTIFY_TYPE=permission ~/.claude/hooks/question-notify.sh",
-            "timeout": 10
-          }
-        ]
-      }
-    ],
-    "Stop": [
-      {
-        "matcher": "*",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/task-complete-notify.sh",
-            "timeout": 10
-          }
-        ]
-      }
-    ],
     "SessionEnd": []
   },
   "statusLine": {
@@ -262,7 +223,9 @@
     "frontend-design@claude-plugins-official": true,
     "supabase@claude-plugins-official": true,
     "rakis@raki-claude-plugins": true,
-    "ralph-loop@claude-plugins-official": true
+    "ralph-loop@claude-plugins-official": true,
+    "vercel@claude-plugins-official": true,
+    "ponytail@ponytail": true
   },
   "extraKnownMarketplaces": {
     "openai-codex": {
@@ -307,11 +270,18 @@
         "source": "github",
         "repo": "anthropics/skills"
       }
+    },
+    "ponytail": {
+      "source": {
+        "source": "github",
+        "repo": "DietrichGebert/ponytail"
+      }
     }
   },
   "language": "Korean",
   "effortLevel": "high",
   "skipDangerousModePermissionPrompt": true,
+  "skipWorkflowUsageWarning": true,
   "verbose": false,
   "preferredNotifChannel": "ghostty",
   "autoCompactEnabled": true,

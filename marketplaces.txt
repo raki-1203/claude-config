@@ -7,3 +7,4 @@ jarrodwatts/claude-hud
 kepano/obsidian-skills
 nextlevelbuilder/ui-ux-pro-max-skill
 anthropics/skills
+DietrichGebert/ponytail
