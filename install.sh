@@ -22,9 +22,14 @@ fi
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
-echo "📥 최신 설정 가져오는 중..."
-git -C "$SCRIPT_DIR" fetch origin || echo "⚠️  git fetch 실패 (오프라인이거나 권한 문제일 수 있습니다)"
-git -C "$SCRIPT_DIR" reset --hard origin/main || echo "⚠️  git reset 실패 (오프라인이거나 권한 문제일 수 있습니다)"
+# git reset이 install.sh 자체를 갱신할 수 있으므로, fetch/reset 후 최신 버전으로
+# 한 번만 재실행한다 (실행 중인 bash는 옛 파일 내용을 계속 읽기 때문).
+if [ -z "$INSTALL_REEXEC" ]; then
+    echo "📥 최신 설정 가져오는 중..."
+    git -C "$SCRIPT_DIR" fetch origin || echo "⚠️  git fetch 실패 (오프라인이거나 권한 문제일 수 있습니다)"
+    git -C "$SCRIPT_DIR" reset --hard origin/main || echo "⚠️  git reset 실패 (오프라인이거나 권한 문제일 수 있습니다)"
+    INSTALL_REEXEC=1 exec bash "$SCRIPT_DIR/install.sh" "$@"
+fi
 
 EXISTING="$HOME/.claude/settings.json"
 NEW="$SCRIPT_DIR/settings.json"
