@@ -61,12 +61,15 @@ if [ -d "$SCRIPT_DIR/scripts" ]; then
     echo "✅ scripts 복사 완료"
 fi
 
-# Copy hooks (Slack notification hooks)
+# Copy hooks (replace: 저장소가 source of truth, 사용자 레벨만 정리)
 if [ -d "$SCRIPT_DIR/hooks" ]; then
+    if [ -d "$HOME/.claude/hooks" ]; then
+        find "$HOME/.claude/hooks" -maxdepth 1 -type f ! -name ".gitkeep" -delete 2>/dev/null || true
+    fi
     mkdir -p "$HOME/.claude/hooks"
-    cp "$SCRIPT_DIR/hooks"/* "$HOME/.claude/hooks/"
+    find "$SCRIPT_DIR/hooks" -maxdepth 1 -type f ! -name ".gitkeep" -exec cp {} "$HOME/.claude/hooks/" \; 2>/dev/null || true
     chmod +x "$HOME/.claude/hooks"/*.sh 2>/dev/null || true
-    echo "✅ hooks 복사 완료"
+    echo "✅ hooks 적용 완료 (저장소 기준)"
 fi
 
 # Copy skills (merge: templates를 덮어쓰되 auto/의 사용자 생성 스킬은 보존)
