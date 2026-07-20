@@ -2,14 +2,22 @@
 # Claude Code PreToolUse hook: git commit 전 Python lint 검사
 # CI와 동일한 ruff 규칙(F821: undefined name, F811: redefined unused) 적용
 
-# git commit 명령이 아니면 스킵
-if [ "$TOOL_NAME" != "Bash" ]; then
+# 훅 입력은 stdin JSON으로 들어온다.
+# $TOOL_NAME / $TOOL_INPUT 같은 환경변수는 주입되지 않는다
+# (훅 전용 환경변수는 CLAUDE_PROJECT_DIR 하나뿐).
+INPUT=$(cat)
+
+# jq가 없으면 판별할 수 없다 — 막지 말고 통과시킨다
+command -v jq &>/dev/null || exit 0
+
+# Bash 도구가 아니면 스킵
+if [ "$(jq -r '.tool_name // empty' <<<"$INPUT")" != "Bash" ]; then
   exit 0
 fi
 
-INPUT="$TOOL_INPUT"
 # git commit 명령인지 확인
-if ! echo "$INPUT" | grep -qE 'git commit'; then
+CMD=$(jq -r '.tool_input.command // empty' <<<"$INPUT")
+if ! grep -qE 'git +commit' <<<"$CMD"; then
   exit 0
 fi
 

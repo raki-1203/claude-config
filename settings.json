@@ -203,7 +203,19 @@
   },
   "model": "opus",
   "hooks": {
-    "SessionEnd": []
+    "SessionEnd": [],
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "~/.claude/hooks/python-lint.sh",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
   },
   "statusLine": {
     "type": "command",
